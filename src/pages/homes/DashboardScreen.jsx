@@ -1,60 +1,80 @@
 import React, { useState } from 'react';
-import { Image, Modal, StyleSheet, Dimensions, Text, View, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { CGMapImg, BackWImg, EditImg, DownloadDarkImg, uploadImg, LinkImg } from '../assets';
+import { Image, Modal, StyleSheet, 
+  Dimensions, Text, View, ImageBackground, 
+  SafeAreaView, FlatList,
+  TouchableOpacity, ScrollView } from 'react-native';
+import { CGMapImg, LogoImg, FilterImg, EditImg, DownloadDarkImg, uploadImg, LinkImg, NotImg } from '../assets';
 import MasonryList from '@react-native-seoul/masonry-list';
 import colors from '../../constants/color';
 const { width, height } = Dimensions.get("window");
 
-const data = [
-    {
-      title: 'Image 1',
-      url: 'https://picsum.photos/600/400?random=1',
-    },
-    {
-      title: 'Image 2',
-      url: 'https://picsum.photos/600/400?random=2',
-    },
-    {
-      title: 'Image 3',
-      url: 'https://picsum.photos/600/400?random=3',
-    },
-  ];
+const images = [
+  { id: '1', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
+  { id: '2', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
+  { id: '3', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
+  { id: '4', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
+];
 
-//   const MyCarousel = () => {
-//     return (
-//       <Carousel
-//         width={width}
-//         height={200}
-//         data={[...Array(5).keys()]}
-//         renderItem={({ index }) => (
-//           <View
-//             style={{
-//               flex: 1,
-//               borderWidth: 1,
-//               justifyContent: 'center',
-//               alignItems: 'center',
-//               backgroundColor: 'lightblue',
-//             }}
-//           >
-//             <Text>Item {index}</Text>
-//           </View>
-//         )}
-//       />
-//     );
-//   };
-// Reusable Header Component
+const MyCarousel = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const onViewableItemsChanged = ({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+      setCurrentIndex(viewableItems[0].index);
+    }
+  };
+
+  const viewabilityConfig = {
+    itemVisiblePercentThreshold: 50, 
+  };
+
+
+  return (
+    <View style={styles.sliderContainer}>
+      {/* Image Slider */}
+      <FlatList
+        data={images}
+        renderItem={({ item }) => (
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: item.uri }} style={styles.image} />
+          </View>
+        )}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig}
+      />
+
+      {/* Pagination Dots */}
+      <View style={styles.paginationContainer}>
+        {images.map((_, index) => (
+          <TouchableOpacity key={index} style={[styles.dot, currentIndex === index && styles.activeDot]} />
+        ))}
+      </View>
+
+      {/* Optional: Text for Current Page */}
+      <Text style={styles.paginationText}>
+        {currentIndex + 1} / {images.length}
+      </Text>
+    </View>
+  );
+};
+
 const Header = ({ onBackPress, onEditPress }) => (
   <View style={styles.header}>
-    <View style={styles.headerColumn}>
-      <TouchableOpacity onPress={onBackPress}>
-        <Image style={styles.headerIcon} source={BackWImg} />
+    <View style={{...styles.headerColumn, flexDirection:"row", width:"100%"}}>
+      <TouchableOpacity  style={{flexDirection:"row",  width:"50%"}} onPress={onBackPress}>
+        <Image source={LogoImg} style={styles.logo} />
+        <Text style={styles.dashboardText}> Dashboard</Text>
       </TouchableOpacity>
-    </View>
-    <View style={[styles.headerColumn, { alignItems: "center" }]}>
-      <TouchableOpacity>
-        <Text style={styles.headerText}>Profile</Text>
-      </TouchableOpacity>
+      <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
+        <View style={{flexDirection:"row"}}>
+        <Image source={FilterImg} style={styles.notificationImg} />
+        <Image source={NotImg} style={styles.notificationImg} />
+        </View>
+      </View>
     </View>
     <View style={[styles.headerColumn, { alignItems: "flex-end" }]}>
       <TouchableOpacity onPress={onEditPress}>
@@ -89,21 +109,20 @@ const ImageCard = ({ item, onPress }) => (
       <View style={styles.imgBottomSection}>
         <Text>CI Young Indians Conferences</Text>
         <View style={styles.linksSection}>
-        <TouchableOpacity>
+          <TouchableOpacity>
             <Image source={LinkImg} />
-        </TouchableOpacity>
-        <TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <Image source={LinkImg} />
-        </TouchableOpacity>
-        <TouchableOpacity>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <Image source={LinkImg} />
-        </TouchableOpacity>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
   </View>
 );
-
 
 const DashboardScreen = () => {
   const data = [
@@ -128,8 +147,8 @@ const DashboardScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header onBackPress={handleBackPress} onEditPress={handleEditPress} />
-        {/* <MyCarousel /> */}
       <ScrollView>
+      <MyCarousel />
         <View style={styles.imagesSection}>
           <MasonryList
             data={data}
@@ -155,12 +174,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  dashboardText:{
+    fontWeight:"bold",
+    fontSize:20,
+    marginTop:4
+  },
+  logo:{
+    width:35,
+    height:35
+  },
+  notificationImg:{
+    width:20,
+    height:20,
+    marginLeft:10
+  },
   header: {
     top: 0,
     padding: 15,
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: colors.primary,
+    backgroundColor: "white",
   },
   headerColumn: {
     width: "33%",
@@ -224,7 +257,50 @@ const styles = StyleSheet.create({
     justifyContent:"space-between",
     width:width/3,
     marginTop:10
-  }
+  },
+  imageContainer: {
+    width: width,  // Full width of the device
+    height: 200,   // Height for image
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  paginationContainer: {
+    position: 'absolute',
+    bottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    margin: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Inactive dots color
+  },
+  activeDot: {
+    backgroundColor: 'white', // Active dot color
+  },
+  paginationText: {
+    position: 'absolute',
+    bottom: 20,
+    fontSize: 16,
+    color: 'white',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  sliderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default DashboardScreen;
