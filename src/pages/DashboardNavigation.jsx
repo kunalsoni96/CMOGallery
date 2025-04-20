@@ -2,19 +2,40 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import DashboardScreen from './homes/DashboardScreen';
-import DownloadImageScreen from './homes/DownloadImageScreen';
 import ImageListScreen from './homes/ImageListScreen';
 import MyDashboardScreen from './homes/MyDashBoardScreen';
 import SearchEventScreen from './homes/SearchEventScreen';
 import colors from '../constants/color';
-import { DownNavImg, SearchFaceImg, ProfileNavImg, SearchImg } from './assets';
+import { DownNavImg, SearchFaceImg, ProfileNavImg, SearchImg, SerachDarkImg, HomeDarkImg, DownloadDarkImg, ProfileDarkImg, HomeWhiteImg, UploadDarkImg } from './assets';
+import ProfileScreen from './homes/ProfileScreen';
 
 const BottomStack = createBottomTabNavigator();
 const { width } = Dimensions.get('window');
 
 // 🔧 Custom TabBar
 const CustomTabBar = ({ state, descriptors, navigation }) => {
-  const icons = [DownNavImg, SearchImg, SearchFaceImg, DownNavImg, ProfileNavImg];
+  const icons = [
+    {
+     default:HomeWhiteImg, 
+     active:HomeDarkImg,
+    },
+    {
+      default:SearchImg, 
+      active:SerachDarkImg
+    },
+    {
+      default:SearchFaceImg,
+      active:UploadDarkImg
+    }, 
+    {
+     default:DownNavImg, 
+     active:DownloadDarkImg
+    },
+    {
+     default:ProfileNavImg,
+     active:ProfileDarkImg
+    }
+    ];
   const labels = ['Home', 'Search', 'Upload', 'My Download', 'Profile'];
 
   return (
@@ -22,7 +43,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
       {state.routes.map((route, index) => {
         const isFocused = state.index === index;
         const tabWidth = isFocused ? width * 0.3 : width * 0.15;
-
+        const iconSource = isFocused ? icons[index].active : icons[index].default;
         const onPress = () => {
           const event = navigation.emit({
             type: 'tabPress',
@@ -47,7 +68,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
               },
             ]}
           >
-            <Image source={icons[index]} style={styles.iconImg} />
+            <Image source={iconSource} style={styles.iconImg} />
             {isFocused && <Text style={styles.labelText}>{labels[index]}</Text>}
           </TouchableOpacity>
         );
@@ -65,10 +86,10 @@ const DashboardNavigation = () => {
       }}
     >
       <BottomStack.Screen name="DashboardScreen" component={DashboardScreen} />
-      <BottomStack.Screen name="DownloadImageScreen" component={DownloadImageScreen} />
+      <BottomStack.Screen name="SearchEventScreen" component={SearchEventScreen} />
       <BottomStack.Screen name="ImageListScreen" component={ImageListScreen} />
       <BottomStack.Screen name="MyDashboardScreen" component={MyDashboardScreen} />
-      <BottomStack.Screen name="SearchEventScreen" component={SearchEventScreen} />
+      <BottomStack.Screen name="ProfileScreen" component={ProfileScreen} />
     </BottomStack.Navigator>
   );
 };

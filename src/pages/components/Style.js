@@ -1,0 +1,87 @@
+import { StyleSheet } from "react-native";
+import colors from "../../constants/color";
+const commonStyle = StyleSheet.create({
+    textInput:{
+        backgroundColor:"white",
+        width:"90%",
+        height:50,
+        borderRadius:40,
+        justifyContent:"center",
+        alignItems:"center",
+        borderWidth:1,
+        borderColor:"#e6e6e6",
+        paddingLeft:20
+    },
+    section:{
+        width:"100%",
+        alignItems:"center",
+        paddingVertical:10,
+      },
+      googleBtn:{
+        backgroundColor:"white",
+        width:"90%",
+        height:50,
+        borderRadius:40,
+        justifyContent:"center",
+        alignItems:"center",
+        borderWidth:1,
+        borderColor:colors.border,
+        flexDirection:'row'
+    },
+    submitBtn:{
+        backgroundColor:colors.primary,
+        width:"90%",
+        height:50,
+        borderRadius:40,
+        justifyContent:"center",
+        alignItems:"center",
+        marginTop:10
+    },
+    contentBox:{
+        backgroundColor:"white",
+        paddingHorizontal:10,
+        paddingVertical:50,
+        width:"100%",
+        borderRadius:20,
+        alignItems:"center"
+    },
+    section:{
+        width:"100%",
+        alignItems:"center",
+        paddingVertical:10
+    },
+    dividerContainer:{
+        width:"100%",
+        alignItems:"center",
+        flexDirection:"row",
+        paddingVertical:20,
+        paddingLeft:'5%',
+        paddingRight:'5%',
+    },
+    hr:{
+        borderBottomColor: '#e6e6e6',
+        borderBottomWidth: 1,
+        marginHorizontal:5
+    },
+    centerText:{
+        paddingHorizontal:10,
+    },
+    questionText:{
+        color:"gray",
+        fontSize:12
+    },
+    policySection:{
+        position:"absolute",
+        bottom:20,
+        flexDirection:"row"
+    },
+    linkText:{
+        fontSize:12
+    },
+    errorMessage:{
+        color:'red',
+        alignSelf:'flex-start',
+        paddingLeft:25
+    }
+})
+export default commonStyle

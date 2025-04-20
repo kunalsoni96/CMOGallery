@@ -3,9 +3,11 @@ import { Image, Modal, StyleSheet,
   Dimensions, Text, View, ImageBackground, 
   SafeAreaView, FlatList,
   TouchableOpacity, ScrollView } from 'react-native';
-import { CGMapImg, LogoImg, FilterImg, EditImg, DownloadDarkImg, uploadImg, LinkImg, NotImg } from '../assets';
+import { LinkImg } from '../assets';
 import MasonryList from '@react-native-seoul/masonry-list';
 import colors from '../../constants/color';
+import Header from '../components/Header';
+
 const { width, height } = Dimensions.get("window");
 
 const images = [
@@ -62,27 +64,6 @@ const MyCarousel = () => {
   );
 };
 
-const Header = ({ onBackPress, onEditPress }) => (
-  <View style={styles.header}>
-    <View style={{...styles.headerColumn, flexDirection:"row", width:"100%"}}>
-      <TouchableOpacity  style={{flexDirection:"row",  width:"50%"}} onPress={onBackPress}>
-        <Image source={LogoImg} style={styles.logo} />
-        <Text style={styles.dashboardText}> Dashboard</Text>
-      </TouchableOpacity>
-      <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
-        <View style={{flexDirection:"row"}}>
-        <Image source={FilterImg} style={styles.notificationImg} />
-        <Image source={NotImg} style={styles.notificationImg} />
-        </View>
-      </View>
-    </View>
-    <View style={[styles.headerColumn, { alignItems: "flex-end" }]}>
-      <TouchableOpacity onPress={onEditPress}>
-        <Image style={styles.headerIcon} source={EditImg} />
-      </TouchableOpacity>
-    </View>
-  </View>
-);
 
 // Reusable ImageCard Component
 const ImageCard = ({ item, onPress }) => (
@@ -146,7 +127,7 @@ const DashboardScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header onBackPress={handleBackPress} onEditPress={handleEditPress} />
+      <Header screen='DashboardScreen' />
       <ScrollView>
       <MyCarousel />
         <View style={styles.imagesSection}>
@@ -174,39 +155,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  dashboardText:{
-    fontWeight:"bold",
-    fontSize:20,
-    marginTop:4
-  },
-  logo:{
-    width:35,
-    height:35
-  },
-  notificationImg:{
-    width:20,
-    height:20,
-    marginLeft:10
-  },
-  header: {
-    top: 0,
-    padding: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "white",
-  },
-  headerColumn: {
-    width: "33%",
-  },
-  headerIcon: {
-    width: 25,
-    height: 25,
-  },
-  headerText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+  
   imagesSection: {
     flexDirection: "row",
     paddingHorizontal: 10,

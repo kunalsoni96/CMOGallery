@@ -1,0 +1,1 @@
+export const baseUrl = "https://cmo-back-livee.onrender.com/";

@@ -3,12 +3,23 @@ import {Text, View, StyleSheet, TouchableOpacity, TextInput} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
-import {useEffect} from 'react';
+import {useState} from 'react';
 import commonStyle from '../components/Style';
 import Footer from '../components/Footer';
 import GoogleSignIn from '../components/GoogleSignIn';
-const RegisterScreen = () => {
+import { isValidMobile } from '../../utils/Validation';
+const MobileRegisterScreen = () => {
+    const [mobile, setMobile] = useState('');
+    const [isInvalid, setIsInvalid] = useState({mobile:false, password:false})
     const navigation = useNavigation();
+
+    const submitHandle = () => {
+        if(!isValidMobile(mobile)){
+            setIsInvalid({...isInvalid, mobile:true})
+            return;
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={commonStyle.contentBox}>
@@ -16,6 +27,7 @@ const RegisterScreen = () => {
                 <Text style={styles.title}>AI Based CMO Gallery</Text>
                 <Text style={styles.subTitle}>On Click Download</Text>
                 </View>
+
                 <GoogleSignIn />
 
                 <View style={commonStyle.dividerContainer}>
@@ -25,24 +37,15 @@ const RegisterScreen = () => {
                 </View>
 
                 <View style={commonStyle.section}>
-                    <TextInput placeholder='Full Name' style={commonStyle.textInput} />
-                </View>
-
-                <View style={commonStyle.section}>
-                    <TextInput placeholder='Mobile No.' style={commonStyle.textInput} />
-                </View>
-
-                <View style={commonStyle.section}>
-                    <TextInput placeholder='Email Id' style={commonStyle.textInput} />
-                </View>
-
-                <View style={commonStyle.section}>
-                    <TextInput placeholder='Create Your Password' style={commonStyle.textInput} />
-                    <Text style={commonStyle.errorMessage}>Please enter valid password</Text>
-                </View>
-
-                <View style={commonStyle.section}>
-                <TouchableOpacity  style={commonStyle.submitBtn}>
+                    <TextInput placeholder='Enter Mobile No.'
+                     placeholderTextColor="#888"
+                     keyboardType="numeric"
+                     contextMenuHidden={true} maxLength={10} 
+                     style={commonStyle.textInput} />
+                     {isInvalid.mobile &&
+                        <Text style={commonStyle.errorMessage}>Please enter 10 digit valid mobile</Text>
+                    }
+                    <TouchableOpacity onPress={submitHandle} style={commonStyle.submitBtn}>
                             <Text style={styles.btnText}>Sign Up</Text>
                     </TouchableOpacity>
                 </View>
@@ -66,23 +69,23 @@ const styles = StyleSheet.create({
     container:{
         justifyContent:"center",
         flex:1,
-        paddingHorizontal:10,
+        paddingHorizontal:10
     },
+    
     title:{
         color:colors.primary,
-        fontWeight:"bold",
-        fontSize:20,
+        fontWeight:700,
+        fontSize:24,
     },
     subTitle:{
         color:colors.primary,
         fontSize:11
     },
-   
     btnText:{
         color:colors.secondary,
         fontWeight:"bold"
     },
-   
+    
     googleBtnText:{
 
     },
@@ -91,4 +94,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default RegisterScreen
+export default MobileRegisterScreen

@@ -3,12 +3,20 @@ import {Text, View, StyleSheet, TouchableOpacity, TextInput} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
-import {useEffect} from 'react';
+import {useState} from 'react';
 import commonStyle from '../components/Style';
 import Footer from '../components/Footer';
-import GoogleSignIn from '../components/GoogleSignIn';
-const RegisterScreen = () => {
+import { isValidEmail } from '../../utils/Validation';
+const ForgotPasswordScreen = () => {
+    const [email, setEmail] = useState('');
+    const [isInvalid, setIsInvalid] = useState({email:false})
     const navigation = useNavigation();
+    const submitHandle = () => {
+        if(!isValidEmail(email)){
+            setIsInvalid({...isInvalid, email:true})
+            return;
+        }
+    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={commonStyle.contentBox}>
@@ -16,42 +24,28 @@ const RegisterScreen = () => {
                 <Text style={styles.title}>AI Based CMO Gallery</Text>
                 <Text style={styles.subTitle}>On Click Download</Text>
                 </View>
-                <GoogleSignIn />
 
                 <View style={commonStyle.dividerContainer}>
                     <View style={{...commonStyle.hr, width:"20%"}}></View>
-                    <View style={commonStyle.centerText}><Text>Or Sign Up With Mobile</Text></View>
+                    <View style={styles.centerText}><Text>Forgot Your Password?</Text></View>
                     <View style={{...commonStyle.hr, width:"20%"}}></View>
                 </View>
 
                 <View style={commonStyle.section}>
-                    <TextInput placeholder='Full Name' style={commonStyle.textInput} />
-                </View>
-
-                <View style={commonStyle.section}>
-                    <TextInput placeholder='Mobile No.' style={commonStyle.textInput} />
-                </View>
-
-                <View style={commonStyle.section}>
-                    <TextInput placeholder='Email Id' style={commonStyle.textInput} />
-                </View>
-
-                <View style={commonStyle.section}>
-                    <TextInput placeholder='Create Your Password' style={commonStyle.textInput} />
-                    <Text style={commonStyle.errorMessage}>Please enter valid password</Text>
-                </View>
-
-                <View style={commonStyle.section}>
-                <TouchableOpacity  style={commonStyle.submitBtn}>
-                            <Text style={styles.btnText}>Sign Up</Text>
+                    <TextInput 
+                    placeholder='Enter Your Email' 
+                    placeholderTextColor="#888"
+                    style={commonStyle.textInput} />
+                    <TouchableOpacity onPress={()=> navigation.navigate("DashboardScreen")} style={commonStyle.submitBtn}>
+                            <Text style={styles.btnText}>Send Now</Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={commonStyle.section}>
                 <View style={styles.registerPrompt}>
-                        <Text style={commonStyle.questionText}>Already Registered? </Text>
+                        <Text style={commonStyle.questionText}>Not Register Yet? </Text>
                         <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
-                            <Text style={commonStyle.linkText}>Sign In</Text>
+                            <Text style={commonStyle.linkText}>Sign Up</Text>
                         </TouchableOpacity>
                 </View>
                 </View>
@@ -66,23 +60,23 @@ const styles = StyleSheet.create({
     container:{
         justifyContent:"center",
         flex:1,
-        paddingHorizontal:10,
+        paddingHorizontal:10
     },
+    
     title:{
         color:colors.primary,
-        fontWeight:"bold",
-        fontSize:20,
+        fontWeight:700,
+        fontSize:24,
     },
     subTitle:{
         color:colors.primary,
         fontSize:11
     },
-   
     btnText:{
         color:colors.secondary,
         fontWeight:"bold"
     },
-   
+    
     googleBtnText:{
 
     },
@@ -91,4 +85,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default RegisterScreen
+export default ForgotPasswordScreen
