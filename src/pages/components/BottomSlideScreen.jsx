@@ -4,12 +4,11 @@ import React, { useRef } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 
-export default function BottomSlideScreen() {
+export default function BottomSlideScreen(props) {
   const refRBSheet = useRef();
 
   return (
-    <View style={styles.container}>
-      <Button title="Open Bottom Sheet" onPress={() => refRBSheet.current.open()} />
+    <View>
 
       <RBSheet
         ref={refRBSheet}

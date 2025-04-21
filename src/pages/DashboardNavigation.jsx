@@ -8,6 +8,7 @@ import SearchEventScreen from './homes/SearchEventScreen';
 import colors from '../constants/color';
 import { DownNavImg, SearchFaceImg, ProfileNavImg, SearchImg, SerachDarkImg, HomeDarkImg, DownloadDarkImg, ProfileDarkImg, HomeWhiteImg, UploadDarkImg } from './assets';
 import ProfileScreen from './homes/ProfileScreen';
+import UploadPhotoScreen from './authentications/UploadPhotoScreen';
 
 const BottomStack = createBottomTabNavigator();
 const { width } = Dimensions.get('window');
@@ -87,7 +88,7 @@ const DashboardNavigation = () => {
     >
       <BottomStack.Screen name="DashboardScreen" component={DashboardScreen} />
       <BottomStack.Screen name="SearchEventScreen" component={SearchEventScreen} />
-      <BottomStack.Screen name="ImageListScreen" component={ImageListScreen} />
+      <BottomStack.Screen name="ImageListScreen" component={UploadPhotoScreen} />
       <BottomStack.Screen name="MyDashboardScreen" component={MyDashboardScreen} />
       <BottomStack.Screen name="ProfileScreen" component={ProfileScreen} />
     </BottomStack.Navigator>

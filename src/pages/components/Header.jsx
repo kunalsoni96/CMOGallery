@@ -1,10 +1,16 @@
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native'
-import { LogoImg, NotImg, FilterImg, BackArrowImg  } from '../assets';
+import { LogoImg, NotImg, FilterImg, BackArrowImg, EditImg  } from '../assets';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import colors from '../../constants/color';
 const Header = (props) => {
     const navigation = useNavigation();
+    const dispatch = useDispatch()
+    const filterHandle = () => {
+
+    }
     return (
-    <View style={styles.header}>
+    <View style={[styles.header, { backgroundColor: props.screen === 'Profile' ? colors.primary : 'white' }]}>
       <View style={{...styles.headerColumn, flexDirection:"row", width:"100%"}}>
       {props.screen=='DashboardScreen' ?
         <TouchableOpacity  style={{flexDirection:"row",  width:"50%"}}>
@@ -14,14 +20,26 @@ const Header = (props) => {
         :
         <TouchableOpacity onPress={()=>navigation.goBack()}  style={{flexDirection:"row",  width:"100%"}}>
           <Image source={BackArrowImg} style={styles.back} />
-          <Text  style={styles.searchText}>{props.screen}</Text>
+          <Text  style={[styles.searchText, { color: props.screen === 'Profile' ? 'white' : colors.primary }]}>{props.screen}</Text>
         </TouchableOpacity>
       }
         {props.screen=='DashboardScreen' &&
         <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
           <View style={{flexDirection:"row"}}>
-          <Image source={FilterImg} style={styles.notificationImg} />
+          <TouchableOpacity onPress={filterHandle}>
+            <Image source={FilterImg} style={styles.notificationImg} />
+          </TouchableOpacity>
           <Image source={NotImg} style={styles.notificationImg} />
+          </View>
+        </View>
+        }
+
+      {props.screen=='Profile' &&
+        <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
+          <View style={{flexDirection:"row"}}>
+          <TouchableOpacity onPress={filterHandle}>
+            <Image source={EditImg} style={styles.EditImg} />
+          </TouchableOpacity>
           </View>
         </View>
         }
@@ -46,7 +64,8 @@ const Header = (props) => {
     searchText:{
     fontWeight:"bold",
     fontSize:20,
-    marginLeft:10
+    marginLeft:10,
+    marginTop:-1
     },
     headerColumn: {
     width: "33%",

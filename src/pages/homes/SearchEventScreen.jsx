@@ -22,7 +22,7 @@ const SearchEventScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header screen='SearchEventScreen' />
+      <Header screen='Search' />
         <View style={commonStyle.section}>
             <TextInput placeholder='Email Id' style={{...commonStyle.textInput, backgroundColor:colors.border}} />
         </View>

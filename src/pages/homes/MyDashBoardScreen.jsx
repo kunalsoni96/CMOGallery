@@ -4,29 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CGMapImg, BackWImg, EditImg, DownloadDarkImg, uploadImg, LinkImg } from '../assets';
 import MasonryList from '@react-native-seoul/masonry-list';
 import colors from '../../constants/color';
+import Header from '../components/Header';
 
 const { width, height } = Dimensions.get("window");
 
-// Reusable Header Component
-const Header = ({ onBackPress, onEditPress }) => (
-  <View style={styles.header}>
-    <View style={styles.headerColumn}>
-      <TouchableOpacity onPress={onBackPress}>
-        <Image style={styles.headerIcon} source={BackWImg} />
-      </TouchableOpacity>
-    </View>
-    <View style={[styles.headerColumn, { alignItems: "center" }]}>
-      <TouchableOpacity>
-        <Text style={styles.headerText}>Profile</Text>
-      </TouchableOpacity>
-    </View>
-    <View style={[styles.headerColumn, { alignItems: "flex-end" }]}>
-      <TouchableOpacity onPress={onEditPress}>
-        <Image style={styles.headerIcon} source={EditImg} />
-      </TouchableOpacity>
-    </View>
-  </View>
-);
 
 // Reusable ImageCard Component
 const ImageCard = ({ item, onPress }) => (
@@ -90,8 +71,7 @@ const MyDashboardScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header onBackPress={handleBackPress} onEditPress={handleEditPress} />
-
+      <Header screen="My Download" />
       <ScrollView>
         <View style={styles.imagesSection}>
           <MasonryList

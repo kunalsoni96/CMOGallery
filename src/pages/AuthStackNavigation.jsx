@@ -12,7 +12,7 @@ import TermServiceScreen from './components/TermServiceScreen';
 const Stack = createNativeStackNavigator();
 const RootNavigation = () => {
   return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='LoginScreen'>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='UploadPhotoScreen'>
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />

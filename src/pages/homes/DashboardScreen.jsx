@@ -3,10 +3,11 @@ import { Image, Modal, StyleSheet,
   Dimensions, Text, View, ImageBackground, 
   SafeAreaView, FlatList,
   TouchableOpacity, ScrollView } from 'react-native';
-import { LinkImg } from '../assets';
+import { DownloadImg, LinkImg, ShareImg, uploadImg } from '../assets';
 import MasonryList from '@react-native-seoul/masonry-list';
 import colors from '../../constants/color';
 import Header from '../components/Header';
+import BottomSlideScreen from '../components/BottomSlideScreen';
 
 const { width, height } = Dimensions.get("window");
 
@@ -91,10 +92,10 @@ const ImageCard = ({ item, onPress }) => (
         <Text>CI Young Indians Conferences</Text>
         <View style={styles.linksSection}>
           <TouchableOpacity>
-            <Image source={LinkImg} />
+            <Image source={DownloadImg} />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Image source={LinkImg} />
+            <Image source={ShareImg} />
           </TouchableOpacity>
           <TouchableOpacity>
             <Image source={LinkImg} />
@@ -102,6 +103,8 @@ const ImageCard = ({ item, onPress }) => (
         </View>
       </View>
     </TouchableOpacity>
+
+    <BottomSlideScreen />
   </View>
 );
 

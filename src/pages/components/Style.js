@@ -16,6 +16,7 @@ const commonStyle = StyleSheet.create({
         width:"100%",
         alignItems:"center",
         paddingVertical:10,
+        flexDirection:'row'
       },
       googleBtn:{
         backgroundColor:"white",
