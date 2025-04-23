@@ -1,5 +1,7 @@
 import { StyleSheet } from "react-native";
 import colors from "../../constants/color";
+import { Dimensions } from "react-native";
+const {width, height} = Dimensions.get('window')
 const commonStyle = StyleSheet.create({
     textInput:{
         backgroundColor:"white",
@@ -10,7 +12,8 @@ const commonStyle = StyleSheet.create({
         alignItems:"center",
         borderWidth:1,
         borderColor:"#e6e6e6",
-        paddingLeft:20
+        paddingLeft:20,
+        color:'black'
     },
     section:{
         width:"100%",
@@ -83,6 +86,39 @@ const commonStyle = StyleSheet.create({
         color:'red',
         alignSelf:'flex-start',
         paddingLeft:25
-    }
+    },
+    directoryContent: {
+        flexDirection: "row",
+        position: "absolute",
+        paddingBottom: 10,
+        bottom: -1,
+        width: "100%",
+        paddingHorizontal: 5,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+      },
+      imageCountText: {
+        color: "white",
+        fontSize: 18,
+      },
+
+      photosText: {
+        color: "white",
+      },
+
+    title:{
+        fontSize:16,
+        color:colors.primary,
+        fontWeight:'500'
+    },
+    linksSection:{
+        flexDirection:"row",
+        justifyContent:"space-between",
+        width:width/3,
+        marginTop:10
+      },
+      linkIMg:{
+        width:30,
+        height:30
+      },
 })
 export default commonStyle

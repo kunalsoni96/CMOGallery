@@ -8,7 +8,7 @@ const GoogleSignIn = () => {
   return (
     <View style={commonStyle.section}>
     <TouchableOpacity onPress={() => {}} style={commonStyle.googleBtn}> 
-            <Image source={GoogleImg} />
+            <Image style={{width:20, height:20, marginTop:2}} source={GoogleImg} />
             <Text> Sign In With Google</Text>
     </TouchableOpacity>
     </View>

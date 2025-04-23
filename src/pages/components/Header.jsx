@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native'
-import { LogoImg, NotImg, FilterImg, BackArrowImg, EditImg  } from '../assets';
+import { LogoImg, NotImg, FilterImg, BackArrowImg, BackWImg, EditImg  } from '../assets';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import colors from '../../constants/color';
@@ -18,10 +18,12 @@ const Header = (props) => {
           <Text style={styles.dashboardText}> Dashboard</Text>
         </TouchableOpacity>
         :
-        <TouchableOpacity onPress={()=>navigation.goBack()}  style={{flexDirection:"row",  width:"100%"}}>
-          <Image source={BackArrowImg} style={styles.back} />
+        <View  style={{flexDirection:"row",  width:"100%"}}>
+          <TouchableOpacity onPress={()=>navigation.goBack()}>
+          <Image source={props.screen === 'Profile'?BackWImg:BackArrowImg} style={styles.backImg} />
+          </TouchableOpacity>
           <Text  style={[styles.searchText, { color: props.screen === 'Profile' ? 'white' : colors.primary }]}>{props.screen}</Text>
-        </TouchableOpacity>
+        </View>
       }
         {props.screen=='DashboardScreen' &&
         <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
@@ -35,12 +37,10 @@ const Header = (props) => {
         }
 
       {props.screen=='Profile' &&
-        <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
-          <View style={{flexDirection:"row"}}>
+        <View style={styles.rightSection}>
           <TouchableOpacity onPress={filterHandle}>
             <Image source={EditImg} style={styles.EditImg} />
           </TouchableOpacity>
-          </View>
         </View>
         }
       </View>
@@ -89,6 +89,20 @@ const Header = (props) => {
     fontWeight: "bold",
     fontSize: 16,
     },
-
+    backImg:{
+      width:25,
+      height:25
+    },
+    EditImg:{
+      width:30,
+      height:30
+    },
+    rightSection:{
+      width:"20%", 
+      alignItems:'flex-end', 
+      position:'absolute', 
+      top:0, 
+      right:0
+    }
     })
   export default Header;

@@ -33,7 +33,9 @@ const ForgotPasswordScreen = () => {
 
                 <View style={commonStyle.section}>
                     <TextInput 
-                    placeholder='Enter Your Email' 
+                    placeholder='Enter Your Mobile Number'
+                    keyboardType="numeric"
+                    contextMenuHidden={true} maxLength={10}  
                     placeholderTextColor="#888"
                     style={commonStyle.textInput} />
                     <TouchableOpacity onPress={()=> navigation.navigate("DashboardScreen")} style={commonStyle.submitBtn}>

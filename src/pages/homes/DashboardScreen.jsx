@@ -3,12 +3,12 @@ import { Image, Modal, StyleSheet,
   Dimensions, Text, View, ImageBackground, 
   SafeAreaView, FlatList,
   TouchableOpacity, ScrollView } from 'react-native';
-import { DownloadImg, LinkImg, ShareImg, uploadImg } from '../assets';
+import { DownloadImg, LinkImg, ShareImg } from '../assets';
 import MasonryList from '@react-native-seoul/masonry-list';
-import colors from '../../constants/color';
 import Header from '../components/Header';
 import BottomSlideScreen from '../components/BottomSlideScreen';
-
+import commonStyle from '../components/Style';
+import colors from '../../constants/color';
 const { width, height } = Dimensions.get("window");
 
 const images = [
@@ -68,7 +68,7 @@ const MyCarousel = () => {
 
 // Reusable ImageCard Component
 const ImageCard = ({ item, onPress }) => (
-  <View style={{ margin: 5 }}>
+  <View style={{ marginHorizontal:5, marginVertical:10 }}>
     <TouchableOpacity
       style={{ borderRadius: 15, overflow: 'hidden' }}
       onPress={() => onPress(item.uri)}
@@ -78,10 +78,10 @@ const ImageCard = ({ item, onPress }) => (
         style={{ width: '100%', height: item.height }}
         resizeMode="cover"
       >
-        <View style={styles.directionContent}>
+        <View style={commonStyle.directoryContent}>
           <View>
-            <Text style={styles.imageCountText}>250</Text>
-            <Text style={styles.photosText}>photos</Text>
+            <Text style={commonStyle.imageCountText}>250</Text>
+            <Text style={commonStyle.photosText}>photos</Text>
           </View>
           <View style={styles.eventDateSection}>
             <Text style={styles.eventDate}>02 Nov 2024</Text>
@@ -89,16 +89,16 @@ const ImageCard = ({ item, onPress }) => (
         </View>
       </ImageBackground>
       <View style={styles.imgBottomSection}>
-        <Text>CI Young Indians Conferences</Text>
-        <View style={styles.linksSection}>
+        <Text style={commonStyle.title}>CI Young Indians Conferences</Text>
+        <View style={commonStyle.linksSection}>
           <TouchableOpacity>
-            <Image source={DownloadImg} />
+            <Image source={DownloadImg} style={commonStyle.linkIMg} />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Image source={ShareImg} />
+            <Image source={ShareImg} style={commonStyle.linkIMg} />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Image source={LinkImg} />
+            <Image source={LinkImg} style={commonStyle.linkIMg} />
           </TouchableOpacity>
         </View>
       </View>
@@ -133,6 +133,9 @@ const DashboardScreen = () => {
       <Header screen='DashboardScreen' />
       <ScrollView>
       <MyCarousel />
+      <View style={styles.heading}>
+            <Text style={{color:colors.primary, fontSize:16, fontWeight:"bold"}}>Recent View</Text>
+        </View>
         <View style={styles.imagesSection}>
           <MasonryList
             data={data}
@@ -157,28 +160,14 @@ const DashboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'white'
   },
   
   imagesSection: {
     flexDirection: "row",
     paddingHorizontal: 10,
   },
-  directionContent: {
-    flexDirection: "row",
-    position: "absolute",
-    paddingBottom: 10,
-    bottom: -1,
-    width: "100%",
-    paddingHorizontal: 5,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-  imageCountText: {
-    color: "white",
-    fontSize: 18,
-  },
-  photosText: {
-    color: "white",
-  },
+  
   eventDateSection:{
      width: width / 4, 
      justifyContent: "center", 
@@ -203,12 +192,6 @@ const styles = StyleSheet.create({
   },
   imgBottomSection:{
      marginTop:10
-  },
-  linksSection:{
-    flexDirection:"row",
-    justifyContent:"space-between",
-    width:width/3,
-    marginTop:10
   },
   imageContainer: {
     width: width,  // Full width of the device
@@ -253,6 +236,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  heading:{
+    paddingHorizontal:25,
+    paddingTop:20  
+    }
 });
 
 export default DashboardScreen;

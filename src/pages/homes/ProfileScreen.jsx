@@ -17,7 +17,11 @@ import {
   CGMapImg,
   BackWImg,
   EditImg,
-  uploadImg
+  uploadImg,
+  NotWhiteImg,
+  DownNavImg,
+  NotImg,
+  DownloadDarkImg
 } from '../assets';
 import Header from '../components/Header';
 
@@ -49,6 +53,17 @@ const ProfileScreen = () => {
               />
               <Text style={styles.profileName}>विष्णुदेव साय</Text>
             </View>
+
+            <View style={styles.porfileBottomSection}>
+                <TouchableOpacity style={styles.profileColumn}>
+                    <Image source={DownNavImg} style={styles.iconImg} />
+                    <Text style={styles.iconText}>My Download</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.profileColumn}>
+                    <Image source={NotWhiteImg} style={styles.iconImg} />
+                    <Text style={styles.iconText}>Notification</Text>
+                </TouchableOpacity>
+            </View>
           </ImageBackground>
         </View>
 
@@ -61,14 +76,16 @@ const ProfileScreen = () => {
             </View>
           </View>
           <View style={[styles.box, { backgroundColor: colors.secondaryBox }]}>
-            <View style={styles.boxContent}>
-              <Image source={uploadImg} style={styles.boxIcon} />
+            <TouchableOpacity style={styles.boxContent}>
+              <Image source={DownloadDarkImg} style={styles.boxIcon} />
               <Text style={styles.boxValue}>872</Text>
               <Text style={styles.boxLabel}>Total Image</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
-
+        <View style={styles.heading}>
+            <Text style={{color:colors.primary, fontSize:16, fontWeight:"bold"}}>Recent View</Text>
+        </View>
         <View style={styles.imagesSection}>
           <MasonryList
             data={imageData}
@@ -183,9 +200,11 @@ const styles = StyleSheet.create({
   boxValue: {
     fontWeight: 'bold',
     fontSize: 24,
+    marginVertical:10
   },
   boxLabel: {
     fontSize: 15,
+    color:colors.primary
   },
   imagesSection: {
     flexDirection: "row",
@@ -209,6 +228,32 @@ const styles = StyleSheet.create({
     width,
     height,
   },
+  porfileBottomSection:{
+    position:'absolute',
+    bottom:'8%',
+    justifyContent:'space-between',
+    width:width,
+    flexDirection:'row',
+  },
+  iconImg: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+    marginRight: 6,
+    },
+    iconText:{
+    fontSize:14,
+    color:'white',
+    marginTop:10
+    },
+    profileColumn:{
+    width:'50%',
+    alignItems:'center'
+    },
+    heading:{
+    paddingHorizontal:25,
+    paddingVertical:10  
+    }
 });
 
 export default ProfileScreen;

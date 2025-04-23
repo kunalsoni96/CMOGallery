@@ -32,9 +32,28 @@ const SearchEventScreen = () => {
                 <View style={styles.left}>
                     <ImageBackground 
                     style={styles.eventImg}
-                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} />
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
                 </View>
-                <View style={styles.right}></View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conference
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity>
+                    <Text style={styles.viewMore}>View More</Text>
+                  </TouchableOpacity>
+                </View>
             </View>
         </View>
         </ScrollView>
@@ -72,7 +91,15 @@ const styles = StyleSheet.create({
     overflow:"hidden"
   },
   right:{
-    width:'70%'
+    width:'70%',
+    padding:10
+  },
+  date:{
+    fontSize:12
+  },
+  viewMore:{
+    color:'gray',
+    fontSize:12
   }
 });
 

@@ -25,19 +25,16 @@ const RegisterScreen = () => {
                 </View>
 
                 <View style={commonStyle.section}>
-                    <TextInput placeholder='Full Name' style={commonStyle.textInput} />
+                    <TextInput placeholderTextColor="#888" placeholder='Full Name' style={commonStyle.textInput} />
                 </View>
 
                 <View style={commonStyle.section}>
-                    <TextInput placeholder='Mobile No.' style={commonStyle.textInput} />
+                    <TextInput placeholderTextColor="#888" placeholder='Mobile No.' style={commonStyle.textInput} />
                 </View>
 
-                <View style={commonStyle.section}>
-                    <TextInput placeholder='Email Id' style={commonStyle.textInput} />
-                </View>
 
                 <View style={commonStyle.section}>
-                    <TextInput placeholder='Create Your Password' style={commonStyle.textInput} />
+                    <TextInput placeholderTextColor="#888"  placeholder='Create Your Password' style={commonStyle.textInput} />
                     <Text style={commonStyle.errorMessage}>Please enter valid password</Text>
                 </View>
 

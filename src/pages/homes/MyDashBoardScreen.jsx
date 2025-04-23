@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Image, Modal, StyleSheet, Dimensions, Text, View, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CGMapImg, BackWImg, EditImg, DownloadDarkImg, uploadImg, LinkImg } from '../assets';
+import { DownloadImg } from '../assets';
 import MasonryList from '@react-native-seoul/masonry-list';
 import colors from '../../constants/color';
 import Header from '../components/Header';
+import commonStyle from '../components/Style';
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,31 +22,19 @@ const ImageCard = ({ item, onPress }) => (
         style={{ width: '100%', height: item.height }}
         resizeMode="cover"
       >
-        <View style={styles.directionContent}>
-          <View>
-            <Text style={styles.imageCountText}>250</Text>
-            <Text style={styles.photosText}>photos</Text>
-          </View>
-          <View style={styles.eventDateSection}>
-            <Text style={styles.eventDate}>02 Nov 2024</Text>
-          </View>
-        </View>
       </ImageBackground>
-      <View style={styles.imgBottomSection}>
-        <Text>CI Young Indians Conferences</Text>
-        <View style={styles.linksSection}>
-        <TouchableOpacity>
-            <Image source={LinkImg} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-            <Image source={LinkImg} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-            <Image source={LinkImg} />
-        </TouchableOpacity>
+    </TouchableOpacity>
+
+    <View style={styles.imgBottomSection}>
+      <View style={{width:'80%'}}>
+        <Text style={commonStyle.title}>CI Young Indians Conferences</Text>
+      </View>
+        <View style={commonStyle.linksSection}>
+          <TouchableOpacity>
+            <Image source={DownloadImg} style={{...commonStyle.linkIMg, marginTop:-5}} />
+          </TouchableOpacity>
         </View>
       </View>
-    </TouchableOpacity>
   </View>
 );
 
@@ -97,6 +86,7 @@ const MyDashboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:'white'
   },
   header: {
     top: 0,
@@ -160,13 +150,19 @@ const styles = StyleSheet.create({
     height: height,
   },
   imgBottomSection:{
-     marginTop:10
+     marginTop:10,
+     flexDirection:'row',
+     width:"100%"
   },
   linksSection:{
     flexDirection:"row",
     justifyContent:"space-between",
     width:width/3,
     marginTop:10
+  },
+  linkIMg:{
+    width:30,
+    height:30
   }
 });
 
