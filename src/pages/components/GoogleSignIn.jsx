@@ -1,13 +1,45 @@
-import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet, Dimensions, Image } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Linking, TouchableOpacity, Text, StyleSheet, Dimensions, Image, Platform } from 'react-native';
 import commonStyle from './Style';
 import { GoogleImg } from '../assets';
+import { useNavigation } from '@react-navigation/native';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 const { height, width } = Dimensions.get('window');
 
 const GoogleSignIn = () => {
+    const navigation = useNavigation()
+
+    useEffect(() => {
+      if(Platform.OS == 'ios'){
+        GoogleSignin.configure({
+          iosClientId: '252059010893-lg88b864jd6n0j2r8b8nn7qlnvohpk72.apps.googleusercontent.com', 
+          offlineAccess: false,
+        });
+      }
+      else{
+      GoogleSignin.configure({
+          webClientId: '252059010893-sotmkfgcjl5g8tkg3nbrjlgmatnt7rd6.apps.googleusercontent.com',
+          offlineAccess: false,
+        });
+      }
+      
+
+      }, []);
+      const signInWithGoogle = async () => {
+        try {
+         
+          await GoogleSignin.hasPlayServices(); 
+          const userInfo = await GoogleSignin.signIn();
+          alert(JSON.stringify(userInfo))
+          console.log('User Info:', userInfo);
+        } catch (error) {
+          console.error('Google Sign-In Error:', error);
+        }
+      };
+
   return (
     <View style={commonStyle.section}>
-    <TouchableOpacity onPress={() => {}} style={commonStyle.googleBtn}> 
+    <TouchableOpacity onPress={() => signInWithGoogle()} style={commonStyle.googleBtn}> 
             <Image style={{width:20, height:20, marginTop:2}} source={GoogleImg} />
             <Text> Sign In With Google</Text>
     </TouchableOpacity>

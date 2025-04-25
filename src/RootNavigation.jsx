@@ -1,7 +1,7 @@
 import DashboardNavigation from './pages/DashboardNavigation';
 import AuthStackNavigation from './pages/AuthStackNavigation';
 const RootNavigation = () => {
-  const isAuth = true;
+  const isAuth = false;
   return (
         <>
            {isAuth? <DashboardNavigation/>:<AuthStackNavigation/>}
