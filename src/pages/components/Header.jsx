@@ -3,11 +3,12 @@ import { LogoImg, NotImg, FilterImg, BackArrowImg, BackWImg, EditImg  } from '..
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import colors from '../../constants/color';
+import { openFilter } from '../../redux/reducers/filterReducer';
 const Header = (props) => {
     const navigation = useNavigation();
     const dispatch = useDispatch()
     const filterHandle = () => {
-
+      dispatch(openFilter())
     }
     return (
     <View style={[styles.header, { backgroundColor: props.screen === 'Profile' ? colors.primary : 'white' }]}>

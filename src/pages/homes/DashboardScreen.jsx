@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Modal, StyleSheet, 
   Dimensions, Text, View, ImageBackground, 
   SafeAreaView, FlatList,
@@ -9,6 +9,7 @@ import Header from '../components/Header';
 import BottomSlideScreen from '../components/BottomSlideScreen';
 import commonStyle from '../components/Style';
 import colors from '../../constants/color';
+import Toaster from '../components/Toaster';
 const { width, height } = Dimensions.get("window");
 
 const images = [
@@ -30,7 +31,6 @@ const MyCarousel = () => {
   const viewabilityConfig = {
     itemVisiblePercentThreshold: 50, 
   };
-
 
   return (
     <View style={styles.sliderContainer}>
@@ -120,15 +120,8 @@ const DashboardScreen = () => {
 
   const [image, setImage] = useState(null);
 
-  const handleBackPress = () => {
-    // Handle back button press
-  };
-
-  const handleEditPress = () => {
-    // Handle edit button press
-  };
-
   return (
+    <>
     <SafeAreaView style={styles.container}>
       <Header screen='DashboardScreen' />
       <ScrollView>
@@ -154,6 +147,8 @@ const DashboardScreen = () => {
         </TouchableOpacity>
       </Modal>
     </SafeAreaView>
+   <Toaster />
+    </>
   );
 };
 
@@ -239,7 +234,7 @@ const styles = StyleSheet.create({
   heading:{
     paddingHorizontal:25,
     paddingTop:20  
-    }
+    },
 });
 
 export default DashboardScreen;
