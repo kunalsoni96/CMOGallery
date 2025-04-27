@@ -60,8 +60,8 @@ const ProfileScreen = () => {
                     <Text style={styles.iconText}>My Download</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.profileColumn}>
-                    <Image source={NotWhiteImg} style={styles.iconImg} />
-                    <Text style={styles.iconText}>Notification</Text>
+                    <Image source={EditImg} style={styles.iconImg} />
+                    <Text style={styles.iconText}>Edit Profile</Text>
                 </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -236,8 +236,8 @@ const styles = StyleSheet.create({
     flexDirection:'row',
   },
   iconImg: {
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
     resizeMode: 'contain',
     marginRight: 6,
     },

@@ -2,17 +2,18 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import DashboardScreen from './homes/DashboardScreen';
-import ImageListScreen from './homes/ImageListScreen';
 import MyDashboardScreen from './homes/MyDashBoardScreen';
 import SearchEventScreen from './homes/SearchEventScreen';
 import colors from '../constants/color';
 import { DownNavImg, SearchFaceImg, ProfileNavImg, SearchImg, SerachDarkImg, HomeDarkImg, DownloadDarkImg, ProfileDarkImg, HomeWhiteImg, UploadDarkImg } from './assets';
 import ProfileScreen from './homes/ProfileScreen';
 import UploadPhotoScreen from './authentications/UploadPhotoScreen';
+import ImageListScreen from './homes/ImageListScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const BottomStack = createBottomTabNavigator();
 const { width } = Dimensions.get('window');
-
+const Stack = createNativeStackNavigator();
 // 🔧 Custom TabBar
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   const icons = [
@@ -78,7 +79,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
   );
 };
 
-const DashboardNavigation = () => {
+const TabNavigation = () => {
   return (
     <BottomStack.Navigator
       tabBar={(props) => <CustomTabBar {...props} />}
@@ -88,12 +89,23 @@ const DashboardNavigation = () => {
     >
       <BottomStack.Screen name="DashboardScreen" component={DashboardScreen} />
       <BottomStack.Screen name="SearchEventScreen" component={SearchEventScreen} />
-      <BottomStack.Screen name="ImageListScreen" component={UploadPhotoScreen} />
+      <BottomStack.Screen name="UploadPhotoScreen" component={UploadPhotoScreen} />
       <BottomStack.Screen name="MyDashboardScreen" component={MyDashboardScreen} />
       <BottomStack.Screen name="ProfileScreen" component={ProfileScreen} />
     </BottomStack.Navigator>
   );
+}
+
+const DashboardNavigation = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MainTabs" component={TabNavigation} />
+      <Stack.Screen name="ImageListScreen" component={ImageListScreen} />
+    </Stack.Navigator>
+  );
 };
+
+
 
 const styles = StyleSheet.create({
   tabBar: {

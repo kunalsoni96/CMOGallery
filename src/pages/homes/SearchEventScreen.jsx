@@ -23,14 +23,12 @@ const SearchEventScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header screen='Search' />
-        <View style={commonStyle.section}>
-            <TextInput placeholder='Email Id' style={{...commonStyle.textInput, backgroundColor:colors.border}} />
-        </View>
         <ScrollView>
         <View style={commonStyle.section}>
             <View style={styles.card}>
                 <View style={styles.left}>
                     <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
                     style={styles.eventImg}
                     source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
                       <View style={{...commonStyle.directoryContent}}>
@@ -87,8 +85,6 @@ const styles = StyleSheet.create({
   },
   left:{
     width:'30%',
-    borderRadius:10,
-    overflow:"hidden"
   },
   right:{
     width:'70%',

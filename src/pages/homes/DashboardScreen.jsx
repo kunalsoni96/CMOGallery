@@ -4,12 +4,12 @@ import { Image, Modal, StyleSheet,
   SafeAreaView, FlatList,
   TouchableOpacity, ScrollView } from 'react-native';
 import { DownloadImg, LinkImg, ShareImg } from '../assets';
-import MasonryList from '@react-native-seoul/masonry-list';
 import Header from '../components/Header';
 import BottomSlideScreen from '../components/BottomSlideScreen';
 import commonStyle from '../components/Style';
 import colors from '../../constants/color';
 import Toaster from '../components/Toaster';
+import { useNavigation } from '@react-navigation/native';
 const { width, height } = Dimensions.get("window");
 
 const images = [
@@ -67,16 +67,19 @@ const MyCarousel = () => {
 
 
 // Reusable ImageCard Component
-const ImageCard = ({ item, onPress }) => (
-  <View style={{ marginHorizontal:5, marginVertical:10 }}>
+const ImageCard = ({ item, onPress }) => {
+const navigation = useNavigation()
+return (
+  <View style={styles.imageCard}>
     <TouchableOpacity
       style={{ borderRadius: 15, overflow: 'hidden' }}
-      onPress={() => onPress(item.uri)}
+      onPress={()=>navigation.navigate('ImageListScreen')}
     >
       <ImageBackground
         source={{ uri: item.uri }}
         style={{ width: '100%', height: item.height }}
         resizeMode="cover"
+        imageStyle={{borderRadius:15}}
       >
         <View style={commonStyle.directoryContent}>
           <View>
@@ -107,6 +110,7 @@ const ImageCard = ({ item, onPress }) => (
     <BottomSlideScreen />
   </View>
 );
+}
 
 const DashboardScreen = () => {
   const data = [
@@ -119,7 +123,6 @@ const DashboardScreen = () => {
   ];
 
   const [image, setImage] = useState(null);
-
   return (
     <>
     <SafeAreaView style={styles.container}>
@@ -130,14 +133,10 @@ const DashboardScreen = () => {
             <Text style={{color:colors.primary, fontSize:16, fontWeight:"bold"}}>Recent View</Text>
         </View>
         <View style={styles.imagesSection}>
-          <MasonryList
-            data={data}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            renderItem={({ item }) => (
-              <ImageCard item={item} onPress={setImage} />
-            )}
-          />
+          {data.map((value)=>{
+              return <ImageCard item={value} />
+          })
+          }
         </View>
       </ScrollView>
 
@@ -148,6 +147,7 @@ const DashboardScreen = () => {
       </Modal>
     </SafeAreaView>
    <Toaster />
+   
     </>
   );
 };
@@ -160,7 +160,9 @@ const styles = StyleSheet.create({
   
   imagesSection: {
     flexDirection: "row",
-    paddingHorizontal: 10,
+    paddingHorizontal: '2%',
+    flexWrap:'wrap',
+    justifyContent:'space-between'
   },
   
   eventDateSection:{
@@ -235,6 +237,12 @@ const styles = StyleSheet.create({
     paddingHorizontal:25,
     paddingTop:20  
     },
+
+    imageCard:{
+      marginHorizontal:'1%', 
+      marginVertical:10, 
+      width: '47%',
+    }
 });
 
 export default DashboardScreen;

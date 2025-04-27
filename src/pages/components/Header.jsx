@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native'
-import { LogoImg, NotImg, FilterImg, BackArrowImg, BackWImg, EditImg  } from '../assets';
+import { LogoImg, NotImg, FilterImg, BackArrowImg, BackWImg, EditImg, LogoutImg  } from '../assets';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import colors from '../../constants/color';
@@ -32,7 +32,7 @@ const Header = (props) => {
           <TouchableOpacity onPress={filterHandle}>
             <Image source={FilterImg} style={styles.notificationImg} />
           </TouchableOpacity>
-          <Image source={NotImg} style={styles.notificationImg} />
+          {/* <Image source={NotImg} style={styles.notificationImg} /> */}
           </View>
         </View>
         }
@@ -40,7 +40,7 @@ const Header = (props) => {
       {props.screen=='Profile' &&
         <View style={styles.rightSection}>
           <TouchableOpacity onPress={filterHandle}>
-            <Image source={EditImg} style={styles.EditImg} />
+            <Image source={LogoutImg} style={styles.EditImg} />
           </TouchableOpacity>
         </View>
         }
@@ -95,8 +95,8 @@ const Header = (props) => {
       height:25
     },
     EditImg:{
-      width:30,
-      height:30
+      width:25,
+      height:25
     },
     rightSection:{
       width:"20%", 

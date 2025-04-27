@@ -95,6 +95,8 @@ const commonStyle = StyleSheet.create({
         width: "100%",
         paddingHorizontal: 5,
         backgroundColor: 'rgba(0,0,0,0.4)',
+        borderBottomLeftRadius:15,
+        borderBottomEndRadius:15
       },
       imageCountText: {
         color: "white",

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
 import commonStyle from '../components/Style';
-import { uploadImg } from '../assets';
+import { DateImg, DropDownImg, uploadImg } from '../assets';
 import Header from '../components/Header';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -74,16 +74,21 @@ const UploadPhotoScreen = () => {
                     <TouchableOpacity 
                     onPress={()=>setDateShow(true)}
                     style={{...commonStyle.textInput, ...styles.dateInput}} >
-
                         <Text>{visibleDate}</Text>
+                    <View style={{position:'absolute', right:20}}>
+                      <Image source={DateImg} style={styles.dropDownImg} />
+                    </View> 
                     </TouchableOpacity>
                     :
+                    <>
                     <DateTimePicker
                     value={date}
                     mode="date" // or "time"
                     display="spinner"
                     onChange={onChange}
                     />
+
+                    </>
                     }
                     {/* <Image source={} /> */}
                 </View>
@@ -95,7 +100,7 @@ const UploadPhotoScreen = () => {
                 >
                 <Text>{selectedValue}</Text>
                 <View style={{position:'absolute', right:20}}>
-                        <Image source={{uri:userImage}} style={styles.userImg} />
+                      <Image source={DropDownImg} style={styles.dropDownImg} />
                 </View> 
                 </TouchableOpacity>
 
@@ -217,6 +222,10 @@ const styles = StyleSheet.create({
         width:30,
         height:30, 
         borderRadius:5
+    },
+    dropDownImg:{
+      width:20, 
+      height:20
     }
 })
 

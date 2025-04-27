@@ -11,7 +11,7 @@ import TermServiceScreen from './components/TermServiceScreen';
 import GoogleAuthentication from './authentications/GoogleAuthentication';
 // import ProfileScreen from './homes/ProfileScreen';
 const Stack = createNativeStackNavigator();
-const RootNavigation = () => {
+const AuthStackNavigation = () => {
   return (
         <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='RegisterScreen'>
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
@@ -28,4 +28,4 @@ const RootNavigation = () => {
   )
 }
 
-export default RootNavigation
+export default AuthStackNavigation
