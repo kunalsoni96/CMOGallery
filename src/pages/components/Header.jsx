@@ -1,15 +1,25 @@
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native'
 import { LogoImg, NotImg, FilterImg, BackArrowImg, BackWImg, EditImg, LogoutImg  } from '../assets';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
+import {  useDispatch } from 'react-redux';
 import colors from '../../constants/color';
 import { openFilter } from '../../redux/reducers/filterReducer';
+import * as Keychain from 'react-native-keychain';
 const Header = (props) => {
     const navigation = useNavigation();
     const dispatch = useDispatch()
     const filterHandle = () => {
       dispatch(openFilter())
     }
+
+    const handleLogout = async () => {
+      try {
+        await Keychain.resetGenericPassword();
+      } catch (error) {
+        console.log('Error resetting credentials', error);
+      }
+    };
+
     return (
     <View style={[styles.header, { backgroundColor: props.screen === 'Profile' ? colors.primary : 'white' }]}>
       <View style={{...styles.headerColumn, flexDirection:"row", width:"100%"}}>
@@ -39,7 +49,7 @@ const Header = (props) => {
 
       {props.screen=='Profile' &&
         <View style={styles.rightSection}>
-          <TouchableOpacity onPress={filterHandle}>
+          <TouchableOpacity onPress={handleLogout}>
             <Image source={LogoutImg} style={styles.EditImg} />
           </TouchableOpacity>
         </View>

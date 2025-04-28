@@ -9,6 +9,7 @@ import GoogleSignIn from '../components/GoogleSignIn';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidMobile, isStrongPassword } from '../../utils/Validation';
 import { loginUser } from '../../redux/actions/loginAction';
+import * as Keychain from 'react-native-keychain';
 const LoginScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -16,6 +17,7 @@ const LoginScreen = () => {
     const [password, setPassword] = useState('');
     const [isInvalid, setIsInvalid] = useState({mobile:false, password:false});
     const submitHandle = async() => {
+        try{
         if(!isValidMobile(mobile)){
             setIsInvalid({...isInvalid, mobile:true})
             return;
@@ -24,9 +26,19 @@ const LoginScreen = () => {
             setIsInvalid({...isInvalid, password:true})
             return;
         }
-      let result =  await dispatch(loginUser(mobile, password))
-      console.log(result)
+        let result =  await dispatch(loginUser(mobile, password))
+        if(result){
+            await Keychain.setGenericPassword(mobile, password);
+        }
+        }
+
+        catch(error){
+            console.log('---', error)
+        }
+        
     }
+
+    
 
     return (
         <SafeAreaView style={styles.container}>

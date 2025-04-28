@@ -13,7 +13,7 @@ import GoogleAuthentication from './authentications/GoogleAuthentication';
 const Stack = createNativeStackNavigator();
 const AuthStackNavigation = () => {
   return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='LoaderScreen'>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='LoginScreen'>
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
