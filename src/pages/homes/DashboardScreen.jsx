@@ -76,35 +76,39 @@ const MyCarousel = () => {
 
 
 const DashboardScreen = () => {
-  const [copiedText, setCopiedText] = useState('');
   const [image, setImage] = useState(null);
 
-  const copyToClipboard = () => {
-    Clipboard.setString('hello world');
-  };
+  const renderItem = ({item}) => <ImageCard item={item} />;
   return (
     <>
-    <SafeAreaView style={styles.container}>
-      <Header screen='DashboardScreen' />
-      <ScrollView>
-      <MyCarousel />
-      <View style={styles.heading}>
-            <Text style={{color:colors.primary, fontSize:16, fontWeight:"bold"}}>Recent View</Text>
-        </View>
-        <View style={styles.imagesSection}>
-          {data.map((value)=>{
-              return <ImageCard item={value} />
-          })
-          }
-        </View>
-      </ScrollView>
+   <SafeAreaView style={styles.container}>
+  <Header screen='DashboardScreen' />
 
-      <Modal visible={image !== null} onRequestClose={() => setImage(null)}>
-        <TouchableOpacity style={styles.modalContainer} onPress={() => setImage(null)}>
-          <Image source={{ uri: image }} style={styles.fullImage} resizeMode="contain" />
-        </TouchableOpacity>
-      </Modal>
-    </SafeAreaView>
+  <FlatList
+    data={data}
+    renderItem={renderItem}
+    keyExtractor={item => item.id}
+    contentContainerStyle={styles.imagesSection}
+    ListHeaderComponent={
+      <>
+        <View style={{ height: height / 4 }}>
+          <MyCarousel />
+        </View>
+        <View style={styles.heading}>
+          <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold' }}>
+            Recent View
+          </Text>
+        </View>
+      </>
+    }
+  />
+
+  <Modal visible={image !== null} onRequestClose={() => setImage(null)}>
+    <TouchableOpacity style={styles.modalContainer} onPress={() => setImage(null)}>
+      <Image source={{ uri: image }} style={styles.fullImage} resizeMode="contain" />
+    </TouchableOpacity>
+  </Modal>
+</SafeAreaView>
    {/* <Toaster type={type} message={message} /> */}
    <BottomSlideScreen />
     {/* <LoaderScreen show='nope' /> */}
@@ -121,9 +125,9 @@ const styles = StyleSheet.create({
   
   imagesSection: {
     flexDirection: "row",
-    paddingHorizontal: '2%',
+    // paddingHorizontal: '2%',
     flexWrap:'wrap',
-    justifyContent:'space-between'
+    justifyContent:'space-around',
   },
   modalContainer: {
     flex: 1,

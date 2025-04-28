@@ -27,6 +27,9 @@ const SearchEventScreen = () => {
       <Header screen='Search' />
         <ScrollView>
         <View style={commonStyle.section}>
+        <View style={{width:'100%', alignItems:'center', paddingBottom:10}}>
+          <TextInput placeholder='Search' placeholderTextColor="#00000" style={commonStyle.textInput} />
+        </View>
         <View style={styles.card}>
                 <View style={styles.left}>
                     <ImageBackground 
@@ -46,7 +49,7 @@ const SearchEventScreen = () => {
                     CII Young Indians Conf..
                   </Text>
 
-                  <View style={{paddingVertical:10}}>
+                  <View style={{paddingVertical:15}}>
                     <Text style={styles.date}>02 Nov 2024</Text>
                   </View>
 
@@ -90,7 +93,8 @@ const styles = StyleSheet.create({
   },
   right:{
     width:'65%',
-    padding:10
+    padding:10,
+    justifyContent:'center'
   },
   date:{
     fontSize:12

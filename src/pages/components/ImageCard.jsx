@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     imageCard:{
     marginHorizontal:'1%', 
     marginVertical:10, 
-    width: '47%',
+    width: width/2.2,
     },
     
     eventDateSection:{

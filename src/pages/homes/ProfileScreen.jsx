@@ -8,7 +8,7 @@ import {
   View,
   ImageBackground,
   TouchableOpacity,
-  ScrollView
+  FlatList
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color';
@@ -37,61 +37,84 @@ const data = [
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
+
+  const renderItem = ({ item }) => {
+    return (
+      <View>
+        <ImageCard item={item} />
+      </View>
+    )
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="Profile" />
 
-      <ScrollView>
-        <View style={styles.profileSection}>
-          <ImageBackground source={CGMapImg} style={styles.map}>
-            <View style={styles.profile}>
-              <Image
-                style={styles.profileImg}
-                source={{ uri: "https://grandnews.in/wp-content/uploads/2024/02/WhatsApp-Image-2024-02-29-at-6.48.35-PM-e1709213548759.jpeg" }}
-              />
-              <Text style={styles.profileName}>विष्णुदेव साय</Text>
-            </View>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.imagesSection}
+        ListHeaderComponent={
+          <>
+            {/* 👤 Profile Section */}
+            <View style={styles.profileSection}>
+              <ImageBackground source={CGMapImg} style={styles.map}>
+                <View style={styles.profile}>
+                  <Image
+                    style={styles.profileImg}
+                    source={{
+                      uri: "https://grandnews.in/wp-content/uploads/2024/02/WhatsApp-Image-2024-02-29-at-6.48.35-PM-e1709213548759.jpeg",
+                    }}
+                  />
+                  <Text style={styles.profileName}>विष्णुदेव साय</Text>
+                </View>
 
-            <View style={styles.porfileBottomSection}>
-                <TouchableOpacity onPress={()=>navigation.navigate('MyDashboardScreen')} style={styles.profileColumn}>
+                <View style={styles.porfileBottomSection}>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("MyDashboardScreen")}
+                    style={styles.profileColumn}
+                  >
                     <Image source={DownNavImg} style={styles.iconImg} />
                     <Text style={styles.iconText}>My Download</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.profileColumn}>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>navigation.navigate('UpdateProfile')} style={styles.profileColumn}>
                     <Image source={EditImg} style={styles.iconImg} />
                     <Text style={styles.iconText}>Edit Profile</Text>
-                </TouchableOpacity>
+                  </TouchableOpacity>
+                </View>
+              </ImageBackground>
             </View>
-          </ImageBackground>
-        </View>
 
-        <View style={styles.boxContainer}>
-          <View style={[styles.box, { backgroundColor: colors.primaryBox }]}>
-            <View style={styles.boxContent}>
-              <Image source={uploadImg} style={styles.boxIcon} />
-              <Text style={styles.boxValue}>872</Text>
-              <Text style={styles.boxLabel}>Total Download</Text>
+            {/* 📦 Box Stats Section */}
+            <View style={styles.boxContainer}>
+              <View style={[styles.box, { backgroundColor: colors.primaryBox }]}>
+                <View style={styles.boxContent}>
+                  <Image source={uploadImg} style={styles.boxIcon} />
+                  <Text style={styles.boxValue}>872</Text>
+                  <Text style={styles.boxLabel}>Total Download</Text>
+                </View>
+              </View>
+              <View style={[styles.box, { backgroundColor: colors.secondaryBox }]}>
+                <View style={styles.boxContent}>
+                  <Image source={DownloadDarkImg} style={styles.boxIcon} />
+                  <Text style={styles.boxValue}>872</Text>
+                  <Text style={styles.boxLabel}>Total Image</Text>
+                </View>
+              </View>
             </View>
-          </View>
-          <View style={[styles.box, { backgroundColor: colors.secondaryBox }]}>
-            <TouchableOpacity style={styles.boxContent}>
-              <Image source={DownloadDarkImg} style={styles.boxIcon} />
-              <Text style={styles.boxValue}>872</Text>
-              <Text style={styles.boxLabel}>Total Image</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.heading}>
-            <Text style={{color:colors.primary, fontSize:16, fontWeight:"bold"}}>Recent View</Text>
-        </View>
-        <View style={styles.imagesSection}>
-          {data.map((value)=>{
-              return <ImageCard item={value} />
-          })
-          }
-        </View>
-      </ScrollView>
 
+            {/* 🕵️ Recent View Heading */}
+            <View style={styles.heading}>
+              <Text style={{ color: colors.primary, fontSize: 16, fontWeight: "bold" }}>
+                Recent View
+              </Text>
+            </View>
+          </>
+        }
+      />
+
+      {/* 🔍 Full Image Modal */}
       <Modal visible={!!image} transparent onRequestClose={() => setImage(null)}>
         <TouchableOpacity style={styles.modalContainer} onPress={() => setImage(null)}>
           <Image source={{ uri: image }} style={styles.fullImage} resizeMode="contain" />
@@ -104,31 +127,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    padding: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: colors.primary,
-  },
-  headerColumn: {
-    width: "33%",
-  },
-  centerAlign: {
-    alignItems: "center",
-  },
-  endAlign: {
-    alignItems: "flex-end",
-  },
-  headerIcon: {
-    width: 25,
-    height: 25,
-  },
-  headerText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 20,
-    marginTop:-1
+    backgroundColor:'white'
   },
   profileSection: {
     backgroundColor: colors.primary,
@@ -194,17 +193,9 @@ const styles = StyleSheet.create({
   },
   imagesSection: {
     flexDirection: "row",
-    paddingHorizontal: '2%',
+    // paddingHorizontal: '2%',
     flexWrap:'wrap',
-    justifyContent:'space-between',
-  },
-  imageWrapper: {
-    margin: 5,
-    flex: 1,
-  },
-  galleryImage: {
-    width: '100%',
-    borderRadius: 10,
+    justifyContent:'space-around',
   },
   modalContainer: {
     flex: 1,
@@ -228,20 +219,20 @@ const styles = StyleSheet.create({
     height: 25,
     resizeMode: 'contain',
     marginRight: 6,
-    },
-    iconText:{
+  },
+  iconText:{
     fontSize:14,
     color:'white',
     marginTop:10
-    },
-    profileColumn:{
+  },
+  profileColumn:{
     width:'50%',
     alignItems:'center'
-    },
-    heading:{
+  },
+  heading:{
     paddingHorizontal:25,
     paddingVertical:10  
-    }
+  }
 });
 
 export default ProfileScreen;
