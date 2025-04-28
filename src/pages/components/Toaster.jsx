@@ -2,16 +2,16 @@ import { useEffect } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import Toast from "react-native-toast-message";
 import colors from "../../constants/color";
-import { CopyImg, CrossImg } from "../assets";
+import { CopyImg, CrossImg, SuccessImg } from "../assets";
 
 const Toaster = ({type, message}) => {
 
 useEffect(()=>{
 Toast.show({
-    type: 'error',
-    text2: 'Oops! Please ensure that your internet connection is active and try again.',
+    type: type,
+    text2: message,
     position: 'bottom', // or 'bottom'
-    visibilityTime: 500000,
+    visibilityTime: 3000,
     bottomOffset: 10,
 });
 },[])
@@ -19,8 +19,8 @@ Toast.show({
 
 const toastConfig = {
 success: ({ text1, text2 }) => (
-    <View style={{...styles.errorToastContainer, backgroundColor:'green'}}>
-    <Image source={CrossImg} style={{width:25, height:25, marginTop:8, marginLeft:10}} />
+    <View style={{...styles.errorToastContainer, backgroundColor:'#34A853', paddingVertical:15}}>
+    <Image source={SuccessImg} style={{width:25, height:25}} />
     <Text style={styles.errorToastSubText}>{text2}</Text>
     </View>
 ),

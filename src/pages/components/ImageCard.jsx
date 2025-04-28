@@ -5,11 +5,12 @@ import commonStyle from './Style';
 import { DownloadImg, LinkImg, ShareImg } from '../assets';
 import Clipboard from '@react-native-clipboard/clipboard';
 const { width } = Dimensions.get('window')
-const ImageCard = ({ item }) => {
+const ImageCard = ({ item, callback }) => {
     const navigation = useNavigation();
 
     const copyToClipboard = () => {
         Clipboard.setString('hello world');
+        callback(true)
       };
 
     const onShare = async () => {
@@ -38,8 +39,8 @@ const ImageCard = ({ item }) => {
           onPress={()=>navigation.navigate('ImageListScreen')}
         >
           <ImageBackground
-            source={{ uri: item.uri }}
-            style={{ width: '100%', height: item.height }}
+            source={{ uri: item?.uri }}
+            style={{ width: '100%', height: item?.height }}
             resizeMode="cover"
             imageStyle={{borderRadius:15}}
           >
@@ -68,6 +69,7 @@ const ImageCard = ({ item }) => {
             </View>
           </View>
         </TouchableOpacity>
+
       </View>
     );
     }

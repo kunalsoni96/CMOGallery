@@ -7,6 +7,7 @@ import MasonryList from '@react-native-seoul/masonry-list';
 import colors from '../../constants/color';
 import Header from '../components/Header';
 import { DownloadFixImg, DownloadImg, ShareFixImg } from '../assets';
+import commonStyle from '../components/Style';
 
 const { width, height } = Dimensions.get("window");
 
@@ -46,6 +47,9 @@ const ImageListScreen = () => {
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
       <ScrollView>
+        <View style={{paddingHorizontal:15, paddingVertical:5}}>
+            <Text style={commonStyle.title}>CI Young Indians Conferences</Text>
+        </View>
         <View style={styles.imagesSection}>
           <MasonryList
             data={data}

@@ -78,8 +78,14 @@ const MyCarousel = () => {
 
 const DashboardScreen = () => {
   const [image, setImage] = useState(null);
-
-  const renderItem = ({item}) => <ImageCard item={item} />;
+  const [copy, setCopy] = useState(false)
+  const copyHandle = () => {
+    setCopy(true)
+    setTimeout(() => {
+      setCopy(false)
+    }, 3000);
+  }
+  const renderItem = ({item}) => <ImageCard item={item} callback={() => copyHandle()} />;
   return (
     <>
    <SafeAreaView style={styles.container}>
@@ -117,7 +123,8 @@ const DashboardScreen = () => {
     </TouchableOpacity>
   </Modal>
 </SafeAreaView>
-   {/* <Toaster type={type} message={message} /> */}
+    
+   {copy && <Toaster type={'success'} message={'Copied'} />}
    <BottomSlideScreen />
     {/* <LoaderScreen show='nope' /> */}
    

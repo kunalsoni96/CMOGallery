@@ -1,18 +1,22 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput,
   Dimensions, ScrollView, 
-  TouchableOpacity } from 'react-native';
+  TouchableOpacity, 
+  Platform} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import {closeFilter} from '../../redux/reducers/filterReducer';
 import colors from '../../constants/color';
 import commonStyle from './Style';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const { height, width } = Dimensions.get('window')
 export default function BottomSlideScreen(props) {
   const refRBSheet = useRef();
   const [isChecked, setChecked] = useState(false);
   const isOpen = useSelector((state) => state.filter.isOpen);
+  const [date, setDate] = useState(new Date());
+  const [visibleDate, setVisibleDate] = useState('DD/MM/YYYY');
   const dispatch = useDispatch();
   useEffect(() => {
     if (isOpen) {
@@ -25,6 +29,20 @@ export default function BottomSlideScreen(props) {
   const handleClose = () => {
     dispatch(closeFilter())
   }
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
+    const year = currentDate.getFullYear();
+    const updatedDate = `${day}/${month}/${year}`;
+    if (event.type === "set") { // user selected something
+        const currentDate = selectedDate || date;
+        setDate(currentDate);
+        setVisibleDate(updatedDate)
+      }
+    //  setDateShow(false); 
+  };
 
   return (
     <View>
@@ -73,58 +91,6 @@ export default function BottomSlideScreen(props) {
           </View>
             <Text style={styles.label}>Azadi ka  Mahatsav</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
-          </View>
-            <Text style={styles.label}>Azadi </Text>
-          </TouchableOpacity>
           </View>
           </ScrollView>
 
@@ -133,7 +99,7 @@ export default function BottomSlideScreen(props) {
               <Text style={styles.eventText}>Date</Text>
             </View>
           </View>
-
+          {Platform.OS == 'android' ?
             <View style={styles.dateSection}>
               <TouchableOpacity style={{...commonStyle.textInput, alignItems:'flex-start'}}>
                 <Text>DD / MM / YYYY</Text>
@@ -143,8 +109,32 @@ export default function BottomSlideScreen(props) {
                 <Text>DD / MM / YYYY</Text>
               </TouchableOpacity>
             </View>
+          :
+          <View>
+            <View>
+              <DateTimePicker
+                value={date}
+                mode="date" 
+                display="compact"
+                onChange={onChange}
+                />
+            </View>
+
+            <View style={{marginTop:10}}>
+              <DateTimePicker
+                value={date}
+                mode="date" 
+                display="compact"
+                onChange={onChange}
+                />
+            </View>
+              
+          </View>
+          }
           </View>
         </View>
+
+        
       </RBSheet>
     </View>
   );
