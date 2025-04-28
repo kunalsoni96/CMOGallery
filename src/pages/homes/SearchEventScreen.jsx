@@ -61,6 +61,8 @@ const SearchEventScreen = () => {
         </View>
         </View>
         </ScrollView>
+
+        
     </SafeAreaView>
   );
 };

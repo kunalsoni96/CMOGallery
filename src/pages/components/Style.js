@@ -122,5 +122,10 @@ const commonStyle = StyleSheet.create({
         width:30,
         height:30
       },
+      notAvailableText:{
+        width:'100%', 
+        alignItems:'center',
+        flex:1,
+      }
 })
 export default commonStyle

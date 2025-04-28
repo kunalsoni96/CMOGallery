@@ -22,16 +22,18 @@ import {
 import Header from '../components/Header';
 import ImageCard from '../components/ImageCard';
 import { useNavigation } from '@react-navigation/native';
+import commonStyle from '../components/Style';
 
 const { width, height } = Dimensions.get("window");
 
 const data = [
-  { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
-  { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
-  { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
-  { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
-  { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
-  { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
+  // { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
+  // { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
+  // { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
+  // { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
+  // { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
+  // { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
+
 ];
 
 const ProfileScreen = () => {
@@ -113,6 +115,13 @@ const ProfileScreen = () => {
           </>
         }
       />
+
+      {
+        data.length == 0 &&
+        <View style={commonStyle.notAvailableText}>
+          <Text>Recent view not available</Text>
+        </View>
+      }
 
       {/* 🔍 Full Image Modal */}
       <Modal visible={!!image} transparent onRequestClose={() => setImage(null)}>
@@ -232,7 +241,7 @@ const styles = StyleSheet.create({
   heading:{
     paddingHorizontal:25,
     paddingVertical:10  
-  }
+  },
 });
 
 export default ProfileScreen;

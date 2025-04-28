@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Image, Modal, StyleSheet, 
   Dimensions, Text, View, 
   SafeAreaView, FlatList,
-  TouchableOpacity, ScrollView } from 'react-native';
+  TouchableOpacity } from 'react-native';
 import Header from '../components/Header';
 import BottomSlideScreen from '../components/BottomSlideScreen';
 import colors from '../../constants/color';
 import Toaster from '../components/Toaster';
+import commonStyle from '../components/Style';
 
 import ImageCard from '../components/ImageCard';
 
@@ -102,6 +103,13 @@ const DashboardScreen = () => {
       </>
     }
   />
+
+    {
+        data.length == 0 &&
+        <View style={commonStyle.notAvailableText}>
+          <Text>Recent view not available</Text>
+        </View>
+      }
 
   <Modal visible={image !== null} onRequestClose={() => setImage(null)}>
     <TouchableOpacity style={styles.modalContainer} onPress={() => setImage(null)}>

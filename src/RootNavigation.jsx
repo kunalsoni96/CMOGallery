@@ -22,7 +22,7 @@ const RootNavigation = () => {
   },[])
   return (
         <>
-           {isAuth? <DashboardNavigation/>:<AuthStackNavigation/>}
+           {!isAuth? <DashboardNavigation/>:<AuthStackNavigation/>}
         </>
   )
 }

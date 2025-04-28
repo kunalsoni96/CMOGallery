@@ -10,12 +10,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isValidMobile, isStrongPassword } from '../../utils/Validation';
 import { loginUser } from '../../redux/actions/loginAction';
 import * as Keychain from 'react-native-keychain';
+import LoaderScreen from '../components/LoaderScreen';
 const LoginScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [mobile, setMobile] = useState('');
     const [password, setPassword] = useState('');
     const [isInvalid, setIsInvalid] = useState({mobile:false, password:false});
+    const [loader, setLoader] = useState(false)
     const submitHandle = async() => {
         try{
         if(!isValidMobile(mobile)){
@@ -26,6 +28,7 @@ const LoginScreen = () => {
             setIsInvalid({...isInvalid, password:true})
             return;
         }
+        setLoader(true)
         let result =  await dispatch(loginUser(mobile, password))
         if(result){
             await Keychain.setGenericPassword(mobile, password);
@@ -102,6 +105,8 @@ const LoginScreen = () => {
 
                 <Footer/>
             </View>
+            
+        {loader && <LoaderScreen show="nope" />}
         </SafeAreaView>
     )
 }
