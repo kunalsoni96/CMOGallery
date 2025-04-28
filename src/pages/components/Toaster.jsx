@@ -1,36 +1,40 @@
 import { useEffect } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image } from "react-native";
 import Toast from "react-native-toast-message";
 import colors from "../../constants/color";
+import { CopyImg, CrossImg } from "../assets";
 
-const Toaster = () => {
+const Toaster = ({type, message}) => {
 
 useEffect(()=>{
 Toast.show({
-    type: 'success',
-    text1: 'Success!',
-    text2: 'Your login successful 🎉',
-    position: 'top', // or 'bottom'
-    visibilityTime: 3000,
+    type: 'error',
+    text2: 'Oops! Please ensure that your internet connection is active and try again.',
+    position: 'bottom', // or 'bottom'
+    visibilityTime: 500000,
+    bottomOffset: 10,
 });
 },[])
 
+
 const toastConfig = {
 success: ({ text1, text2 }) => (
-    <View style={styles.toastContainer}>
-    <View>
-    <Text style={styles.toastText}>{text1}</Text>
-    <Text style={styles.toastSubText}>{text2}</Text>
-    </View>
-    {/* <TouchableOpacity style={styles.close}>
-        <Text style={{color:'white', fontSize:30}}>x</Text>
-    </TouchableOpacity> */}
+    <View style={{...styles.errorToastContainer, backgroundColor:'green'}}>
+    <Image source={CrossImg} style={{width:25, height:25, marginTop:8, marginLeft:10}} />
+    <Text style={styles.errorToastSubText}>{text2}</Text>
     </View>
 ),
 error: ({ text1, text2 }) => (
     <View style={styles.errorToastContainer}>
-    <Text style={styles.errorToastText}>{text1}</Text>
+    <Image source={CrossImg} style={{width:25, height:25, marginTop:8, marginLeft:10}} />
     <Text style={styles.errorToastSubText}>{text2}</Text>
+    </View>
+),
+
+info: ({ text1, text2 }) => (
+    <View style={styles.errorToastContainer}>
+        <Image source={CopyImg} style={{width:20, height:20, marginTop:8, marginLeft:10}} />
+        <Text style={styles.errorToastSubText}>{text2}</Text>
     </View>
 ),
 };
@@ -42,34 +46,40 @@ error: ({ text1, text2 }) => (
 
 const styles = StyleSheet.create({
     toastContainer: {
-        backgroundColor: '#34A853',
+        backgroundColor: colors.primary,
         borderRadius: 10,
         padding:10,
         width:"90%",
-        marginTop:10,
         flexDirection:'row',
         },
         toastText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-        paddingVertical:5
         },
         toastSubText: {
         color: 'white',
         fontSize: 14,
-        paddingVertical:5
         },
         errorToastContainer: {
         backgroundColor: 'red',
-        borderRadius: 15,
-        padding: 10,
-        marginHorizontal: 20,
+        borderRadius: 10,
+        marginHorizontal: 10,
+        paddingHorizontal:20,
+        paddingVertical:10,
+        flexDirection:'row',
+        justifyContent:'center', 
         },
         errorToastText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+        },
+
+        errorToastSubText:{
+        color:'white',
+        fontSize:16,
+        paddingLeft:10
         },
 
         close:{

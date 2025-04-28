@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Image, Modal, StyleSheet, 
-  Dimensions, Text, View, ImageBackground, 
+  Dimensions, Text, View, 
   SafeAreaView, FlatList,
   TouchableOpacity, ScrollView } from 'react-native';
-import { DownloadImg, LinkImg, ShareImg } from '../assets';
 import Header from '../components/Header';
 import BottomSlideScreen from '../components/BottomSlideScreen';
-import commonStyle from '../components/Style';
 import colors from '../../constants/color';
 import Toaster from '../components/Toaster';
-import { useNavigation } from '@react-navigation/native';
+
+import ImageCard from '../components/ImageCard';
+
 const { width, height } = Dimensions.get("window");
 
 const images = [
@@ -17,6 +17,15 @@ const images = [
   { id: '2', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
   { id: '3', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
   { id: '4', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
+];
+
+const data = [
+  { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
+  { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
+  { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
+  { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
+  { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
+  { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
 ];
 
 const MyCarousel = () => {
@@ -66,63 +75,13 @@ const MyCarousel = () => {
 };
 
 
-// Reusable ImageCard Component
-const ImageCard = ({ item, onPress }) => {
-const navigation = useNavigation()
-return (
-  <View style={styles.imageCard}>
-    <TouchableOpacity
-      style={{ borderRadius: 15, overflow: 'hidden' }}
-      onPress={()=>navigation.navigate('ImageListScreen')}
-    >
-      <ImageBackground
-        source={{ uri: item.uri }}
-        style={{ width: '100%', height: item.height }}
-        resizeMode="cover"
-        imageStyle={{borderRadius:15}}
-      >
-        <View style={commonStyle.directoryContent}>
-          <View>
-            <Text style={commonStyle.imageCountText}>250</Text>
-            <Text style={commonStyle.photosText}>photos</Text>
-          </View>
-          <View style={styles.eventDateSection}>
-            <Text style={styles.eventDate}>02 Nov 2024</Text>
-          </View>
-        </View>
-      </ImageBackground>
-      <View style={styles.imgBottomSection}>
-        <Text style={commonStyle.title}>CI Young Indians Conferences</Text>
-        <View style={commonStyle.linksSection}>
-          <TouchableOpacity>
-            <Image source={DownloadImg} style={commonStyle.linkIMg} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image source={ShareImg} style={commonStyle.linkIMg} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Image source={LinkImg} style={commonStyle.linkIMg} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </TouchableOpacity>
-
-    <BottomSlideScreen />
-  </View>
-);
-}
-
 const DashboardScreen = () => {
-  const data = [
-    { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
-    { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
-    { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
-    { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
-    { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
-    { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
-  ];
-
+  const [copiedText, setCopiedText] = useState('');
   const [image, setImage] = useState(null);
+
+  const copyToClipboard = () => {
+    Clipboard.setString('hello world');
+  };
   return (
     <>
     <SafeAreaView style={styles.container}>
@@ -146,7 +105,9 @@ const DashboardScreen = () => {
         </TouchableOpacity>
       </Modal>
     </SafeAreaView>
-   <Toaster />
+   {/* <Toaster type={type} message={message} /> */}
+   <BottomSlideScreen />
+    {/* <LoaderScreen show='nope' /> */}
    
     </>
   );
@@ -164,19 +125,6 @@ const styles = StyleSheet.create({
     flexWrap:'wrap',
     justifyContent:'space-between'
   },
-  
-  eventDateSection:{
-     width: width / 4, 
-     justifyContent: "center", 
-     alignItems: "flex-end" 
-  },
-  eventDate: {
-    fontSize: 11,
-    color: "white",
-    position: "absolute",
-    bottom: 2,
-    right: 0, 
-  },
   modalContainer: {
     flex: 1,
     backgroundColor: 'black',
@@ -186,9 +134,6 @@ const styles = StyleSheet.create({
   fullImage: {
     width: width,
     height: height,
-  },
-  imgBottomSection:{
-     marginTop:10
   },
   imageContainer: {
     width: width,  // Full width of the device
@@ -238,11 +183,6 @@ const styles = StyleSheet.create({
     paddingTop:20  
     },
 
-    imageCard:{
-      marginHorizontal:'1%', 
-      marginVertical:10, 
-      width: '47%',
-    }
 });
 
 export default DashboardScreen;

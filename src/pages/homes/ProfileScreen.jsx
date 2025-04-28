@@ -11,23 +11,21 @@ import {
   ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MasonryList from '@react-native-seoul/masonry-list';
 import colors from '../../constants/color';
 import {
   CGMapImg,
-  BackWImg,
   EditImg,
   uploadImg,
-  NotWhiteImg,
   DownNavImg,
-  NotImg,
   DownloadDarkImg
 } from '../assets';
 import Header from '../components/Header';
+import ImageCard from '../components/ImageCard';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get("window");
 
-const imageData = [
+const data = [
   { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
   { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
   { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
@@ -38,7 +36,7 @@ const imageData = [
 
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
-
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="Profile" />
@@ -55,7 +53,7 @@ const ProfileScreen = () => {
             </View>
 
             <View style={styles.porfileBottomSection}>
-                <TouchableOpacity style={styles.profileColumn}>
+                <TouchableOpacity onPress={()=>navigation.navigate('MyDashboardScreen')} style={styles.profileColumn}>
                     <Image source={DownNavImg} style={styles.iconImg} />
                     <Text style={styles.iconText}>My Download</Text>
                 </TouchableOpacity>
@@ -87,22 +85,10 @@ const ProfileScreen = () => {
             <Text style={{color:colors.primary, fontSize:16, fontWeight:"bold"}}>Recent View</Text>
         </View>
         <View style={styles.imagesSection}>
-          <MasonryList
-            data={imageData}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            renderItem={({ item }) => (
-              <View style={styles.imageWrapper}>
-                <TouchableOpacity onPress={() => setImage(item.uri)}>
-                  <Image
-                    source={{ uri: item.uri }}
-                    style={[styles.galleryImage, { height: item.height }]}
-                    resizeMode="cover"
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
-          />
+          {data.map((value)=>{
+              return <ImageCard item={value} />
+          })
+          }
         </View>
       </ScrollView>
 
@@ -208,7 +194,9 @@ const styles = StyleSheet.create({
   },
   imagesSection: {
     flexDirection: "row",
-    paddingHorizontal: 20,
+    paddingHorizontal: '2%',
+    flexWrap:'wrap',
+    justifyContent:'space-between',
   },
   imageWrapper: {
     margin: 5,

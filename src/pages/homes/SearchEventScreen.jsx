@@ -6,9 +6,11 @@ import { Image, StyleSheet,
 import colors from '../../constants/color';
 import Header from '../components/Header';
 import commonStyle from '../components/Style';
+import { ViewMoreImg } from '../assets';
 const { width, height } = Dimensions.get("window");
-
+import { useNavigation } from '@react-navigation/native';
 const SearchEventScreen = () => {
+  const navigation = useNavigation();
   const data = [
     { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
     { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
@@ -25,7 +27,7 @@ const SearchEventScreen = () => {
       <Header screen='Search' />
         <ScrollView>
         <View style={commonStyle.section}>
-            <View style={styles.card}>
+        <View style={styles.card}>
                 <View style={styles.left}>
                     <ImageBackground 
                     imageStyle={{ borderRadius: 15 }} 
@@ -41,18 +43,19 @@ const SearchEventScreen = () => {
                 </View>
                 <View style={styles.right}>
                   <Text style={commonStyle.title}>
-                    CII Young Indians Conference
+                    CII Young Indians Conf..
                   </Text>
 
                   <View style={{paddingVertical:10}}>
                     <Text style={styles.date}>02 Nov 2024</Text>
                   </View>
 
-                  <TouchableOpacity>
-                    <Text style={styles.viewMore}>View More</Text>
+                  <TouchableOpacity onPress={()=>navigation.navigate('ImageListScreen')} style={{flexDirection:'row'}}>
+                    <Text style={styles.viewMore}>View More </Text>
+                    <Image source={ViewMoreImg} style={{width:25, height:15, marginTop:2}} />
                   </TouchableOpacity>
                 </View>
-            </View>
+        </View>
         </View>
         </ScrollView>
     </SafeAreaView>
@@ -69,25 +72,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 16,
-    margin: 16,
-  
+    marginHorizontal:15,
+    
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-     width:'93%',
-     padding:10,
+    width:'93%',
   },
   eventImg:{
-    width:width/4,
-    height:width/4,
+    width:width/3.4,
+    height:width/3.4,
   },
   left:{
-    width:'30%',
+    width:'35%',
   },
   right:{
-    width:'70%',
+    width:'65%',
     padding:10
   },
   date:{

@@ -2,20 +2,20 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Text, View, StyleSheet, Image, SafeAreaView, Dimensions } from 'react-native';
 import colors from '../../constants/color';
 const {height, width} = Dimensions.get('window')
-const LoaderScreen = () => {
+const LoaderScreen = ({show}) => {
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const rotate = () => {
-      rotateAnim.setValue(0); // Reset animation to 0
+      rotateAnim.setValue(0); 
       Animated.timing(rotateAnim, {
         toValue: 1,
         duration: 1000,
         easing: Easing.linear,
         useNativeDriver: true,
-      }).start(() => rotate()); // Continuous loop
+      }).start(() => rotate()); 
     };
-    rotate(); // Start rotation
+    rotate(); 
 
     return () => rotateAnim.stopAnimation();
   }, []);
@@ -31,22 +31,26 @@ const LoaderScreen = () => {
 
         </View>
       <Animated.View style={[styles.loaderBorder, { transform: [{ rotate: spin }] }]} />
-    
+      {show !='nope' &&
+      <>
       <View style={styles.imageWrapper}>
         <Image
           source={{
-            uri: 'https://imnb.org/wp-content/uploads/2024/01/IMG-20240101-WA0074.jpg',
+            uri: 'https://shabdateer.com/wp-content/uploads/2024/04/ewojiiru_400x400-3.jpg',
           }}
           style={styles.profileImage}
         />
       </View>
+     
       <View style={styles.textArea}>
         <Text style={styles.searchText}>Searching Related Photo...</Text>
       </View>
-
+      
       <View style={{...styles.textArea, top:height/1.2}}>
         <Text style={{...styles.searchText, fontSize:14}}>The latest AI image search.</Text>
       </View>
+      </>
+      }
     
     </SafeAreaView>
   );
@@ -55,9 +59,12 @@ const LoaderScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    position:'absolute',
+    width:width,
+    height:height
   },
   loaderBorder: {
     width: 100,  

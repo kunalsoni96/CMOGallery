@@ -1,42 +1,13 @@
 import React, { useState } from 'react';
-import { Image, Modal, StyleSheet, Dimensions, Text, View, ImageBackground, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { DownloadImg } from '../assets';
-import MasonryList from '@react-native-seoul/masonry-list';
+import { Image, StyleSheet, 
+  Dimensions, Text, View, 
+  SafeAreaView, TextInput, FlatList,
+  TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
 import colors from '../../constants/color';
 import Header from '../components/Header';
 import commonStyle from '../components/Style';
-
+import { DownloadFixImg, DownloadImg, ViewMoreImg } from '../assets';
 const { width, height } = Dimensions.get("window");
-
-
-// Reusable ImageCard Component
-const ImageCard = ({ item, onPress }) => (
-  <View style={{ margin: 5 }}>
-    <TouchableOpacity
-      style={{ borderRadius: 15, overflow: 'hidden' }}
-      onPress={() => onPress(item.uri)}
-    >
-      <ImageBackground
-        source={{ uri: item.uri }}
-        style={{ width: '100%', height: item.height }}
-        resizeMode="cover"
-      >
-      </ImageBackground>
-    </TouchableOpacity>
-
-    <View style={styles.imgBottomSection}>
-      <View style={{width:'80%'}}>
-        <Text style={commonStyle.title}>CI Young Indians Conferences</Text>
-      </View>
-        <View style={commonStyle.linksSection}>
-          <TouchableOpacity>
-            <Image source={DownloadImg} style={{...commonStyle.linkIMg, marginTop:-5}} />
-          </TouchableOpacity>
-        </View>
-      </View>
-  </View>
-);
 
 const MyDashboardScreen = () => {
   const data = [
@@ -50,35 +21,252 @@ const MyDashboardScreen = () => {
 
   const [image, setImage] = useState(null);
 
-  const handleBackPress = () => {
-    // Handle back button press
-  };
-
-  const handleEditPress = () => {
-    // Handle edit button press
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <Header screen="My Download" />
-      <ScrollView>
-        <View style={styles.imagesSection}>
-          <MasonryList
-            data={data}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            renderItem={({ item }) => (
-              <ImageCard item={item} onPress={setImage} />
-            )}
-          />
-        </View>
-      </ScrollView>
+      <Header screen='My Downloads' />
+        <ScrollView>
+        <View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
 
-      <Modal visible={image !== null} onRequestClose={() => setImage(null)}>
-        <TouchableOpacity style={styles.modalContainer} onPress={() => setImage(null)}>
-          <Image source={{ uri: image }} style={styles.fullImage} resizeMode="contain" />
-        </TouchableOpacity>
-      </Modal>
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View><View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View><View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View><View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View><View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View><View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View><View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View><View style={commonStyle.section}>
+            <View style={styles.card}>
+                <View style={styles.left}>
+                    <ImageBackground 
+                    imageStyle={{ borderRadius: 15 }} 
+                    style={styles.eventImg}
+                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                      <View style={{...commonStyle.directoryContent}}>
+                        <View>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
+                        </View>
+                      </View>
+                      </ImageBackground>
+                </View>
+                <View style={styles.right}>
+                  <Text style={commonStyle.title}>
+                    CII Young Indians Conf..
+                  </Text>
+
+                  <View style={{paddingVertical:10}}>
+                    <Text style={styles.date}>02 Nov 2024</Text>
+                  </View>
+
+                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                    <Text style={styles.viewMore}> Download </Text>
+                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                  </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+        </ScrollView>
     </SafeAreaView>
   );
 };
@@ -86,83 +274,39 @@ const MyDashboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'white'
+    backgroundColor:"white",
   },
-  header: {
-    top: 0,
-    padding: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: colors.primary,
-  },
-  headerColumn: {
-    width: "33%",
-  },
-  headerIcon: {
-    width: 25,
-    height: 25,
-  },
-  headerText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  imagesSection: {
-    flexDirection: "row",
-    paddingHorizontal: 10,
-  },
-  directionContent: {
-    flexDirection: "row",
-    position: "absolute",
-    paddingBottom: 10,
-    bottom: -1,
-    width: "100%",
-    paddingHorizontal: 5,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-  },
-  imageCountText: {
-    color: "white",
-    fontSize: 18,
-  },
-  photosText: {
-    color: "white",
-  },
-  eventDateSection:{
-     width: width / 4, 
-     justifyContent: "center", 
-     alignItems: "flex-end" 
-  },
-  eventDate: {
-    fontSize: 11,
-    color: "white",
-    position: "absolute",
-    bottom: 2,
-    right: 0, 
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'black',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  fullImage: {
-    width: width,
-    height: height,
-  },
-  imgBottomSection:{
-     marginTop:10,
-     flexDirection:'row',
-     width:"100%"
-  },
-  linksSection:{
+  card:{
     flexDirection:"row",
-    justifyContent:"space-between",
-    width:width/3,
-    marginTop:10
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    marginHorizontal:15, 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+     width:'93%',
   },
-  linkIMg:{
-    width:30,
-    height:30
+  eventImg:{
+    width:width/3.4,
+    height:width/3.4,
+  },
+  left:{
+    width:'35%',
+  },
+  right:{
+    width:'65%',
+    padding:10
+  },
+  date:{
+    fontSize:12
+  },
+  viewMore:{
+    color:'gray',
+    fontSize:12,
+    marginTop:4
   }
 });
 
