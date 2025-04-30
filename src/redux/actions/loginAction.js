@@ -6,6 +6,7 @@ export const loginUser = createAsyncThunk(
   'login/user',
   async ({ mobile, password }, thunkAPI) => {
     try {
+      console.log(mobile, password)
       const response = await axios.post(`${baseUrl}client-login`, {
         mobile,
         password

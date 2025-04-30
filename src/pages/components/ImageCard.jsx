@@ -5,19 +5,19 @@ import commonStyle from './Style';
 import { DownloadImg, LinkImg, ShareImg } from '../assets';
 import Clipboard from '@react-native-clipboard/clipboard';
 const { width } = Dimensions.get('window')
-const ImageCard = ({ item, callback }) => {
+const ImageCard = ({ item, callback, customHeight }) => {
     const navigation = useNavigation();
 
-    const copyToClipboard = () => {
-        Clipboard.setString('hello world');
+    const copyToClipboard = (uri) => {
+        Clipboard.setString(uri);
         callback(true)
       };
 
-    const onShare = async () => {
+    const onShare = async (uri) => {
     try {
         const result = await Share.share({
-        message: 'Check out this awesome content!',
-        url: 'https://www.example.com', 
+        message: (uri),
+        url: uri, 
         });
         if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -36,21 +36,21 @@ const ImageCard = ({ item, callback }) => {
       <View style={styles.imageCard}>
         <TouchableOpacity
           style={{ borderRadius: 15, overflow: 'hidden' }}
-          onPress={()=>navigation.navigate('ImageListScreen')}
+          onPress={()=>navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })}
         >
           <ImageBackground
-            source={{ uri: item?.uri }}
-            style={{ width: '100%', height: item?.height }}
+            source={{ uri: item?.cover }}
+            style={{ width: '100%', height: customHeight }}
             resizeMode="cover"
             imageStyle={{borderRadius:15}}
           >
             <View style={commonStyle.directoryContent}>
               <View>
-                <Text style={commonStyle.imageCountText}>250</Text>
+                {/* <Text style={commonStyle.imageCountText}>{item.total}</Text> */}
                 <Text style={commonStyle.photosText}>photos</Text>
               </View>
               <View style={styles.eventDateSection}>
-                <Text style={styles.eventDate}>02 Nov 2024</Text>
+                <Text style={styles.eventDate}>{item?.date}</Text>
               </View>
             </View>
           </ImageBackground>
@@ -60,10 +60,10 @@ const ImageCard = ({ item, callback }) => {
               <TouchableOpacity>
                 <Image source={DownloadImg} style={commonStyle.linkIMg} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => onShare()}>
+              <TouchableOpacity onPress={() => onShare(`https://nbdigital.online/album/${item?._id}`)}>
                 <Image source={ShareImg} style={commonStyle.linkIMg} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>copyToClipboard()}>
+              <TouchableOpacity onPress={()=>copyToClipboard(`https://nbdigital.online/album/${item?._id}`)}>
                 <Image source={LinkImg} style={commonStyle.linkIMg} />
               </TouchableOpacity>
             </View>

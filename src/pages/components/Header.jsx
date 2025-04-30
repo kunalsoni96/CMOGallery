@@ -5,6 +5,7 @@ import {  useDispatch } from 'react-redux';
 import colors from '../../constants/color';
 import { openFilter } from '../../redux/reducers/filterReducer';
 import * as Keychain from 'react-native-keychain';
+import { logoutUser } from '../../redux/reducers/loginReducer';
 const Header = (props) => {
     const navigation = useNavigation();
     const dispatch = useDispatch()
@@ -15,6 +16,7 @@ const Header = (props) => {
     const handleLogout = async () => {
       try {
         await Keychain.resetGenericPassword();
+        dispatch(logoutUser(false))
       } catch (error) {
         console.log('Error resetting credentials', error);
       }

@@ -17,7 +17,8 @@ const LoginScreen = () => {
     const [mobile, setMobile] = useState('');
     const [password, setPassword] = useState('');
     const [isInvalid, setIsInvalid] = useState({mobile:false, password:false});
-    const [loader, setLoader] = useState(false)
+
+    const loader = useSelector(state=>state.login.loading)
     const submitHandle = async() => {
         try{
         if(!isValidMobile(mobile)){
@@ -28,9 +29,9 @@ const LoginScreen = () => {
             setIsInvalid({...isInvalid, password:true})
             return;
         }
-        setLoader(true)
-        let result =  await dispatch(loginUser(mobile, password))
+        let result =  await dispatch(loginUser({mobile, password}))
         if(result){
+            console.log('------kunal yes', result)
             await Keychain.setGenericPassword(mobile, password);
         }
         }

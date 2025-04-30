@@ -1,5 +1,5 @@
-import {use, useState} from 'react';
-import {Text, View, FlatList, StyleSheet, Modal, TouchableOpacity, Image, TextInput, Platform} from 'react-native'
+import {useEffect, useState} from 'react';
+import {Text, View, FlatList, PermissionsAndroid, StyleSheet, Modal, TouchableOpacity, Image, TextInput, Platform} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
@@ -8,6 +8,9 @@ import { DateImg, DropDownImg, uploadImg } from '../assets';
 import Header from '../components/Header';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {useDispatch} from 'react-redux';
+import RNFS from 'react-native-fs';
+import { searchImage } from '../../redux/actions/EventAction';
 const UploadPhotoScreen = () => {
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState('Select An Event');
@@ -17,13 +20,13 @@ const UploadPhotoScreen = () => {
   const [visibleDate, setVisibleDate] = useState('DD/MM/YYYY');
   const [userImage, setUserImage] = useState('')
   const [errorMessage, setErrorMessage] = useState(false);
+  const [base64, setBase64] = useState(null);
   const options = ['Java', 'JavaScript'];
-
+  const dispatch = useDispatch()
   const handleSelect = (value) => {
     setSelectedValue(value);
     setShowModal(false);
   };
-   
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     const day = String(currentDate.getDate()).padStart(2, '0');
@@ -38,8 +41,35 @@ const UploadPhotoScreen = () => {
      setDateShow(false); 
   };
 
+
+async function requestStoragePermission() {
+  if (Platform.OS === 'android') {
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      ]);
+      console.log(granted)
+      return (
+        granted['android.permission.READ_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED &&
+        granted['android.permission.WRITE_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED
+      );
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+
+useEffect(()=>{
+  requestStoragePermission()
+},[])
+
+
   const pickImage = () => {
-    launchImageLibrary({mediaType: 'photo'}, response => {
+    launchImageLibrary({mediaType: 'photo'}, async(response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorCode) {
@@ -55,11 +85,25 @@ const UploadPhotoScreen = () => {
             setErrorMessage(false)
             setUserImage(response.assets[0].uri)
         }
+        try {
+          const base64Data = await RNFS.readFile(asset.uri, 'base64');
+          setBase64(base64Data);
+          console.log("✅ Base64 for JSON:", base64Data);
+        } catch (err) {
+          console.error("Error converting to base64:", err);
+        }
+        
 
         console.log('Selected Image URI:', asset.fileSize);
       }
     });
   };
+
+
+  const submitHandle = async() => {
+    const data = await dispatch(searchImage(base64))
+    navigation.navigate('LoaderScreen',{screen:'UploadPhotoScreen', data:data})
+  }
     return (
         <SafeAreaView style={styles.container}>
             <Header screen='Upload Photo' />
@@ -151,6 +195,7 @@ const UploadPhotoScreen = () => {
 
                 <View style={commonStyle.section}>
                 <TouchableOpacity
+                  onPress={()=>submitHandle()}
                   disabled={userImage==""}
                   style={[commonStyle.submitBtn, {backgroundColor: userImage=="" ? colors.border : colors.primary}]}>
                 <Text style={[styles.btnText, {color: userImage=="" ? 'gray' : colors.secondary}]}>Proceed</Text>

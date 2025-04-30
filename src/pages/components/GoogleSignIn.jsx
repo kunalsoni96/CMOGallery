@@ -4,6 +4,7 @@ import commonStyle from './Style';
 import { GoogleImg } from '../assets';
 import { useNavigation } from '@react-navigation/native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import * as Keychain from 'react-native-keychain';
 const { height, width } = Dimensions.get('window');
 
 const GoogleSignIn = () => {
@@ -30,8 +31,13 @@ const GoogleSignIn = () => {
          
           await GoogleSignin.hasPlayServices(); 
           const userInfo = await GoogleSignin.signIn();
-          alert(JSON.stringify(userInfo))
-          console.log('User Info:', userInfo);
+          console.log(userInfo,'testing')
+          if(userInfo.type == "success"){
+            Keychain.setGenericPassword('auth_token', userInfo.data.idToken);
+          }
+          else{
+            console.error('something went wrong:', userInfo);
+          }
         } catch (error) {
           console.error('Google Sign-In Error:', error);
         }

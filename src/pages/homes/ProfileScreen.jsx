@@ -93,14 +93,14 @@ const ProfileScreen = () => {
               <View style={[styles.box, { backgroundColor: colors.primaryBox }]}>
                 <View style={styles.boxContent}>
                   <Image source={uploadImg} style={styles.boxIcon} />
-                  <Text style={styles.boxValue}>872</Text>
+                  <Text style={styles.boxValue}>0</Text>
                   <Text style={styles.boxLabel}>Total Download</Text>
                 </View>
               </View>
               <View style={[styles.box, { backgroundColor: colors.secondaryBox }]}>
                 <View style={styles.boxContent}>
                   <Image source={DownloadDarkImg} style={styles.boxIcon} />
-                  <Text style={styles.boxValue}>872</Text>
+                  <Text style={styles.boxValue}>0</Text>
                   <Text style={styles.boxLabel}>Total Image</Text>
                 </View>
               </View>
@@ -118,7 +118,8 @@ const ProfileScreen = () => {
 
       {
         data.length == 0 &&
-        <View style={commonStyle.notAvailableText}>
+        <View style={{...commonStyle.notAvailableText, position:'absolute',
+         bottom:10}}>
           <Text>Recent view not available</Text>
         </View>
       }

@@ -1,142 +1,150 @@
-import React, { useState } from 'react';
-import { Image, Modal, StyleSheet, Dimensions, 
-    Text, View, ImageBackground, TouchableOpacity, 
-    ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import MasonryList from '@react-native-seoul/masonry-list';
+import React, { useEffect, useState } from 'react';
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Dimensions,
+  Text,
+  View,
+  ImageBackground,
+  TouchableOpacity,
+  FlatList,
+  SafeAreaView
+} from 'react-native';
 import colors from '../../constants/color';
 import Header from '../components/Header';
-import { DownloadFixImg, DownloadImg, ShareFixImg } from '../assets';
+import { DownloadFixImg, ShareFixImg } from '../assets';
 import commonStyle from '../components/Style';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPhotos } from '../../redux/actions/EventAction';
 
 const { width, height } = Dimensions.get("window");
 
-
-// Reusable ImageCard Component
-const ImageCard = ({ item, onPress }) => (
-  <View style={{ margin: 5 }}>
-    <TouchableOpacity
-      style={{ borderRadius: 15, overflow: 'hidden' }}
-      onPress={() => onPress(item.uri)}
-    >
+// ✅ ImageCard component
+const ImageCard = ({ item, isSelected, onSelect }) => (
+  <View style={styles.imageCard}>
+    <TouchableOpacity style={styles.imageTouchable} onPress={onSelect}>
       <ImageBackground
-        source={{ uri: item.uri }}
-        style={{ width: '100%', height: item.height }}
-        resizeMode="cover"
+        source={{ uri: item.image }}
+        style={styles.imageBackground}
+        imageStyle={{ borderRadius: 10 }}
       >
+        {/* Checkbox Overlay */}
+        <View style={styles.checkboxContainer}>
+          {isSelected && (
+            <View style={styles.checkbox}>
+              <Text style={styles.checkmark}>✓</Text>
+            </View>
+         )} 
+        </View>
       </ImageBackground>
     </TouchableOpacity>
-
   </View>
 );
 
-const ImageListScreen = () => {
-  const data = [
-    { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
-    { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
-    { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
-    { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
-    { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
-    { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
-  ];
 
+const ImageListScreen = (props) => {
   const [image, setImage] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getPhotos(props?.route?.params?.id));
+  }, []);
 
+  const event = useSelector(state => state.event);
+  const toggleSelectImage = (id) => {
+    setSelectedImages(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  let data = []
+  if(props.route.params.screen == "UploadPhotoScreen"){
+    data = props?.route?.params?.data?.payload?.photos
+  }
+  else{
+    data = event.eventPhotos
+  }
+  console.log('-------', data)
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
-      <ScrollView>
-        <View style={{paddingHorizontal:15, paddingVertical:5}}>
-            <Text style={commonStyle.title}>CI Young Indians Conferences</Text>
-        </View>
-        <View style={styles.imagesSection}>
-          <MasonryList
-            data={data}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            renderItem={({ item }) => (
-              <ImageCard item={item} onPress={setImage} />
-            )}
-          />
-        </View>
-      </ScrollView>
+
+      <View style={styles.titleSection}>
+        <Text style={commonStyle.title}>
+          {props?.route?.params?.title}
+        </Text>
+      </View>
+
+      <View style={styles.imagesSection}>
+        <FlatList
+          data={data}
+          keyExtractor={(item, index) => item?._id ? item._id.toString() : index.toString()}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: 'space-between' }}
+          contentContainerStyle={{ padding: 10 }}
+          renderItem={({ item }) => <ImageCard item={item}
+          isSelected={selectedImages.includes(item?.image)}
+          onSelect={() => toggleSelectImage(item.image)} />}
+        />
+      </View>
 
       <Modal visible={image !== null} onRequestClose={() => setImage(null)}>
-        <TouchableOpacity style={styles.modalContainer} onPress={() => setImage(null)}>
-          <Image source={{ uri: image }} style={styles.fullImage} resizeMode="contain" />
+        <TouchableOpacity
+          style={styles.modalContainer}
+          onPress={() => setImage(null)}
+        >
+          <Image
+            source={{ uri: image }}
+            style={styles.fullImage}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
       </Modal>
 
       <View style={styles.bottomSection}>
         <TouchableOpacity style={styles.link}>
-            <Image source={ShareFixImg} style={{width:15, height:18}} />
-            <Text style={{fontSize:16, color:colors.primary}}> Share</Text>
+          <Image source={ShareFixImg} style={styles.icon} />
+          <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={{...styles.link, backgroundColor:colors.primary}}>
-            <Image source={DownloadFixImg} style={{width:20, height:20}} />
-            <Text style={{fontSize:16, color:colors.secondary}}> Download</Text>
+        <TouchableOpacity style={[styles.link, { backgroundColor: colors.primary }]}>
+          <Image source={DownloadFixImg} style={styles.icon} />
+          <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
+// ✅ Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:'white'
+    backgroundColor: 'white',
   },
-  header: {
-    top: 0,
-    padding: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: colors.primary,
-  },
-  headerColumn: {
-    width: "33%",
-  },
-  headerIcon: {
-    width: 25,
-    height: 25,
-  },
-  headerText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 16,
+  titleSection: {
+    paddingHorizontal: 15,
+    paddingVertical: 5,
   },
   imagesSection: {
-    flexDirection: "row",
-    paddingHorizontal: 10,
+    flex: 1,
+    
   },
-  directionContent: {
-    flexDirection: "row",
-    position: "absolute",
-    paddingBottom: 10,
-    bottom: -1,
-    width: "100%",
-    paddingHorizontal: 5,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+  imageCard: {
+    flex: 1,
+    margin: 5,
+    borderRadius: 10,
+    overflow: 'hidden',
+    
   },
-  imageCountText: {
-    color: "white",
-    fontSize: 18,
+  imageTouchable: {
+    borderRadius: 15,
+    overflow: 'hidden',
   },
-  photosText: {
-    color: "white",
-  },
-  eventDateSection:{
-     width: width / 4, 
-     justifyContent: "center", 
-     alignItems: "flex-end" 
-  },
-  eventDate: {
-    fontSize: 11,
-    color: "white",
-    position: "absolute",
-    bottom: 2,
-    right: 0, 
+  imageBackground: {
+    width: '100%',
+    height: 250,
   },
   modalContainer: {
     flex: 1,
@@ -148,36 +156,49 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
   },
-  imgBottomSection:{
-     marginTop:10,
-     flexDirection:'row',
-     width:"100%"
+  bottomSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    position: 'absolute',
+    bottom: 20,
+    width: '100%',
   },
-  linksSection:{
-    flexDirection:"row",
-    justifyContent:"space-between",
-    width:width/3,
-    marginTop:10
+  link: {
+    width: width / 2.4,
+    height: 55,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.secondary,
+    flexDirection: 'row',
   },
-  linkIMg:{
-    width:30,
-    height:30
+  linkText: {
+    fontSize: 16,
+    color: colors.primary,
   },
-  bottomSection:{
-    flexDirection:'row',
-    justifyContent:'space-around',
+  icon: {
+    width: 20,
+    height: 20,
+    marginRight: 5,
+  },
+  checkboxContainer:{
+    width:20, 
+    height:20,
+    borderWidth:2,
     position:'absolute',
-    bottom:20,
-    width:'100%'
+    right:10,
+    top:10,
+    borderColor:'white',
+    borderRadius:5
   },
-  link:{
-    width:width/2.4,
-    height:55,
-    borderRadius:30,
-    justifyContent:'center',
-    alignItems:'center',
-    backgroundColor:colors.secondary,
-    flexDirection:'row'
+  checkbox:{
+
+  },
+  checkmark:{
+    color:'white',
+    fontSize:16,
+    marginTop:-3,
+    marginLeft:3
   }
 });
 

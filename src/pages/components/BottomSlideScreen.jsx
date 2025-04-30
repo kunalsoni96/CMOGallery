@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput,
   Dimensions, ScrollView, 
   TouchableOpacity, 
+  FlatList,
   Platform} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +10,7 @@ import {closeFilter} from '../../redux/reducers/filterReducer';
 import colors from '../../constants/color';
 import commonStyle from './Style';
 import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 const { height, width } = Dimensions.get('window')
 export default function BottomSlideScreen(props) {
@@ -44,6 +46,18 @@ export default function BottomSlideScreen(props) {
     //  setDateShow(false); 
   };
 
+  const renderItem = ({item}) => {
+    return (
+      <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
+          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
+            {isChecked && <Text style={styles.checkmark}>✓</Text>}
+          </View>
+            <Text style={styles.label}>{item?.name}</Text>
+        </TouchableOpacity>
+    )
+  }
+
+  const districts = useSelector(state=>state.event?.districts)
   return (
     <View>
       <RBSheet
@@ -83,16 +97,14 @@ export default function BottomSlideScreen(props) {
 
 
           <View style={{width:'100%', alignItems:'flex-start'}}>
-          <ScrollView>
           <View style={styles.list}>
-          <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
+          <FlatList
+          data={districts}
+          renderItem={renderItem}
+          keyExtractor={(item, index)=> index}
+          />
+
           </View>
-            <Text style={styles.label}>Azadi ka  Mahatsav</Text>
-          </TouchableOpacity>
-          </View>
-          </ScrollView>
 
           <View style={{...styles.header, ...styles.date}}>
             <View style={styles.headerLeft}>

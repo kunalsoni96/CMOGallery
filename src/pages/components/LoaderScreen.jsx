@@ -64,7 +64,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position:'absolute',
     width:width,
-    height:height
+    height:height,
+    elevation:500
   },
   loaderBorder: {
     width: 100,  

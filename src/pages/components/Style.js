@@ -126,6 +126,8 @@ const commonStyle = StyleSheet.create({
         width:'100%', 
         alignItems:'center',
         flex:1,
+        // position:'absolute',
+        // bottom:10
       }
 })
 export default commonStyle

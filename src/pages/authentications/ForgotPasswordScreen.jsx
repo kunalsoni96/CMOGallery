@@ -1,19 +1,18 @@
 import {Text, View, StyleSheet, TouchableOpacity, TextInput} from 'react-native'
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
 import {useState} from 'react';
 import commonStyle from '../components/Style';
 import Footer from '../components/Footer';
-import { isValidEmail } from '../../utils/Validation';
+import { isValidMobile } from '../../utils/Validation';
 const ForgotPasswordScreen = () => {
-    const [email, setEmail] = useState('');
-    const [isInvalid, setIsInvalid] = useState({email:false})
+    const [mobile, setMobile] = useState('');
+    const [isInvalid, setIsInvalid] = useState({mobile:false})
     const navigation = useNavigation();
     const submitHandle = () => {
-        if(!isValidEmail(email)){
-            setIsInvalid({...isInvalid, email:true})
+        if(!isValidMobile(mobile)){
+            setIsInvalid({...isInvalid, mobile:true})
             return;
         }
     }
@@ -37,8 +36,17 @@ const ForgotPasswordScreen = () => {
                     keyboardType="numeric"
                     contextMenuHidden={true} maxLength={10}  
                     placeholderTextColor="#888"
+                    value={mobile}
+                    onChangeText={(text)=>{
+                        setMobile(text)
+                        setIsInvalid({mobile:false})
+                    }
+                    }
                     style={commonStyle.textInput} />
-                    <TouchableOpacity onPress={()=> navigation.navigate("DashboardScreen")} style={commonStyle.submitBtn}>
+                     {isInvalid.mobile &&
+                    <Text style={commonStyle.errorMessage}>Please enter 10 digit valid mobile</Text>
+                    }
+                    <TouchableOpacity onPress={submitHandle} style={commonStyle.submitBtn}>
                             <Text style={styles.btnText}>Send Now</Text>
                     </TouchableOpacity>
                 </View>
@@ -46,7 +54,7 @@ const ForgotPasswordScreen = () => {
                 <View style={commonStyle.section}>
                 <View style={styles.registerPrompt}>
                         <Text style={commonStyle.questionText}>Not Register Yet? </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+                        <TouchableOpacity onPress={() => navigation.navigate("MobileRegisterScreen")}>
                             <Text style={commonStyle.linkText}>Sign Up</Text>
                         </TouchableOpacity>
                 </View>

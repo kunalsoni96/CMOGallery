@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Modal, StyleSheet, 
   Dimensions, Text, View, 
   SafeAreaView, FlatList,
@@ -8,26 +8,19 @@ import BottomSlideScreen from '../components/BottomSlideScreen';
 import colors from '../../constants/color';
 import Toaster from '../components/Toaster';
 import commonStyle from '../components/Style';
-
 import ImageCard from '../components/ImageCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDistricts, getEvents } from '../../redux/actions/EventAction';
+import { Banner1Img, Banner2Img, Banner3Img } from '../assets';
 
 const { width, height } = Dimensions.get("window");
 
 const images = [
-  { id: '1', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
-  { id: '2', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
-  { id: '3', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
-  { id: '4', uri: 'https://bloggingbistro.com/wp-content/uploads/2018/05/unsplash-tips-for-using-stock-photos.jpg' },
+  Banner1Img,
+  Banner2Img,
+  Banner3Img
 ];
 
-const data = [
-  { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
-  { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
-  { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
-  { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
-  { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
-  { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
-];
 
 const MyCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,6 +35,7 @@ const MyCarousel = () => {
     itemVisiblePercentThreshold: 50, 
   };
 
+
   return (
     <View style={styles.sliderContainer}>
       {/* Image Slider */}
@@ -49,15 +43,16 @@ const MyCarousel = () => {
         data={images}
         renderItem={({ item }) => (
           <View style={styles.imageContainer}>
-            <Image source={{ uri: item.uri }} style={styles.image} />
+            <Image source={item} style={styles.image} />
           </View>
         )}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
+        
       />
 
       {/* Pagination Dots */}
@@ -79,22 +74,37 @@ const MyCarousel = () => {
 const DashboardScreen = () => {
   const [image, setImage] = useState(null);
   const [copy, setCopy] = useState(false)
+  
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(getEvents({}))
+    dispatch(getDistricts({}))
+  },[])
+
+  const event = useSelector(state=>state.event)
   const copyHandle = () => {
     setCopy(true)
     setTimeout(() => {
       setCopy(false)
     }, 3000);
   }
-  const renderItem = ({item}) => <ImageCard item={item} callback={() => copyHandle()} />;
+  const renderItem = ({item, index}) => {
+  const customHeight = index % 2 === 0 ? 200 : 250;
+  return (
+  <ImageCard item={item} customHeight={customHeight} callback={() => copyHandle()} />
+  );
+};
+
+
   return (
     <>
    <SafeAreaView style={styles.container}>
   <Header screen='DashboardScreen' />
 
   <FlatList
-    data={data}
+    data={event?.eventsList}
     renderItem={renderItem}
-    keyExtractor={item => item.id}
+    keyExtractor={item => item?._id}
     contentContainerStyle={styles.imagesSection}
     ListHeaderComponent={
       <>
@@ -111,7 +121,7 @@ const DashboardScreen = () => {
   />
 
     {
-        data.length == 0 &&
+        event?.eventsList?.length == 0 &&
         <View style={commonStyle.notAvailableText}>
           <Text>Recent view not available</Text>
         </View>
@@ -124,7 +134,8 @@ const DashboardScreen = () => {
   </Modal>
 </SafeAreaView>
     
-   {copy && <Toaster type={'success'} message={'Copied'} />}
+   {/* {copy && <Toaster type={'success'} message={'Copied'} />} */}
+   {event?.loading && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
     {/* <LoaderScreen show='nope' /> */}
    

@@ -11,6 +11,7 @@ import UploadPhotoScreen from './authentications/UploadPhotoScreen';
 import ImageListScreen from './homes/ImageListScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UpdateProfile from './homes/UpdateProfile';
+import LoaderScreen from './components/LoaderScreen';
 
 const BottomStack = createBottomTabNavigator();
 const { width } = Dimensions.get('window');
@@ -103,6 +104,7 @@ const DashboardNavigation = () => {
       <Stack.Screen name="MainTabs" component={TabNavigation} />
       <Stack.Screen name="ImageListScreen" component={ImageListScreen} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
+      <Stack.Screen name="LoaderScreen" component={LoaderScreen} />
     </Stack.Navigator>
   );
 };

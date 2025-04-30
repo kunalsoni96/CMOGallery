@@ -1,1 +1,1 @@
-export const baseUrl = "https://cmo-back-livee.onrender.com/";
+export const baseUrl = "http://147.93.106.153:5000/";
