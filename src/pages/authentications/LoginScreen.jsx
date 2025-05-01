@@ -11,13 +11,14 @@ import { isValidMobile, isStrongPassword } from '../../utils/Validation';
 import { loginUser } from '../../redux/actions/loginAction';
 import * as Keychain from 'react-native-keychain';
 import LoaderScreen from '../components/LoaderScreen';
+import Toaster from '../components/Toaster';
 const LoginScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const [mobile, setMobile] = useState('');
     const [password, setPassword] = useState('');
     const [isInvalid, setIsInvalid] = useState({mobile:false, password:false});
-
+    const [error, setError] = useState(false);
     const loader = useSelector(state=>state.login.loading)
     const submitHandle = async() => {
         try{
@@ -30,9 +31,22 @@ const LoginScreen = () => {
             return;
         }
         let result =  await dispatch(loginUser({mobile, password}))
-        if(result){
-            console.log('------kunal yes', result)
-            await Keychain.setGenericPassword(mobile, password);
+        console.log(result,'f')
+        if(result.error)
+        {   
+            setError(true)
+            setTimeout(() => {
+                setError(false)
+            }, 3000);
+        }
+        else
+        {
+            const dataToStore = {
+                user: result.payload,
+                auth_token: result.payload.userId,
+                signInWith: 'mobile',
+              };
+            await Keychain.setGenericPassword('user', JSON.stringify(dataToStore));
         }
         }
 
@@ -52,7 +66,7 @@ const LoginScreen = () => {
                 <Text style={styles.subTitle}>On Click Download</Text>
                 </View>
 
-                <GoogleSignIn />
+                <GoogleSignIn callback={() => setLoader(true)} />
 
                 <View style={commonStyle.dividerContainer}>
                     <View style={{...commonStyle.hr, width:"20%"}}></View>
@@ -69,6 +83,7 @@ const LoginScreen = () => {
                     placeholderTextColor="#888"
                     onChangeText={(text)=>{
                         setMobile(text)
+                        setError(false)
                         setIsInvalid({...isInvalid, mobile:false})
                     }}
                     style={[commonStyle.textInput, isInvalid && styles.inputError]} />
@@ -78,6 +93,7 @@ const LoginScreen = () => {
                     <TextInput
                     onChangeText={(text)=>{
                         setPassword(text)
+                        setError(false)
                         setIsInvalid({...isInvalid, password:false})
                     }}
                     value={password}
@@ -87,6 +103,7 @@ const LoginScreen = () => {
                     {isInvalid.password &&
                         <Text style={commonStyle.errorMessage}>Please enter valid password</Text>
                     }
+                    
                     <TouchableOpacity onPress={submitHandle} style={commonStyle.submitBtn}>
                             <Text style={styles.btnText}>Sign In</Text>
                     </TouchableOpacity>
@@ -104,10 +121,11 @@ const LoginScreen = () => {
                 </View>
                 </View>
 
-                <Footer/>
+         <Footer/>
             </View>
             
         {loader && <LoaderScreen show="nope" />}
+        {error && <Toaster /> }
         </SafeAreaView>
     )
 }

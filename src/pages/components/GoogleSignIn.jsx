@@ -5,11 +5,13 @@ import { GoogleImg } from '../assets';
 import { useNavigation } from '@react-navigation/native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as Keychain from 'react-native-keychain';
+import { useDispatch } from 'react-redux';
+import { googleLoggedIn } from '../../redux/reducers/loginReducer';
 const { height, width } = Dimensions.get('window');
 
 const GoogleSignIn = () => {
     const navigation = useNavigation()
-
+    const dispatch = useDispatch()
     useEffect(() => {
       if(Platform.OS == 'ios'){
         GoogleSignin.configure({
@@ -28,12 +30,17 @@ const GoogleSignIn = () => {
       }, []);
       const signInWithGoogle = async () => {
         try {
-         
           await GoogleSignin.hasPlayServices(); 
           const userInfo = await GoogleSignin.signIn();
-          console.log(userInfo,'testing')
           if(userInfo.type == "success"){
-            Keychain.setGenericPassword('auth_token', userInfo.data.idToken);
+            const dataToStore = {
+              user: userInfo?.data?.user,
+              auth_token: userInfo?.data?.idToken,
+              signInWith: 'google',
+            };
+            console.log(userInfo?.data?.user,'lslkfjksjdklfklsd')
+            await Keychain.setGenericPassword('user', JSON.stringify(dataToStore));
+            dispatch(googleLoggedIn(dataToStore)) 
           }
           else{
             console.error('something went wrong:', userInfo);

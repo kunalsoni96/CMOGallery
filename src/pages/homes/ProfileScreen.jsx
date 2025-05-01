@@ -17,12 +17,14 @@ import {
   EditImg,
   uploadImg,
   DownNavImg,
-  DownloadDarkImg
+  DownloadDarkImg,
+  LogoImg
 } from '../assets';
 import Header from '../components/Header';
 import ImageCard from '../components/ImageCard';
 import { useNavigation } from '@react-navigation/native';
 import commonStyle from '../components/Style';
+import { useSelector } from 'react-redux';
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,9 +38,12 @@ const data = [
 
 ];
 
+
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
+
+  const user = JSON.parse(useSelector(state=>state.login.user))
 
   const renderItem = ({ item }) => {
     return (
@@ -63,13 +68,21 @@ const ProfileScreen = () => {
             <View style={styles.profileSection}>
               <ImageBackground source={CGMapImg} style={styles.map}>
                 <View style={styles.profile}>
+                  {user?.signInWith == 'google' ?
                   <Image
                     style={styles.profileImg}
                     source={{
-                      uri: "https://grandnews.in/wp-content/uploads/2024/02/WhatsApp-Image-2024-02-29-at-6.48.35-PM-e1709213548759.jpeg",
+                      uri: user?.user.photo,
                     }}
                   />
-                  <Text style={styles.profileName}>विष्णुदेव साय</Text>
+                    :
+                  <Image
+                    style={styles.profileImg}
+                    source={LogoImg}
+                  />
+
+                }
+                  <Text style={styles.profileName}>{user?.user?.name}</Text>
                 </View>
 
                 <View style={styles.porfileBottomSection}>

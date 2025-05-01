@@ -11,6 +11,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch} from 'react-redux';
 import RNFS from 'react-native-fs';
 import { searchImage } from '../../redux/actions/EventAction';
+import LoaderScreen from '../components/LoaderScreen';
 const UploadPhotoScreen = () => {
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState('Select An Event');
@@ -21,6 +22,7 @@ const UploadPhotoScreen = () => {
   const [userImage, setUserImage] = useState('')
   const [errorMessage, setErrorMessage] = useState(false);
   const [base64, setBase64] = useState(null);
+  const [loader, setLoader] = useState(false);
   const options = ['Java', 'JavaScript'];
   const dispatch = useDispatch()
   const handleSelect = (value) => {
@@ -101,8 +103,10 @@ useEffect(()=>{
 
 
   const submitHandle = async() => {
+    setLoader(true)
     const data = await dispatch(searchImage(base64))
-    navigation.navigate('LoaderScreen',{screen:'UploadPhotoScreen', data:data})
+    setLoader(false)
+    navigation.navigate('ImageListScreen',{data:data, screen:'UploadPhotoScreen'})
   }
     return (
         <SafeAreaView style={styles.container}>
@@ -212,6 +216,8 @@ useEffect(()=>{
                     onChange={onChange}
                     />
                 )}
+
+                {loader && <LoaderScreen />}
         </SafeAreaView>
     )
 }

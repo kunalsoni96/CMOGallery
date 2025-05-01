@@ -1,92 +1,87 @@
-import { useEffect } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
-import Toast from "react-native-toast-message";
-import colors from "../../constants/color";
-import { CopyImg, CrossImg, SuccessImg } from "../assets";
+    import { useEffect } from "react";
+    import { StyleSheet, View, Text, Image } from "react-native";
+    import Toast from "react-native-toast-message";
+    import colors from "../../constants/color";
+    import { CopyImg, CrossImg, SuccessImg } from "../assets";
 
-const Toaster = ({type, message}) => {
+    const Toaster = ({type, message}) => {
 
-useEffect(()=>{
-Toast.show({
-    type: type,
-    text2: message,
-    position: 'bottom', // or 'bottom'
-    visibilityTime: 3000,
-    bottomOffset: 10,
-});
-},[])
+    useEffect(()=>{
+    Toast.show({
+        type: 'error',
+        text2: 'Mobile or Password are Invalid.',
+        position: 'bottom', // or 'bottom'
+        visibilityTime: 3000,
+        bottomOffset: 10,
+    });
+    },[])
 
 
-const toastConfig = {
-success: ({ text1, text2 }) => (
-    <View style={{...styles.errorToastContainer, backgroundColor:'#34A853', paddingVertical:15}}>
-    <Image source={SuccessImg} style={{width:25, height:25}} />
-    <Text style={styles.errorToastSubText}>{text2}</Text>
-    </View>
-),
-error: ({ text1, text2 }) => (
-    <View style={styles.errorToastContainer}>
-    <Image source={CrossImg} style={{width:25, height:25, marginTop:8, marginLeft:10}} />
-    <Text style={styles.errorToastSubText}>{text2}</Text>
-    </View>
-),
-
-info: ({ text1, text2 }) => (
-    <View style={styles.errorToastContainer}>
-        <Image source={CopyImg} style={{width:20, height:20, marginTop:8, marginLeft:10}} />
+    const toastConfig = {
+    success: ({ text1, text2 }) => (
+        <View style={{...styles.errorToastContainer, backgroundColor:'#34A853', paddingVertical:15}}>
+        <Image source={SuccessImg} style={{width:25, height:25}} />
         <Text style={styles.errorToastSubText}>{text2}</Text>
-    </View>
-),
-};
+        </View>
+    ),
+    error: () => (
+        <View style={{...styles.errorToastContainer}}>
+        <Image source={CrossImg} style={{width:25, height:25, marginTop:1, marginLeft:10,}} />
+        <Text style={styles.errorToastSubText}>Mobile or Password are Invalid.</Text>
+        </View>
+    ),
 
-    return (
-        <Toast config={toastConfig} />
-    )
-}
+    };
 
-const styles = StyleSheet.create({
-    toastContainer: {
-        backgroundColor: colors.primary,
-        borderRadius: 10,
-        padding:10,
-        width:"90%",
-        flexDirection:'row',
-        },
-        toastText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-        },
-        toastSubText: {
-        color: 'white',
-        fontSize: 14,
-        },
-        errorToastContainer: {
-        backgroundColor: 'red',
-        borderRadius: 10,
-        marginHorizontal: 10,
-        paddingHorizontal:20,
-        paddingVertical:10,
-        flexDirection:'row',
-        justifyContent:'center', 
-        },
-        errorToastText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold',
-        },
+        return (
+            <Toast config={toastConfig} />
+        )
+    }
 
-        errorToastSubText:{
-        color:'white',
-        fontSize:16,
-        paddingLeft:10
-        },
+    const styles = StyleSheet.create({
+        toastContainer: {
+            backgroundColor: colors.primary,
+            borderRadius: 10,
+            padding:10,
+            width:"90%",
+            flexDirection:'row',
+            },
+            toastText: {
+            color: 'white',
+            fontSize: 18,
+            fontWeight: 'bold',
+            },
+            toastSubText: {
+            color: 'white',
+            fontSize: 14,
+            },
+            errorToastContainer: {
+            backgroundColor: 'red',
+            borderRadius: 10,
+            marginHorizontal: 10,
+            paddingHorizontal:20,
+            paddingVertical:10,
+            flexDirection:'row',
+            justifyContent:'center', 
+            },
+            errorToastText: {
+            color: 'white',
+            fontSize: 18,
+            fontWeight: 'bold',
+            },
 
-        close:{
-        position:'absolute',
-        right:10,
-        alignSelf:'center'
-        }
-    })
+            errorToastSubText:{
+            color:'white',
+            fontSize:16,
+            paddingLeft:10,
+            marginTop:3
+            },
 
-export default Toaster;
+            close:{
+            position:'absolute',
+            right:10,
+            alignSelf:'center'
+            }
+        })
+
+    export default Toaster;

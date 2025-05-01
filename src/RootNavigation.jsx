@@ -2,35 +2,45 @@ import DashboardNavigation from './pages/DashboardNavigation';
 import AuthStackNavigation from './pages/AuthStackNavigation';
 import { useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import SplashScreen from './pages/authentications/SplashScreen';
+import { googleLoggedIn } from './redux/reducers/loginReducer';
+
 const RootNavigation = () => {
-  const [isAuth, setIsAuth] = useState(false)
-  const isloggedUser = useSelector(state=>state.login.isloggedIn)
- 
+  const dispatch = useDispatch()
+  const isloggedUser = useSelector(state => state.login.isloggedIn);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const checkLoginStatus = async () => {
     try {
       const credentials = await Keychain.getGenericPassword();
-      console.log(credentials, '-fffffff')
       if (credentials) {
-        setIsAuth(true)
+        console.log(credentials, 'credentialscredentialscredentials')
+        setIsAuthenticated(true);
+        dispatch(googleLoggedIn(credentials.password))
       } else {
-        setIsAuth(false)
+        setIsAuthenticated(false);
       }
     } catch (error) {
-      console.log('Error retrieving credentials', error);
-      setIsAuth(false);
+      console.log('Error', error);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false); 
     }
   };
 
-  useEffect(()=>{
-    checkLoginStatus()
-  },[isloggedUser])
+  useEffect(() => {
+    setTimeout(() => {
+      checkLoginStatus();
+    }, 1000); 
+  }, [isloggedUser]);
 
-  return (
-        <>
-           {isAuth ? <DashboardNavigation/>:<AuthStackNavigation/>}
-        </>
-  )
-}
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
-export default RootNavigation
+  return isAuthenticated ? <DashboardNavigation /> : <AuthStackNavigation />;
+};
+
+export default RootNavigation;

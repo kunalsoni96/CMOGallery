@@ -4,19 +4,24 @@ import * as Keychain from 'react-native-keychain';
 const loginSlice = createSlice({
     name:'login',
     initialState:{
-        user:null,
+        user:{},
         token:null,
         loading:false,
         error:null,
-        isloggedIn:false
+        isloggedIn:false,
+        signInWith:''
     },
     reducers:{
         googleLoggedIn:(state, action) => {
             state.token = action.payload.token;
-            state.isloggedIn = !state.isloggedIn
+            state.isloggedIn = true;
+            state.loading = true;
+            state.user = action.payload;
+            state.signInWith = 'google'
         },
         logoutUser:(state,action)=>{
-            state.isloggedIn = action.payload.logout
+            state.isloggedIn = false;
+            state.loading = false;
         },
         mobileLoggedIn:(state, action) => {
             state.isloggedIn = true
@@ -30,9 +35,9 @@ const loginSlice = createSlice({
         })
         .addCase(loginUser.fulfilled, (state, action) => {
             state.loading = false; 
-            state.user = action.payload.user;
-            state.token = action.payload.token;
+            state.user =  action.payload; 
             state.isloggedIn = true;
+            state.signInWith = 'mobile'
         })
         .addCase(loginUser.rejected, (state, action) => {
             state.loading = false;
@@ -43,4 +48,4 @@ const loginSlice = createSlice({
 
 
 export default loginSlice.reducer;
-export const {logoutUser}  = loginSlice.actions
+export const {logoutUser, googleLoggedIn}  = loginSlice.actions

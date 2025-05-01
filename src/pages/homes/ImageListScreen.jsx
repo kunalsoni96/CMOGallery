@@ -70,12 +70,13 @@ const ImageListScreen = (props) => {
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
-
+      {props?.route?.params?.title &&
       <View style={styles.titleSection}>
         <Text style={commonStyle.title}>
           {props?.route?.params?.title}
         </Text>
       </View>
+  }
 
       <View style={styles.imagesSection}>
         <FlatList
