@@ -17,7 +17,8 @@ import { DownloadFixImg, ShareFixImg } from '../assets';
 import commonStyle from '../components/Style';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPhotos } from '../../redux/actions/EventAction';
-
+import Share from 'react-native-share';
+import RNFS from 'react-native-fs';
 const { width, height } = Dimensions.get("window");
 
 // ✅ ImageCard component
@@ -66,7 +67,40 @@ const ImageListScreen = (props) => {
   else{
     data = event.eventPhotos
   }
-  console.log('-------', data)
+ 
+  async function downloadImageToLocal(url, index) {
+    const extension = url.split('.').pop().split(/\#|\?/)[0]; // get file extension
+    const localPath = `${RNFS.CachesDirectoryPath}/shared_image_${index}.${extension}`;
+  
+    const res = await RNFS.downloadFile({
+      fromUrl: url,
+      toFile: localPath,
+    }).promise;
+  
+    if (res.statusCode === 200) {
+      return Platform.OS === 'android' ? 'file://' + localPath : localPath;
+    } else {
+      throw new Error('Failed to download image');
+    }
+  }
+  
+const  shareImages = async(urls) => {
+    try {
+      const localImagePaths = await Promise.all(
+        urls.map((url, index) => downloadImageToLocal(url, index))
+      );
+  
+      const shareOptions = {
+        title: 'Share images',
+        urls: localImagePaths, // multiple local images
+      };
+  
+      await Share.open(shareOptions);
+    } catch (error) {
+      // console.error('Error sharing images:', error);
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
@@ -105,7 +139,7 @@ const ImageListScreen = (props) => {
       </Modal>
 
       <View style={styles.bottomSection}>
-        <TouchableOpacity style={styles.link}>
+        <TouchableOpacity onPress={() => shareImages(selectedImages)} style={styles.link}>
           <Image source={ShareFixImg} style={styles.icon} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
