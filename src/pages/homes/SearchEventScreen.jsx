@@ -32,7 +32,7 @@ const ListCard = ({item}) => {
               </View>
               <View style={styles.right}>
                 <Text style={commonStyle.title}>
-                  {item?.name}
+                {item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}
                 </Text>
 
                 <View style={{paddingVertical:15}}>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    width:'93%',
+    width:'91%',
     marginVertical:5
   },
   eventImg:{

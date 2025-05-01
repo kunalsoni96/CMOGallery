@@ -55,7 +55,7 @@ const ImageCard = ({ item, callback, customHeight }) => {
             </View>
           </ImageBackground>
           <View style={styles.imgBottomSection}>
-            <Text style={commonStyle.title}>CI Young Indians Conferences</Text>
+            <Text style={commonStyle.title}>{item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}</Text>
             <View style={commonStyle.linksSection}>
               <TouchableOpacity>
                 <Image source={DownloadImg} style={commonStyle.linkIMg} />

@@ -8,7 +8,7 @@ import { DateImg, DropDownImg, uploadImg } from '../assets';
 import Header from '../components/Header';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import RNFS from 'react-native-fs';
 import { searchImage } from '../../redux/actions/EventAction';
 import LoaderScreen from '../components/LoaderScreen';
@@ -23,7 +23,9 @@ const UploadPhotoScreen = () => {
   const [errorMessage, setErrorMessage] = useState(false);
   const [base64, setBase64] = useState(null);
   const [loader, setLoader] = useState(false);
-  const options = ['Java', 'JavaScript'];
+
+
+  const event_list = useSelector(state=>state.event.eventsList)
   const dispatch = useDispatch()
   const handleSelect = (value) => {
     setSelectedValue(value);
@@ -42,6 +44,8 @@ const UploadPhotoScreen = () => {
       }
      setDateShow(false); 
   };
+
+  console.log('--------event_listevent_list-',event_list)
 
 
 async function requestStoragePermission() {
@@ -160,14 +164,14 @@ useEffect(()=>{
                 >
                 <View style={styles.modalContent}>
                     <FlatList
-                    data={options}
-                    keyExtractor={(item) => item}
+                    data={event_list}
+                    keyExtractor={(item) => item._id}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                         style={{...styles.option}}
-                        onPress={() => handleSelect(item)}
+                        onPress={() => handleSelect(item._id)}
                         >
-                        <Text>{item}</Text>
+                        <Text>{item?.name}</Text>
                         </TouchableOpacity>
                     )}
                     />

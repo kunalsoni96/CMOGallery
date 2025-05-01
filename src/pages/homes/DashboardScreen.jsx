@@ -62,10 +62,10 @@ const MyCarousel = () => {
         ))}
       </View>
 
-      {/* Optional: Text for Current Page */}
-      <Text style={styles.paginationText}>
+  
+      {/* <Text style={styles.paginationText}>
         {currentIndex + 1} / {images.length}
-      </Text>
+      </Text> */}
     </View>
   );
 };
@@ -133,7 +133,6 @@ const DashboardScreen = () => {
     </TouchableOpacity>
   </Modal>
 </SafeAreaView>
-    
    {/* {copy && <Toaster type={'success'} message={'Copied'} />} */}
    {event?.loading && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
