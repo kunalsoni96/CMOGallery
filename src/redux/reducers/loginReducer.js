@@ -9,7 +9,8 @@ const loginSlice = createSlice({
         loading:false,
         error:null,
         isloggedIn:false,
-        signInWith:''
+        signInWith:'',
+        loginSuccess:false
     },
     reducers:{
         googleLoggedIn:(state, action) => {
@@ -17,7 +18,7 @@ const loginSlice = createSlice({
             state.isloggedIn = true;
             state.loading = true;
             state.user = action.payload;
-            state.signInWith = 'google'
+            state.signInWith = 'google';
         },
         logoutUser:(state,action)=>{
             state.isloggedIn = false;
@@ -25,6 +26,9 @@ const loginSlice = createSlice({
         },
         mobileLoggedIn:(state, action) => {
             state.isloggedIn = true
+        },
+        loggedInSuccess:(state, action) => {
+            state.loginSuccess = true
         }
     },
     extraReducers:(builder) => {
@@ -48,4 +52,4 @@ const loginSlice = createSlice({
 
 
 export default loginSlice.reducer;
-export const {logoutUser, googleLoggedIn}  = loginSlice.actions
+export const {logoutUser, googleLoggedIn, loggedInSuccess}  = loginSlice.actions

@@ -15,10 +15,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const { height, width } = Dimensions.get('window')
 export default function BottomSlideScreen(props) {
   const refRBSheet = useRef();
-  const [isChecked, setChecked] = useState(false);
+  const [isChecked, setChecked] = useState('');
   const isOpen = useSelector((state) => state.filter.isOpen);
   const [date, setDate] = useState(new Date());
-  const [visibleDate, setVisibleDate] = useState('DD/MM/YYYY');
   const dispatch = useDispatch();
   useEffect(() => {
     if (isOpen) {
@@ -48,9 +47,9 @@ export default function BottomSlideScreen(props) {
 
   const renderItem = ({item}) => {
     return (
-      <TouchableOpacity onPress={() => setChecked(!isChecked)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked && styles.checkedBox]}>
-            {isChecked && <Text style={styles.checkmark}>✓</Text>}
+      <TouchableOpacity onPress={() => setChecked(item)} style={styles.checkboxContainer}>
+          <View style={[styles.checkbox, isChecked == item && styles.checkedBox]}>
+            
           </View>
             <Text style={styles.label}>{item?.name}</Text>
         </TouchableOpacity>
@@ -89,8 +88,8 @@ export default function BottomSlideScreen(props) {
               <Text style={styles.eventText}>Districts</Text>
             </View>
             <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.clearAll}>
-                <Text>Clear All</Text>
+              <TouchableOpacity onPress={()=>setChecked('')} style={styles.clearAll}>
+                <Text>Clear</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -107,11 +106,14 @@ export default function BottomSlideScreen(props) {
           </View>
 
           <View style={{...styles.header, ...styles.date}}>
-            <View style={styles.headerLeft}>
-              <Text style={styles.eventText}>Date</Text>
-            </View>
+          <TouchableOpacity
+                  // onPress={()=>submitHandle()}
+                  disabled={isChecked==""}
+                  style={[commonStyle.submitBtn, {backgroundColor: isChecked=="" ? colors.border : colors.primary}]}>
+                <Text style={[styles.btnText, {color: isChecked=="" ? 'gray' : colors.secondary}]}>Proceed</Text>
+                </TouchableOpacity>
           </View>
-          {Platform.OS == 'android' ?
+          {/* {Platform.OS == 'android' ?
             <View style={styles.dateSection}>
               <TouchableOpacity style={{...commonStyle.textInput, alignItems:'flex-start'}}>
                 <Text>DD / MM / YYYY</Text>
@@ -142,7 +144,7 @@ export default function BottomSlideScreen(props) {
             </View>
               
           </View>
-          }
+          } */}
           </View>
         </View>
 
@@ -168,7 +170,8 @@ const styles = StyleSheet.create({
   header:{
     flexDirection:'row',
     justifyContent:'space-between',
-    marginBottom:10
+    marginBottom:10,
+    justifyContent:'center'
   },
   headerLeft:{
     width:'50%',
@@ -190,15 +193,15 @@ const styles = StyleSheet.create({
     marginHorizontal:5
   },
   checkbox: {
-    width: 17,
-    height: 17,
-    borderWidth: 1,
-    borderColor: '#00000',
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: colors.primary,
     marginRight: 10,
-    borderRadius:5
+    borderRadius:15
   },
   checkedBox: {
-   
+   backgroundColor:colors.secondary
   },
   checkmark: {
     color: '#00000',

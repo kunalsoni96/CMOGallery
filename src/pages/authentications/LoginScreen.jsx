@@ -12,6 +12,7 @@ import { loginUser } from '../../redux/actions/loginAction';
 import * as Keychain from 'react-native-keychain';
 import LoaderScreen from '../components/LoaderScreen';
 import Toaster from '../components/Toaster';
+import { loggedInSuccess } from '../../redux/reducers/loginReducer';
 const LoginScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -31,7 +32,7 @@ const LoginScreen = () => {
             return;
         }
         let result =  await dispatch(loginUser({mobile, password}))
-        console.log(result,'f')
+        
         if(result.error)
         {   
             setError(true)
@@ -46,7 +47,9 @@ const LoginScreen = () => {
                 auth_token: result.payload.userId,
                 signInWith: 'mobile',
               };
+            
             await Keychain.setGenericPassword('user', JSON.stringify(dataToStore));
+            dispatch(loggedInSuccess())
         }
         }
 
@@ -125,7 +128,7 @@ const LoginScreen = () => {
             </View>
             
         {loader && <LoaderScreen show="nope" />}
-        {error && <Toaster /> }
+        {error && <Toaster type='error' message='Mobile or Password is Invalid' /> }
         </SafeAreaView>
     )
 }

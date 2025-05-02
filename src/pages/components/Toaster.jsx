@@ -8,8 +8,8 @@
 
     useEffect(()=>{
     Toast.show({
-        type: 'error',
-        text2: 'Mobile or Password are Invalid.',
+        type: type,
+        text2: message,
         position: 'bottom', // or 'bottom'
         visibilityTime: 3000,
         bottomOffset: 10,
@@ -74,7 +74,7 @@
             color:'white',
             fontSize:16,
             paddingLeft:10,
-            marginTop:3
+            marginTop:2
             },
 
             close:{

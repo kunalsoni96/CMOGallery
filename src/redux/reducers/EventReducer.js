@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getDistricts, getEvents, getPhotos, searchImage } from "../actions/EventAction";
+import { getDistricts, getEvents, getPhotos, searchEvent, searchEventByDistrict, searchImage } from "../actions/EventAction";
 
 const eventSlice = createSlice({
     name:"event",
@@ -74,6 +74,40 @@ const eventSlice = createSlice({
             state.error = null;
         })
         .addCase(searchImage.rejected, (state, action)=> {
+            state.loading = false;
+            state.error = action.payload || 'Fetched Error';
+        })
+
+
+        //search events
+        builder
+        .addCase(searchEvent.pending, (state)=> {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(searchEvent.fulfilled, (state, action)=> {
+            state.loading = false;
+            state.eventsList = action.payload
+            state.error = null;
+        })
+        .addCase(searchEvent.rejected, (state, action)=> {
+            state.loading = false;
+            state.error = action.payload || 'Fetched Error';
+        })
+
+
+        //search events by district
+        builder
+        .addCase(searchEventByDistrict.pending, (state)=> {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(searchEventByDistrict.fulfilled, (state, action)=> {
+            state.loading = false;
+            state.eventsList = action.payload
+            state.error = null;
+        })
+        .addCase(searchEventByDistrict.rejected, (state, action)=> {
             state.loading = false;
             state.error = action.payload || 'Fetched Error';
         })

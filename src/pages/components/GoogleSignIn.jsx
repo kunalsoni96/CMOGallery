@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as Keychain from 'react-native-keychain';
 import { useDispatch } from 'react-redux';
-import { googleLoggedIn } from '../../redux/reducers/loginReducer';
+import { googleLoggedIn, loggedInSuccess } from '../../redux/reducers/loginReducer';
 const { height, width } = Dimensions.get('window');
 
 const GoogleSignIn = () => {
@@ -38,9 +38,9 @@ const GoogleSignIn = () => {
               auth_token: userInfo?.data?.idToken,
               signInWith: 'google',
             };
-            console.log(userInfo?.data?.user,'lslkfjksjdklfklsd')
             await Keychain.setGenericPassword('user', JSON.stringify(dataToStore));
             dispatch(googleLoggedIn(dataToStore)) 
+            dispatch(loggedInSuccess())
           }
           else{
             console.error('something went wrong:', userInfo);

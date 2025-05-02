@@ -82,6 +82,7 @@ const DashboardScreen = () => {
   },[])
 
   const event = useSelector(state=>state.event)
+  const loginSuccess = useSelector(state=>state.login.loginSuccess)
   const copyHandle = () => {
     setCopy(true)
     setTimeout(() => {
@@ -134,7 +135,7 @@ const DashboardScreen = () => {
   </Modal>
 </SafeAreaView>
    {/* {copy && <Toaster type={'success'} message={'Copied'} />} */}
-   {event?.loading && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
+   {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
     {/* <LoaderScreen show='nope' /> */}
    

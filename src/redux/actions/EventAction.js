@@ -61,13 +61,41 @@ export const searchImage = createAsyncThunk(
             const response = await axios.post(`${baseUrl}search-by-upload`,{
                 image:image,
             })
-
-            console.log(response.data)
             return response.data
         }
         catch(error){
-            console.log(error.response)
             return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
         }
     }
+)
+
+export const searchEvent = createAsyncThunk(
+    'eventSearch', 
+    async (search, thunkAPI) => {
+        try{
+            const response = await axios.post(`${baseUrl}search-results?q=${search}&_rsc=c5fq1`,{
+                image:image,
+            })
+            return response.data
+        }
+        catch(error){
+            return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
+        }
+    }
+)
+
+export const searchEventByDistrict = createAsyncThunk(
+    'searchEventByDistrict',
+    async (district, thunkAPI) => {
+        try{
+        const response = await axios.post(`${baseUrl}albums-by-district?name=${district}&page=1&limit=16`,{
+            image:image,
+        })
+        return response.data
+        }
+        catch(error){
+            return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
+        }
+    }
+    
 )
