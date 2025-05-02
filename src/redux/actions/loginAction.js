@@ -17,3 +17,21 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+export const googleLoggedIn = createAsyncThunk(
+  'googleLoggedIn',
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.post(`${baseUrl}google-login`, {
+        name:data?.user.name,
+        email:data?.user.email,
+        photo:data?.user.photo,
+      });
+
+      console.log(response, 'last check')
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
+    }
+  }
+);

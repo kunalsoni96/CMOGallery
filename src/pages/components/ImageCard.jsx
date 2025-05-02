@@ -5,12 +5,11 @@ import commonStyle from './Style';
 import { DownloadImg, LinkImg, ShareImg } from '../assets';
 import Clipboard from '@react-native-clipboard/clipboard';
 const { width } = Dimensions.get('window')
-const ImageCard = ({ item, callback, customHeight }) => {
+const ImageCard = ({ item,  customHeight }) => {
     const navigation = useNavigation();
 
     const copyToClipboard = (uri) => {
         Clipboard.setString(uri);
-        callback(true)
       };
 
     const onShare = async (uri) => {
@@ -78,7 +77,7 @@ const styles = StyleSheet.create({
     imageCard:{
     marginHorizontal:'1%', 
     marginVertical:10, 
-    width: width/2.2,
+    width: width/2.1,
     },
     
     eventDateSection:{

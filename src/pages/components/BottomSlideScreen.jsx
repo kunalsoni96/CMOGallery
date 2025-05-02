@@ -10,6 +10,7 @@ import {closeFilter} from '../../redux/reducers/filterReducer';
 import colors from '../../constants/color';
 import commonStyle from './Style';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { searchEventByDistrict } from '../../redux/actions/EventAction';
 
 
 const { height, width } = Dimensions.get('window')
@@ -31,24 +32,31 @@ export default function BottomSlideScreen(props) {
     dispatch(closeFilter())
   }
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
-    const year = currentDate.getFullYear();
-    const updatedDate = `${day}/${month}/${year}`;
-    if (event.type === "set") { // user selected something
-        const currentDate = selectedDate || date;
-        setDate(currentDate);
-        setVisibleDate(updatedDate)
-      }
-    //  setDateShow(false); 
-  };
+  // const onChange = (event, selectedDate) => {
+  //   const currentDate = selectedDate || date;
+  //   const day = String(currentDate.getDate()).padStart(2, '0');
+  //   const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
+  //   const year = currentDate.getFullYear();
+  //   const updatedDate = `${day}/${month}/${year}`;
+  //   if (event.type === "set") { // user selected something
+  //       const currentDate = selectedDate || date;
+  //       setDate(currentDate);
+  //       setVisibleDate(updatedDate)
+  //     }
+  //   //  setDateShow(false); 
+  // };
+
+  const submitHandle = async() => {
+  dispatch(closeFilter())
+   setTimeout(async() => {
+    await dispatch(searchEventByDistrict(isChecked))
+   }, 0);
+  }
 
   const renderItem = ({item}) => {
     return (
-      <TouchableOpacity onPress={() => setChecked(item)} style={styles.checkboxContainer}>
-          <View style={[styles.checkbox, isChecked == item && styles.checkedBox]}>
+      <TouchableOpacity onPress={() => setChecked(item.name)} style={styles.checkboxContainer}>
+          <View style={[styles.checkbox, isChecked == item.name && styles.checkedBox]}>
             
           </View>
             <Text style={styles.label}>{item?.name}</Text>
@@ -107,7 +115,7 @@ export default function BottomSlideScreen(props) {
 
           <View style={{...styles.header, ...styles.date}}>
           <TouchableOpacity
-                  // onPress={()=>submitHandle()}
+                  onPress={()=>submitHandle()}
                   disabled={isChecked==""}
                   style={[commonStyle.submitBtn, {backgroundColor: isChecked=="" ? colors.border : colors.primary}]}>
                 <Text style={[styles.btnText, {color: isChecked=="" ? 'gray' : colors.secondary}]}>Proceed</Text>

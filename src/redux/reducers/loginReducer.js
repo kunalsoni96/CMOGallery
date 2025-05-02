@@ -1,6 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { loginUser } from '../actions/loginAction';
-import * as Keychain from 'react-native-keychain';
+import { googleLoggedIn, loginUser } from '../actions/loginAction';
 const loginSlice = createSlice({
     name:'login',
     initialState:{
@@ -13,13 +12,13 @@ const loginSlice = createSlice({
         loginSuccess:false
     },
     reducers:{
-        googleLoggedIn:(state, action) => {
-            state.token = action.payload.token;
-            state.isloggedIn = true;
-            state.loading = true;
-            state.user = action.payload;
-            state.signInWith = 'google';
-        },
+        // googleLoggedIn:(state, action) => {
+        //     state.token = action.payload.token;
+        //     state.isloggedIn = true;
+        //     state.loading = true;
+        //     state.user = action.payload;
+        //     state.signInWith = 'google';
+        // },
         logoutUser:(state,action)=>{
             state.isloggedIn = false;
             state.loading = false;
@@ -47,9 +46,29 @@ const loginSlice = createSlice({
             state.loading = false;
             state.error = action.payload || 'Login failed';
         });
+
+        //google login
+        builder
+        .addCase(googleLoggedIn.pending, (state)=>{
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(googleLoggedIn.fulfilled, (state, action) => {
+            state.token = action.payload.token;
+            state.isloggedIn = true;
+            state.loading = true;
+            state.user = action.payload;
+            state.signInWith = 'google';
+        })
+        .addCase(googleLoggedIn.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || 'Login failed';
+        });
+
+        
     }
 })
 
 
 export default loginSlice.reducer;
-export const {logoutUser, googleLoggedIn, loggedInSuccess}  = loginSlice.actions
+export const {logoutUser, loggedInSuccess}  = loginSlice.actions

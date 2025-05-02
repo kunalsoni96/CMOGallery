@@ -11,7 +11,9 @@ import commonStyle from '../components/Style';
 import ImageCard from '../components/ImageCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDistricts, getEvents } from '../../redux/actions/EventAction';
-import { Banner1Img, Banner2Img, Banner3Img } from '../assets';
+import { Banner1Img, Banner2Img, Banner3Img, FilterImg } from '../assets';
+import LoaderScreen from '../components/LoaderScreen';
+import { openFilter } from '../../redux/reducers/filterReducer';
 
 const { width, height } = Dimensions.get("window");
 
@@ -73,8 +75,7 @@ const MyCarousel = () => {
 
 const DashboardScreen = () => {
   const [image, setImage] = useState(null);
-  const [copy, setCopy] = useState(false)
-  
+  // const [copy, setCopy] = useState(false)
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getEvents({}))
@@ -83,25 +84,30 @@ const DashboardScreen = () => {
 
   const event = useSelector(state=>state.event)
   const loginSuccess = useSelector(state=>state.login.loginSuccess)
-  const copyHandle = () => {
-    setCopy(true)
-    setTimeout(() => {
-      setCopy(false)
-    }, 3000);
-  }
+  const loader = useSelector(state=>state.event.loading)
+  // const copyHandle = () => {
+  //   setCopy(true)
+  //   setTimeout(() => {
+  //     setCopy(false)
+  //   }, 3000);
+  // }
   const renderItem = ({item, index}) => {
   const customHeight = index % 2 === 0 ? 200 : 250;
   return (
-  <ImageCard item={item} customHeight={customHeight} callback={() => copyHandle()} />
+  <ImageCard item={item} customHeight={customHeight} />
   );
 };
+
+const filterHandle = () => {
+  dispatch(openFilter())
+}
 
 
   return (
     <>
    <SafeAreaView style={styles.container}>
   <Header screen='DashboardScreen' />
-
+  <View style={{flex:1, justifyContent:'space-between'}}>
   <FlatList
     data={event?.eventsList}
     renderItem={renderItem}
@@ -113,18 +119,26 @@ const DashboardScreen = () => {
           <MyCarousel />
         </View>
         <View style={styles.heading}>
-          <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold' }}>
-            Recent View
+          <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold', width:'50%' }}>
+            Recent Events
           </Text>
+          <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
+          <View style={{flexDirection:"row"}}>
+          <TouchableOpacity onPress={filterHandle}>
+            <Image source={FilterImg} style={styles.notificationImg} />
+          </TouchableOpacity>
+          </View>
+        </View>
         </View>
       </>
     }
   />
+  </View>
 
     {
         event?.eventsList?.length == 0 &&
         <View style={commonStyle.notAvailableText}>
-          <Text>Recent view not available</Text>
+          <Text>Event not available</Text>
         </View>
       }
 
@@ -137,7 +151,7 @@ const DashboardScreen = () => {
    {/* {copy && <Toaster type={'success'} message={'Copied'} />} */}
    {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
-    {/* <LoaderScreen show='nope' /> */}
+   {loader && <LoaderScreen />}
    
     </>
   );
@@ -153,7 +167,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // paddingHorizontal: '2%',
     flexWrap:'wrap',
-    justifyContent:'space-around',
+    justifyContent:'space-between',
   },
   modalContainer: {
     flex: 1,
@@ -205,12 +219,22 @@ const styles = StyleSheet.create({
   },
   sliderContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
+
   },
   heading:{
     paddingHorizontal:25,
-    paddingTop:20  
+    paddingTop:20,
+    flexDirection:'row'
+    },
+  notificationImg:{
+    width:25,
+    height:25,
+    marginLeft:10,
+    position:'absolute',
+    right:0,
+    top:-8
     },
 
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Image,
   Modal,
@@ -24,7 +24,8 @@ import Header from '../components/Header';
 import ImageCard from '../components/ImageCard';
 import { useNavigation } from '@react-navigation/native';
 import commonStyle from '../components/Style';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUserDownload } from '../../redux/actions/EventAction';
 
 const { width, height } = Dimensions.get("window");
 
@@ -42,9 +43,11 @@ const data = [
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
-
-  const user = JSON.parse(useSelector(state=>state.login.user))
-
+  const dispatch = useDispatch()
+  const user = useSelector(state=>state.login.user)
+  useEffect(()=>{
+    // dispatch(getUserDownload())
+  },[])
   const renderItem = ({ item }) => {
     return (
       <View>

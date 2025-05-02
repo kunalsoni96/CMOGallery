@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
 import { useDispatch, useSelector } from 'react-redux';
 import SplashScreen from './pages/authentications/SplashScreen';
-import { googleLoggedIn } from './redux/reducers/loginReducer';
+import { googleLoggedIn } from './redux/actions/loginAction';
 
 const RootNavigation = () => {
   const dispatch = useDispatch()

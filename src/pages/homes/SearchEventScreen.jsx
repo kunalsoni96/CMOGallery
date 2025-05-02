@@ -10,7 +10,7 @@ import { ViewMoreImg } from '../assets';
 const { width, height } = Dimensions.get("window");
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { getEvents } from '../../redux/actions/EventAction';
+import { getEvents, searchEvent } from '../../redux/actions/EventAction';
 
 
 const ListCard = ({item}) => {
@@ -51,23 +51,13 @@ const ListCard = ({item}) => {
 
 
 const SearchEventScreen = () => {
-  
-  const data = [
-    { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
-    { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
-    { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
-    { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
-    { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
-    { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
-  ];
-
+  const [text, setText] = useState('')
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getEvents({}))
   },[])
 
   const event = useSelector(state=>state.event)
-  
 
   const renderItem = ({item, index}) => {
     return (
@@ -75,12 +65,23 @@ const SearchEventScreen = () => {
     );
   };
 
+  const searchEventHandle = () => {
+    dispatch(searchEvent(text))
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header screen='Search' />
         <View style={commonStyle.section}>
         <View style={{width:'100%', alignItems:'center', paddingBottom:10}}>
-          <TextInput placeholder='Search' placeholderTextColor="black" style={commonStyle.textInput} />
+          <TextInput 
+          value={text}
+          onChangeText={(text)=>setText(text)}
+          placeholder='Search' 
+          placeholderTextColor="black" style={commonStyle.textInput} />
+          <TouchableOpacity onPress={() => searchEventHandle()} style={{position:'absolute', right:'5%', top:-5, padding:20}}>
+            <Text style={{fontWeight:'bold'}}>Go</Text>
+          </TouchableOpacity>
         </View>
         <FlatList
         data={event?.eventsList}

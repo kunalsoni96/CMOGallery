@@ -73,9 +73,8 @@ export const searchEvent = createAsyncThunk(
     'eventSearch', 
     async (search, thunkAPI) => {
         try{
-            const response = await axios.post(`${baseUrl}search-results?q=${search}&_rsc=c5fq1`,{
-                image:image,
-            })
+            const response = await axios.get(`${baseUrl}search-results?q=${search}&_rsc=c5fq1`)
+            console.log('-------------event search', response)
             return response.data
         }
         catch(error){
@@ -88,10 +87,8 @@ export const searchEventByDistrict = createAsyncThunk(
     'searchEventByDistrict',
     async (district, thunkAPI) => {
         try{
-        const response = await axios.post(`${baseUrl}albums-by-district?name=${district}&page=1&limit=16`,{
-            image:image,
-        })
-        return response.data
+        const response = await axios.get(`${baseUrl}albums-by-district?name=${district}&page=1&limit=16`)
+        return response.data.albums
         }
         catch(error){
             return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
@@ -99,3 +96,17 @@ export const searchEventByDistrict = createAsyncThunk(
     }
     
 )
+
+export const getUserDownload = createAsyncThunk('getUserDownload', 
+async(userId, thunkAPI)=> {
+    try{
+        const response = await axios.post(`${baseUrl}get-user-download-count`,{
+            userId
+        })
+        console.log(response,'get download list')
+        return response.data
+    }
+    catch(error){
+        return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
+    }
+})

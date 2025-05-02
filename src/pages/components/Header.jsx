@@ -6,12 +6,11 @@ import colors from '../../constants/color';
 import { openFilter } from '../../redux/reducers/filterReducer';
 import * as Keychain from 'react-native-keychain';
 import { logoutUser } from '../../redux/reducers/loginReducer';
+import { getDistricts, getEvents } from '../../redux/actions/EventAction';
 const Header = (props) => {
     const navigation = useNavigation();
     const dispatch = useDispatch()
-    const filterHandle = () => {
-      dispatch(openFilter())
-    }
+    
 
     const handleLogout = async () => {
       try {
@@ -22,11 +21,16 @@ const Header = (props) => {
       }
     };
 
+    const getEventHandle = ()  => {
+      dispatch(getEvents({}))
+      dispatch(getDistricts({}))
+    }
+
     return (
     <View style={[styles.header, { backgroundColor: props.screen === 'Profile' ? colors.primary : 'white' }]}>
       <View style={{...styles.headerColumn, flexDirection:"row", width:"100%"}}>
       {props.screen=='DashboardScreen' ?
-        <TouchableOpacity  style={{flexDirection:"row",  width:"50%"}}>
+        <TouchableOpacity onPress={() => getEventHandle()} style={{flexDirection:"row",  width:"50%"}}>
           <Image source={LogoImg} style={styles.logo} />
           <Text style={styles.dashboardText}> Dashboard</Text>
         </TouchableOpacity>
@@ -38,21 +42,23 @@ const Header = (props) => {
           <Text  style={[styles.searchText, { color: props.screen === 'Profile' ? 'white' : colors.primary }]}>{props.screen}</Text>
         </View>
       }
-        {props.screen=='DashboardScreen' &&
+        {/* {props.screen=='DashboardScreen' &&
         <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
           <View style={{flexDirection:"row"}}>
           <TouchableOpacity onPress={filterHandle}>
             <Image source={FilterImg} style={styles.notificationImg} />
           </TouchableOpacity>
-          {/* <Image source={NotImg} style={styles.notificationImg} /> */}
+          <Image source={NotImg} style={styles.notificationImg} />
           </View>
         </View>
-        }
+        } */}
 
       {props.screen=='Profile' &&
         <View style={styles.rightSection}>
-          <TouchableOpacity onPress={handleLogout}>
+          <TouchableOpacity style={{flexDirection:'row'}} onPress={handleLogout}>
+          <Text style={{color:'white', fontWeight:'bold'}}> Logout </Text>
             <Image source={LogoutImg} style={styles.EditImg} />
+            
           </TouchableOpacity>
         </View>
         }
