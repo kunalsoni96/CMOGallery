@@ -76,7 +76,6 @@ export const searchEvent = createAsyncThunk(
             const response = await axios.post(`${baseUrl}master-search`,{
                 query: search
             })
-            console.log('-------------event search', response)
             return response.data
         }
         catch(error){
@@ -107,6 +106,21 @@ async(userId, thunkAPI)=> {
         })
         console.log(response,'get download list')
         return response.data
+    }
+    catch(error){
+        return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
+    }
+})
+
+
+export const getUserDownloadHistory = createAsyncThunk('getUserDownloadHistory', 
+async(userId, thunkAPI)=> {
+    try{
+        const response = await axios.post(`${baseUrl}get-download-history`,{
+            userId
+        })
+        console.log('-------res',response)
+        return response?.data?.history
     }
     catch(error){
         return thunkAPI.rejectWithValue(error.response || 'Fetched failed');

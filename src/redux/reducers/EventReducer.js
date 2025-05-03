@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getDistricts, getEvents, getPhotos, getUserDownload, searchEvent, searchEventByDistrict, searchImage } from "../actions/EventAction";
+import { getDistricts, getEvents, getPhotos, getUserDownload, getUserDownloadHistory, searchEvent, searchEventByDistrict, searchImage } from "../actions/EventAction";
 
 const eventSlice = createSlice({
     name:"event",
@@ -10,7 +10,8 @@ const eventSlice = createSlice({
         eventPhotos:[],
         districts:[],
         searchImages:[],
-        userDownloads:{}
+        userDownloads:{},
+        userDownloadHistory:[]
     },
     extraReducers:(builder)=>{
         //get events
@@ -126,6 +127,23 @@ const eventSlice = createSlice({
             state.error = null;
         })
         .addCase(getUserDownload.rejected, (state, action)=> {
+            state.loading = false;
+            state.error = action.payload || 'Fetched Error';
+        })
+
+
+        //get user downloads history
+        builder
+        .addCase(getUserDownloadHistory.pending, (state)=> {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(getUserDownloadHistory.fulfilled, (state, action)=> {
+            state.loading = false;
+            state.userDownloadHistory = action.payload
+            state.error = null;
+        })
+        .addCase(getUserDownloadHistory.rejected, (state, action)=> {
             state.loading = false;
             state.error = action.payload || 'Fetched Error';
         })

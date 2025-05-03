@@ -21,6 +21,7 @@ const LoginScreen = () => {
     const [isInvalid, setIsInvalid] = useState({mobile:false, password:false});
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [secureTextEntry, setSecureTextEntry] = useState(true)
     const loader = useSelector(state=>state.login.loading)
     const submitHandle = async() => {
         try{
@@ -90,6 +91,7 @@ const LoginScreen = () => {
                 </View>
 
                 <View style={commonStyle.section}>
+                <View style={{width:'100%', alignItems:'center'}}>
                     <TextInput 
                     value={mobile} 
                     keyboardType="numeric"
@@ -105,19 +107,32 @@ const LoginScreen = () => {
                     {isInvalid.mobile &&
                     <Text style={commonStyle.errorMessage}>Please enter 10 digit valid mobile</Text>
                     }
+                    </View>
+                    <View  style={{width:'100%', alignItems:'center'}}>
                     <TextInput
                     onChangeText={(text)=>{
                         setPassword(text)
                         setError(false)
                         setIsInvalid({...isInvalid, password:false})
                     }}
-                    value={password}
+                     value={password}
+                     secureTextEntry={secureTextEntry}
                      placeholder='Password' 
                      placeholderTextColor="#888"
                      style={{...commonStyle.textInput, marginTop:10}} />
+                     <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)} style={styles.passwordSeeBtn}>
+                        <Text style={{color:colors.primary, fontWeight:'bold'}}>
+                            {secureTextEntry ?
+                            'Show'
+                            :
+                            'Hide'
+                            }
+                            </Text>
+                     </TouchableOpacity>
                     {isInvalid.password &&
                         <Text style={commonStyle.errorMessage}>Please enter valid password</Text>
                     }
+                    </View>
                     
                     <TouchableOpacity onPress={submitHandle} style={commonStyle.submitBtn}>
                             <Text style={styles.btnText}>Sign In</Text>
@@ -172,6 +187,11 @@ const styles = StyleSheet.create({
     registerPrompt:{
         flexDirection:"row",
     },
+    passwordSeeBtn:{
+        position:'absolute',
+        right:25,
+        top:25
+    }
 })
 
 export default LoginScreen

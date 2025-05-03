@@ -1,4 +1,4 @@
-import {use, useState} from 'react';
+import {use, useEffect, useState} from 'react';
 import {Text, View, StyleSheet, 
     TouchableOpacity, TextInput} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
@@ -6,15 +6,32 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
 import commonStyle from '../components/Style';
 import Header from '../components/Header';
+import { useSelector } from 'react-redux';
 const UpdateProfile = () => {
   const navigation = useNavigation();
   const [isInvalid, setIsInvalid] = useState({mobile:false, password:false})
+  const [mobile, setMobile] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const submitHandle = () => {
     if(!isValidMobile(mobile)){
         setIsInvalid({...isInvalid, mobile:true})
         return;
     }
 }
+
+const user = useSelector(state=>state.login.user)
+
+useEffect(() => {
+    if(user.email){
+        setEmail(user.email)
+    }
+    if(user.mobile){
+        setMobile(user.mobile)
+    }
+    setName(user.name)
+},[])
     return (
         <SafeAreaView style={styles.container}>
             <Header screen='Update Profile' />
@@ -26,6 +43,7 @@ const UpdateProfile = () => {
                     <View style={styles.inputSection}>
                     <TextInput placeholder='Full Name'
                      placeholderTextColor="#888"
+                     value={name}
                      style={commonStyle.textInput} />
                      {isInvalid.name &&
                         <Text style={commonStyle.errorMessage}>Please enter your name</Text>
@@ -34,8 +52,10 @@ const UpdateProfile = () => {
 
                     <View style={styles.inputSection}>
                     <TextInput placeholder='Enter Mobile No.'
+                     editable={false}
                      placeholderTextColor="#888"
                      keyboardType="numeric"
+                     value={mobile}
                      contextMenuHidden={true} maxLength={10} 
                      style={commonStyle.textInput} />
                      {isInvalid.mobile &&
@@ -46,6 +66,8 @@ const UpdateProfile = () => {
                     <View style={styles.inputSection}>
                     <TextInput placeholder='Enter Email'
                      placeholderTextColor="#888"
+                     value={email}
+                     editable={false}
                      style={commonStyle.textInput} />
                      {isInvalid.email &&
                         <Text style={commonStyle.errorMessage}>Please enter valid email</Text>
@@ -59,7 +81,7 @@ const UpdateProfile = () => {
                      style={commonStyle.textInput} />
 
                     </View>
-                    <TouchableOpacity onPress={submitHandle} style={commonStyle.submitBtn}>
+                    <TouchableOpacity style={commonStyle.submitBtn}>
                             <Text style={styles.btnText}>Proceed</Text>
                     </TouchableOpacity>
                 </View>

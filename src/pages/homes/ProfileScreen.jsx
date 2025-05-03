@@ -50,7 +50,9 @@ const ProfileScreen = () => {
   const userEventData = useSelector(state=>state.event.userDownloads)
 
   useEffect(()=>{
+    if(user.userId){
     dispatch(getUserDownload(user.userId))
+    }
   },[])
   const renderItem = ({ item }) => {
     return (

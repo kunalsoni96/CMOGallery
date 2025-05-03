@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, 
   Dimensions, Text, View, 
   SafeAreaView, TextInput, FlatList,
@@ -7,34 +7,31 @@ import colors from '../../constants/color';
 import Header from '../components/Header';
 import commonStyle from '../components/Style';
 import { DownloadImg } from '../assets';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserDownloadHistory } from '../../redux/actions/EventAction';
 const { width, height } = Dimensions.get("window");
 
 const MyDashboardScreen = () => {
-  const data = [
-    { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
-    { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
-    { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
-    { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
-    { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
-    { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
-  ];
+  const dispatch = useDispatch()
+  const user = useSelector(state=>state.login.user)
+  const loader = useSelector(state=>state.login.loading)
+  const userDownloadHistory = useSelector(state=>state.event.userDownloadHistory)
 
-  const [image, setImage] = useState(null);
+  useEffect(()=>{
+    dispatch(getUserDownloadHistory(user.userId))
+  },[])
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Header screen='My Downloads' />
-        <ScrollView>
-        <View style={commonStyle.section}>
-            {/* <View style={styles.card}>
+  const renderItem = ({item}) => {
+    return (
+      <View style={styles.card}>
                 <View style={styles.left}>
                     <ImageBackground 
                     imageStyle={{ borderRadius: 15 }} 
                     style={styles.eventImg}
-                    source={{uri:'https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg'}} >
+                    source={{uri:item?.image}} >
                       <View style={{...commonStyle.directoryContent}}>
                         <View>
-                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                        <Text style={{...commonStyle.imageCountText, fontSize:14}}>{item.photoCount}</Text>
                         <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
                         </View>
                       </View>
@@ -42,11 +39,11 @@ const MyDashboardScreen = () => {
                 </View>
                 <View style={styles.right}>
                   <Text style={commonStyle.title}>
-                    CII Young Indians Conf..
+                  {item?.title?.length > 15 ? item?.title?.substring(0, 15) + '...' : item?.title}
                   </Text>
 
                   <View style={{paddingVertical:10}}>
-                    <Text style={styles.date}>02 Nov 2024</Text>
+                    <Text style={styles.date}>{item?.date}</Text>
                   </View>
 
                   <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
@@ -54,10 +51,20 @@ const MyDashboardScreen = () => {
                     <Image source={DownloadImg} style={{width:25, height:25}} />
                   </TouchableOpacity>
                 </View>
-            </View> */}
+            </View>
+    )
+  }
+  return (
+    <SafeAreaView style={styles.container}>
+      <Header screen='My Downloads' />
+        <View style={commonStyle.section}>
+            <FlatList
+            data={userDownloadHistory}
+            renderItem={renderItem}
+            keyExtractor={(item, index)=>index}
+            />
         </View>
        
-        </ScrollView>
     </SafeAreaView>
   );
 };
