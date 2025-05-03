@@ -39,9 +39,9 @@ const GoogleSignIn = () => {
               auth_token: userInfo?.data?.idToken,
               signInWith: 'google',
             };
+            let api_result = await dispatch(googleLoggedIn(dataToStore)) 
+            dataToStore.user.userId = api_result.payload.userId
             await Keychain.setGenericPassword('user', JSON.stringify(dataToStore));
-            console.log('ddddpre check', dataToStore)
-            dispatch(googleLoggedIn(dataToStore)) 
             dispatch(loggedInSuccess())
           }
           else{

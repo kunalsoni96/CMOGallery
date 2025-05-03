@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import { googleLoggedIn, loginUser } from '../actions/loginAction';
+import { googleLoggedIn, loginUser, logoutUser } from '../actions/loginAction';
 const loginSlice = createSlice({
     name:'login',
     initialState:{
@@ -12,17 +12,6 @@ const loginSlice = createSlice({
         loginSuccess:false
     },
     reducers:{
-        // googleLoggedIn:(state, action) => {
-        //     state.token = action.payload.token;
-        //     state.isloggedIn = true;
-        //     state.loading = true;
-        //     state.user = action.payload;
-        //     state.signInWith = 'google';
-        // },
-        logoutUser:(state,action)=>{
-            state.isloggedIn = false;
-            state.loading = false;
-        },
         mobileLoggedIn:(state, action) => {
             state.isloggedIn = true
         },
@@ -65,10 +54,23 @@ const loginSlice = createSlice({
             state.error = action.payload || 'Login failed';
         });
 
+        //logout user
+        builder
+        .addCase(logoutUser.pending, (state) => {
+            state.loading = true; 
+            state.isloggedIn = false;
+        })
+        .addCase(logoutUser.fulfilled, (state) => {
+            state.loading = false
+        })
+        .addCase(logoutUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
+        });
         
     }
 })
 
 
 export default loginSlice.reducer;
-export const {logoutUser, loggedInSuccess}  = loginSlice.actions
+export const { loggedInSuccess}  = loginSlice.actions

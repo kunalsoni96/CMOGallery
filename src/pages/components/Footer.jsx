@@ -14,6 +14,12 @@ const Footer = () => {
             <TouchableOpacity onPress={()=>navigation.navigate('TermServiceScreen')} style={commonStyle.extraBtn}>
                 <Text style={commonStyle.questionText}>Terms Of Services </Text>
             </TouchableOpacity>
+            <View style={styles.divider}>
+                <Text style={styles.text}> | </Text>
+            </View>
+            <TouchableOpacity onPress={()=>navigation.navigate('TermsOfUse')} style={commonStyle.extraBtn}>
+                <Text style={commonStyle.questionText}>Terms Of Use </Text>
+            </TouchableOpacity>
         </View>
     )
 }

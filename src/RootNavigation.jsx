@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import * as Keychain from 'react-native-keychain';
 import { useDispatch, useSelector } from 'react-redux';
 import SplashScreen from './pages/authentications/SplashScreen';
-import { googleLoggedIn } from './redux/actions/loginAction';
+import { googleLoggedIn, loginUser } from './redux/actions/loginAction';
 
 const RootNavigation = () => {
   const dispatch = useDispatch()
@@ -16,9 +16,14 @@ const RootNavigation = () => {
     try {
       const credentials = await Keychain.getGenericPassword();
       if (credentials) {
-        console.log(credentials, 'credentialscredentialscredentials')
         setIsAuthenticated(true);
-        dispatch(googleLoggedIn(credentials.password))
+        let wayOfLogin = JSON.parse(credentials.password)
+        if(wayOfLogin.signInWith == 'google'){
+          dispatch(googleLoggedIn(credentials.password))
+        }
+        else{
+          dispatch(loginUser({mobile:wayOfLogin.user.mobile, password:wayOfLogin.password}))
+        }
       } else {
         setIsAuthenticated(false);
       }

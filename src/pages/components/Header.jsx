@@ -5,8 +5,8 @@ import {  useDispatch } from 'react-redux';
 import colors from '../../constants/color';
 import { openFilter } from '../../redux/reducers/filterReducer';
 import * as Keychain from 'react-native-keychain';
-import { logoutUser } from '../../redux/reducers/loginReducer';
 import { getDistricts, getEvents } from '../../redux/actions/EventAction';
+import { logoutUser } from '../../redux/actions/loginAction';
 const Header = (props) => {
     const navigation = useNavigation();
     const dispatch = useDispatch()

@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getDistricts, getEvents } from '../../redux/actions/EventAction';
 import { Banner1Img, Banner2Img, Banner3Img, FilterImg } from '../assets';
 import LoaderScreen from '../components/LoaderScreen';
+import MasonryList from '@react-native-seoul/masonry-list';
 import { openFilter } from '../../redux/reducers/filterReducer';
 
 const { width, height } = Dimensions.get("window");
@@ -108,31 +109,32 @@ const filterHandle = () => {
    <SafeAreaView style={styles.container}>
   <Header screen='DashboardScreen' />
   <View style={{flex:1, justifyContent:'space-between'}}>
-  <FlatList
-    data={event?.eventsList}
-    renderItem={renderItem}
-    keyExtractor={item => item?._id}
-    contentContainerStyle={styles.imagesSection}
-    ListHeaderComponent={
-      <>
-        <View style={{ height: height / 4 }}>
-          <MyCarousel />
-        </View>
-        <View style={styles.heading}>
-          <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold', width:'50%' }}>
-            Recent Events
-          </Text>
-          <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
-          <View style={{flexDirection:"row"}}>
-          <TouchableOpacity onPress={filterHandle}>
-            <Image source={FilterImg} style={styles.notificationImg} />
-          </TouchableOpacity>
-          </View>
-        </View>
-        </View>
-      </>
-    }
-  />
+          <MasonryList
+          data={event?.eventsList}
+          keyExtractor={(item) => item._id}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
+          ListHeaderComponent={
+            <>
+              <View style={{ height: height / 4 }}>
+                <MyCarousel />
+              </View>
+              <View style={styles.heading}>
+                <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold', width:'50%' }}>
+                  Recent Events
+                </Text>
+                <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
+                <View style={{flexDirection:"row"}}>
+                <TouchableOpacity onPress={filterHandle}>
+                  <Image source={FilterImg} style={styles.notificationImg} />
+                </TouchableOpacity>
+                </View>
+              </View>
+              </View>
+            </>
+          }
+        />
   </View>
 
     {

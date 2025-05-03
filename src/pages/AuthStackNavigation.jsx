@@ -9,6 +9,7 @@ import ForgotPasswordScreen from './authentications/ForgotPasswordScreen';
 import PrivacyPolicyScreen from './components/PrivacyPolicyScreen';
 import TermServiceScreen from './components/TermServiceScreen';
 import GoogleAuthentication from './authentications/GoogleAuthentication';
+import TermsOfUse from './components/TermsOfUse';
 // import ProfileScreen from './homes/ProfileScreen';
 const Stack = createNativeStackNavigator();
 const AuthStackNavigation = () => {
@@ -23,6 +24,7 @@ const AuthStackNavigation = () => {
             <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
             <Stack.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} />
             <Stack.Screen name="TermServiceScreen" component={TermServiceScreen} />
+            <Stack.Screen name="TermsOfUse" component={TermsOfUse} />
             <Stack.Screen name="GoogleAuthentication" component={GoogleAuthentication} />
         </Stack.Navigator>
   )

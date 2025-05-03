@@ -22,11 +22,12 @@ import { getPhotos } from '../../redux/actions/EventAction';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import { zip } from 'react-native-zip-archive';
+import MasonryList from '@react-native-seoul/masonry-list';
 const { width, height } = Dimensions.get("window");
 
 // ✅ ImageCard component
 const ImageCard = ({ item, isSelected, onSelect }) => (
-  <View style={styles.imageCard}>
+  <View style={{...styles.imageCard, height:item.height}}>
     <TouchableOpacity style={styles.imageTouchable} onPress={onSelect}>
       <ImageBackground
         source={{ uri: item.image }}
@@ -50,6 +51,7 @@ const ImageCard = ({ item, isSelected, onSelect }) => (
 const ImageListScreen = (props) => {
   const [image, setImage] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [data, setData] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -63,13 +65,35 @@ const ImageListScreen = (props) => {
     );
   };
 
-  let data = []
-  if(props.route.params.screen == "UploadPhotoScreen"){
-    data = props?.route?.params?.data?.payload?.photos
-  }
-  else{
-    data = event.eventPhotos
-  }
+
+  useEffect(() => {
+    let data = []
+    if(props.route.params.screen == "UploadPhotoScreen"){
+      data = props?.route?.params?.data?.payload?.photos
+    }
+    else{
+      data = event.eventPhotos
+    }
+
+    const shouldStartWithSmall = Math.random() < 0.5; // randomly true or false
+
+    let result = data.map((value, index) => {
+      const newItem = { ...value };
+
+      const isEven = index % 2 === 0;
+      const assignSmall = shouldStartWithSmall ? isEven : !isEven;
+
+      if (assignSmall) {
+        newItem.height = Math.floor(Math.random() * (220 - 200 + 1)) + 200;
+      } else {
+        newItem.height = Math.floor(Math.random() * (270 - 250 + 1)) + 250;
+      }
+
+      return newItem;
+    });
+
+setData(result);
+  },[event])
  
   async function downloadImageToLocal(url, index) {
     const extension = url.split('.').pop().split(/\#|\?/)[0]; // get file extension
@@ -174,6 +198,15 @@ const  shareImages = async(urls) => {
   }
 
 
+  const renderItem = (item, index) => {
+    return (
+      <ImageCard item={item}
+      isSelected={selectedImages.includes(item?.image)}
+      onSelect={() => toggleSelectImage(item.image)} 
+      />
+    )
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
@@ -186,15 +219,21 @@ const  shareImages = async(urls) => {
   }
 
       <View style={styles.imagesSection}>
-        <FlatList
+        {/* <FlatList
           data={data}
-          keyExtractor={(item, index) => item?._id ? item._id.toString() : index.toString()}
+          keyExtractor={(item, index) => item?._id ? item._id : index.toString()}
           numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-between' }}
           contentContainerStyle={{ padding: 10 }}
           renderItem={({ item }) => <ImageCard item={item}
           isSelected={selectedImages.includes(item?.image)}
           onSelect={() => toggleSelectImage(item.image)} />}
+        /> */}
+        <MasonryList
+          data={data}
+          keyExtractor={(item) => item._id}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => renderItem(item)}
         />
       </View>
 

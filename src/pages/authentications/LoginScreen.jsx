@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import {Text, View, StyleSheet, TouchableOpacity, TextInput} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +20,7 @@ const LoginScreen = () => {
     const [password, setPassword] = useState('');
     const [isInvalid, setIsInvalid] = useState({mobile:false, password:false});
     const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
     const loader = useSelector(state=>state.login.loading)
     const submitHandle = async() => {
         try{
@@ -46,6 +47,7 @@ const LoginScreen = () => {
                 user: result.payload,
                 auth_token: result.payload.userId,
                 signInWith: 'mobile',
+                password:password
               };
             
             await Keychain.setGenericPassword('user', JSON.stringify(dataToStore));
@@ -59,6 +61,16 @@ const LoginScreen = () => {
         
     }
 
+    useEffect(()=>{
+        if(loader){
+            setLoading(true)
+        }
+        else{
+            setTimeout(() => {
+                setLoading(false)
+            }, 1500);
+        }
+    },[loader])
     
 
     return (
@@ -127,8 +139,8 @@ const LoginScreen = () => {
          <Footer/>
             </View>
             
-        {loader && <LoaderScreen show="nope" />}
-        {error && <Toaster type='error' message='Mobile or Password is Invalid' /> }
+        {loading && <LoaderScreen show="nope" />}
+        {error && !loading && <Toaster type='error' message='Mobile or Password is Invalid' /> }
         </SafeAreaView>
     )
 }

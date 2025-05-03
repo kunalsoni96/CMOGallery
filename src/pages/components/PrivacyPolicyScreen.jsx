@@ -9,7 +9,7 @@ const PrivacyPolicyScreen = () => {
     <SafeAreaView style={styles.container}>
         <Header screen="Privacy Policy"/>
       <WebView
-        source={{ uri: 'https://nbdigitech.com/tnc.php' }}
+        source={{ uri: 'https://nbdigital.online/info/privacy-policy' }}
         style={styles.webview}
         onError={() => console.log('WebView failed to load')}
         onLoad={() => console.log('WebView loaded successfully')}

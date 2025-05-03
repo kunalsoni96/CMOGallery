@@ -73,7 +73,9 @@ export const searchEvent = createAsyncThunk(
     'eventSearch', 
     async (search, thunkAPI) => {
         try{
-            const response = await axios.get(`${baseUrl}search-results?q=${search}&_rsc=c5fq1`)
+            const response = await axios.post(`${baseUrl}master-search`,{
+                query: search
+            })
             console.log('-------------event search', response)
             return response.data
         }

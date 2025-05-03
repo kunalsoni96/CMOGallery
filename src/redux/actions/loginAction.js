@@ -6,11 +6,11 @@ export const loginUser = createAsyncThunk(
   'login/user',
   async ({ mobile, password }, thunkAPI) => {
     try {
-      console.log(mobile, password)
       const response = await axios.post(`${baseUrl}client-login`, {
         mobile,
         password
       });
+      // console.log(response.data)
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
@@ -28,10 +28,15 @@ export const googleLoggedIn = createAsyncThunk(
         photo:data?.user.photo,
       });
 
-      console.log(response, 'last check')
+      data.userId = response.data.userId;
       return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data?.message || 'Login failed');
     }
   }
 );
+
+export const logoutUser = createAsyncThunk('login/logoutUser', async (_, thunkAPI) => {
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  return true;
+});

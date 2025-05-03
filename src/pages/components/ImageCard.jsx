@@ -45,7 +45,7 @@ const ImageCard = ({ item,  customHeight }) => {
           >
             <View style={commonStyle.directoryContent}>
               <View>
-                {/* <Text style={commonStyle.imageCountText}>{item.total}</Text> */}
+                <Text style={commonStyle.imageCountText}>{item.photo_count}</Text>
                 <Text style={commonStyle.photosText}>photos</Text>
               </View>
               <View style={styles.eventDateSection}>

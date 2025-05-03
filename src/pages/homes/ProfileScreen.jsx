@@ -26,6 +26,7 @@ import { useNavigation } from '@react-navigation/native';
 import commonStyle from '../components/Style';
 import { useSelector, useDispatch } from 'react-redux';
 import { getUserDownload } from '../../redux/actions/EventAction';
+import LoaderScreen from '../components/LoaderScreen';
 
 const { width, height } = Dimensions.get("window");
 
@@ -45,8 +46,11 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
   const user = useSelector(state=>state.login.user)
+  const loader = useSelector(state=>state.login.loading)
+  const userEventData = useSelector(state=>state.event.userDownloads)
+
   useEffect(()=>{
-    // dispatch(getUserDownload())
+    dispatch(getUserDownload(user.userId))
   },[])
   const renderItem = ({ item }) => {
     return (
@@ -109,14 +113,14 @@ const ProfileScreen = () => {
               <View style={[styles.box, { backgroundColor: colors.primaryBox }]}>
                 <View style={styles.boxContent}>
                   <Image source={uploadImg} style={styles.boxIcon} />
-                  <Text style={styles.boxValue}>0</Text>
+                  <Text style={styles.boxValue}>{userEventData?.downloads}</Text>
                   <Text style={styles.boxLabel}>Total Download</Text>
                 </View>
               </View>
               <View style={[styles.box, { backgroundColor: colors.secondaryBox }]}>
                 <View style={styles.boxContent}>
                   <Image source={DownloadDarkImg} style={styles.boxIcon} />
-                  <Text style={styles.boxValue}>0</Text>
+                  <Text style={styles.boxValue}>{userEventData?.photos}</Text>
                   <Text style={styles.boxLabel}>Total Image</Text>
                 </View>
               </View>
@@ -146,6 +150,8 @@ const ProfileScreen = () => {
           <Image source={{ uri: image }} style={styles.fullImage} resizeMode="contain" />
         </TouchableOpacity>
       </Modal>
+
+      {loader && <LoaderScreen /> }
     </SafeAreaView>
   );
 };

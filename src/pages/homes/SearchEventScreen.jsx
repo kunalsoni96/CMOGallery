@@ -51,7 +51,9 @@ const ListCard = ({item}) => {
 
 
 const SearchEventScreen = () => {
+  const navigation = useNavigation();
   const [text, setText] = useState('')
+  const [suggestions, setSuggestions] = useState([]);
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getEvents({}))
@@ -69,6 +71,15 @@ const SearchEventScreen = () => {
     dispatch(searchEvent(text))
   }
 
+  const handleSearch = (text) => {
+    setText(text)
+
+    const filtered = event.eventsList?.filter(item =>
+      item?.name.toLowerCase()?.includes(text.toLowerCase())
+    );
+    setSuggestions(filtered);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header screen='Search' />
@@ -76,12 +87,27 @@ const SearchEventScreen = () => {
         <View style={{width:'100%', alignItems:'center', paddingBottom:10}}>
           <TextInput 
           value={text}
-          onChangeText={(text)=>setText(text)}
+          onChangeText={(text)=>handleSearch(text)}
           placeholder='Search' 
           placeholderTextColor="black" style={commonStyle.textInput} />
-          <TouchableOpacity onPress={() => searchEventHandle()} style={{position:'absolute', right:'5%', top:-5, padding:20}}>
+          {/* <TouchableOpacity onPress={() => searchEventHandle()} style={{position:'absolute', right:'5%', top:-5, padding:20}}>
             <Text style={{fontWeight:'bold'}}>Go</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+
+          {text.length > 0 && (
+          <View style={styles.suggestionBox}>
+            <FlatList
+              data={suggestions}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity 
+                onPress={()=>navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })}>
+                  <Text style={styles.suggestion}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        )}
         </View>
         <FlatList
         data={event?.eventsList}
@@ -132,7 +158,28 @@ const styles = StyleSheet.create({
   viewMore:{
     color:'gray',
     fontSize:12
-  }
+  },
+  suggestionBox: {
+    width:width/1.2,
+    position: 'absolute',
+    top: 45,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    maxHeight: 200,
+    zIndex: 10,
+    elevation: 5, 
+    shadowColor: '#000', 
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
+  },
+  suggestion: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderColor: '#eee',
+  },
 });
 
 export default SearchEventScreen;

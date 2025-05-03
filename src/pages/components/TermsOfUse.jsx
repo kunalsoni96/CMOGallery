@@ -4,12 +4,12 @@ import { WebView } from 'react-native-webview';
 import Header from './Header';
 const { height, width } = Dimensions.get('window');
 
-const TermServiceScreen = () => {
+const TermsOfUse = () => {
   return (
     <SafeAreaView style={styles.container}>
         <Header screen="Terms & Conditions"/>
       <WebView
-        source={{ uri: 'https://nbdigital.online/info/terms-and-conditions' }}
+        source={{ uri: 'https://nbdigital.online/info/terms-of-use' }}
         style={styles.webview}
         onError={() => console.log('WebView failed to load')}
         onLoad={() => console.log('WebView loaded successfully')}
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TermServiceScreen;
+export default TermsOfUse;
