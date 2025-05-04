@@ -21,7 +21,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPhotos } from '../../redux/actions/EventAction';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
-import { zip } from 'react-native-zip-archive';
 import MasonryList from '@react-native-seoul/masonry-list';
 const { width, height } = Dimensions.get("window");
 
@@ -148,50 +147,6 @@ const  shareImages = async(urls) => {
 
 
 
-  const downloadZippedImagesToStorage = async (urls) => {
-    try {
-        if (!urls || urls.length === 0) {
-            Alert.alert('Error', 'No image URLs provided.');
-            return;
-        }
-
-        const granted = await requestStoragePermission(); // Request permission, but this can be skipped if no external storage used
-        alert(granted)
-        if (!granted) return;
-
-        const tempFolder = `${RNFS.TemporaryDirectoryPath}/zip_images`;  // Use Temporary Directory
-
-        await RNFS.mkdir(tempFolder);
-
-        const downloadedPaths = await Promise.all(
-            urls.map(async (url, index) => {
-                const ext = url.split('.').pop().split(/\#|\?/)[0] || 'jpg';
-                const filePath = `${tempFolder}/image_${index}.${ext}`;
-                const res = await RNFS.downloadFile({ fromUrl: url, toFile: filePath }).promise;
-                if (res.statusCode === 200) {
-                    return filePath;
-                } else {
-                    throw new Error(`Download failed for ${url}`);
-                }
-            })
-        );
-
-        if (downloadedPaths.length === 0) {
-            Alert.alert('Error', 'No images were downloaded.');
-            return;
-        }
-
-        // Here we store in internal storage (app-specific storage)
-        const zipPath = `${RNFS.TemporaryDirectoryPath}/images_bundle.zip`;  // Use Temporary Directory instead of external storage
-        const zippedPath = await zip(tempFolder, zipPath);
-        Alert.alert('Success', `ZIP file created at:\n${zippedPath}`);
-    } catch (err) {
-        console.log('Error creating ZIP:', err);
-        Alert.alert('Error', err.message || 'Unexpected error occurred');
-    }
-};
-
-
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
@@ -231,7 +186,7 @@ const  shareImages = async(urls) => {
           <Image source={ShareFixImg} style={{...styles.icon, width:20}} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>downloadZippedImagesToStorage(selectedImages)} style={[styles.link, { backgroundColor: colors.primary }]}>
+        <TouchableOpacity style={[styles.link, { backgroundColor: colors.primary }]}>
           <Image source={DownloadFixImg} style={styles.icon} />
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
