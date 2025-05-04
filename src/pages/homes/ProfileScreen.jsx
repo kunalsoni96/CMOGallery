@@ -46,7 +46,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
   const user = useSelector(state=>state.login.user)
-  const loader = useSelector(state=>state.login.loading)
+  const loader = useSelector(state=>state.event.loading)
   const userEventData = useSelector(state=>state.event.userDownloads)
 
   useEffect(()=>{

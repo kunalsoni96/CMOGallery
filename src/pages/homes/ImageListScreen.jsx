@@ -131,71 +131,10 @@ const  shareImages = async(urls) => {
 
   
   
-  async function requestStoragePermission() {
-    if (Platform.OS !== 'android') return true;
   
-    const androidVersion = parseInt(Platform.Version, 10);
-    console.log('Android version:', androidVersion);
   
-    if (androidVersion >= 33) {
-      // Android 13+ - new media permissions
-      const readMediaImages = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-      );
-      const readMediaVideo = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO
-      );
-      console.log('Permission results:', readMediaImages, readMediaVideo);
-      return (
-        readMediaImages === PermissionsAndroid.RESULTS.GRANTED ||
-        readMediaVideo === PermissionsAndroid.RESULTS.GRANTED
-      );
-    } else if (androidVersion >= 30) {
-      // Android 11 or 12
-      const readExternal = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-      );
-      console.log('Permission result:', readExternal);
-      return readExternal === PermissionsAndroid.RESULTS.GRANTED;
-    } else {
-      // Android 10 and below
-      const writeExternal = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-      );
-      console.log('Permission result:', writeExternal);
-      return writeExternal === PermissionsAndroid.RESULTS.GRANTED;
-    }
-  }
 
   
-  async function downloadZippedImages(urls) {
-    try {
-      // 📁 App-specific cache folder
-      const tempFolder = `${RNFS.CachesDirectoryPath}/zip_images`;
-      await RNFS.mkdir(tempFolder);
-  
-      // ⬇️ Download all images to temp folder
-      const downloadedPaths = await Promise.all(
-        urls.map(async (url, index) => {
-          const ext = url.split('.').pop().split(/\#|\?/)[0];
-          const filePath = `${tempFolder}/image_${index}.${ext}`;
-          const res = await RNFS.downloadFile({ fromUrl: url, toFile: filePath }).promise;
-          if (res.statusCode === 200) return filePath;
-          else throw new Error(`Failed to download: ${url}`);
-        })
-      );
-  
-      // 🗜️ Create ZIP file from temp folder
-      const zipPath = `${RNFS.CachesDirectoryPath}/images_bundle.zip`;
-      // await zip(tempFolder, zipPath);
-  
-      await RNFS.copyFile(zipPath, zipPath);
-        alert
-    } catch (err) {
-      console.log('ZIP failed:', err);
-      Alert.alert('Error', 'Failed to prepare ZIP file.');
-    }
-  }
 
 
   const renderItem = (item, index) => {
@@ -206,6 +145,52 @@ const  shareImages = async(urls) => {
       />
     )
   }
+
+
+
+  const downloadZippedImagesToStorage = async (urls) => {
+    try {
+        if (!urls || urls.length === 0) {
+            Alert.alert('Error', 'No image URLs provided.');
+            return;
+        }
+
+        const granted = await requestStoragePermission(); // Request permission, but this can be skipped if no external storage used
+        alert(granted)
+        if (!granted) return;
+
+        const tempFolder = `${RNFS.TemporaryDirectoryPath}/zip_images`;  // Use Temporary Directory
+
+        await RNFS.mkdir(tempFolder);
+
+        const downloadedPaths = await Promise.all(
+            urls.map(async (url, index) => {
+                const ext = url.split('.').pop().split(/\#|\?/)[0] || 'jpg';
+                const filePath = `${tempFolder}/image_${index}.${ext}`;
+                const res = await RNFS.downloadFile({ fromUrl: url, toFile: filePath }).promise;
+                if (res.statusCode === 200) {
+                    return filePath;
+                } else {
+                    throw new Error(`Download failed for ${url}`);
+                }
+            })
+        );
+
+        if (downloadedPaths.length === 0) {
+            Alert.alert('Error', 'No images were downloaded.');
+            return;
+        }
+
+        // Here we store in internal storage (app-specific storage)
+        const zipPath = `${RNFS.TemporaryDirectoryPath}/images_bundle.zip`;  // Use Temporary Directory instead of external storage
+        const zippedPath = await zip(tempFolder, zipPath);
+        Alert.alert('Success', `ZIP file created at:\n${zippedPath}`);
+    } catch (err) {
+        console.log('Error creating ZIP:', err);
+        Alert.alert('Error', err.message || 'Unexpected error occurred');
+    }
+};
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -219,15 +204,6 @@ const  shareImages = async(urls) => {
   }
 
       <View style={styles.imagesSection}>
-        {/* <FlatList
-          data={data}
-          keyExtractor={(item, index) => item?._id ? item._id : index.toString()}
-          numColumns={2}
-          contentContainerStyle={{ padding: 10 }}
-          renderItem={({ item }) => <ImageCard item={item}
-          isSelected={selectedImages.includes(item?.image)}
-          onSelect={() => toggleSelectImage(item.image)} />}
-        /> */}
         <MasonryList
           data={data}
           keyExtractor={(item) => item._id}
@@ -252,10 +228,10 @@ const  shareImages = async(urls) => {
 
       <View style={styles.bottomSection}>
         <TouchableOpacity onPress={() => shareImages(selectedImages)} style={styles.link}>
-          <Image source={ShareFixImg} style={{...styles.icon, width:20,}} />
+          <Image source={ShareFixImg} style={{...styles.icon, width:20}} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>downloadZippedImages(selectedImages)} style={[styles.link, { backgroundColor: colors.primary }]}>
+        <TouchableOpacity onPress={()=>downloadZippedImagesToStorage(selectedImages)} style={[styles.link, { backgroundColor: colors.primary }]}>
           <Image source={DownloadFixImg} style={styles.icon} />
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>

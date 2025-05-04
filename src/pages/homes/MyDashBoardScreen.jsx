@@ -18,6 +18,7 @@ const MyDashboardScreen = () => {
   const userDownloadHistory = useSelector(state=>state.event.userDownloadHistory)
 
   useEffect(()=>{
+    console.log(user, 'useruseruseruser======================')
     dispatch(getUserDownloadHistory(user.userId))
   },[])
 

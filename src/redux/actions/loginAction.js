@@ -27,7 +27,7 @@ export const googleLoggedIn = createAsyncThunk(
         email:data?.user.email,
         photo:data?.user.photo,
       });
-
+      console.log('----user id-----', response.data.userId)
       data.userId = response.data.userId;
       return data;
     } catch (error) {

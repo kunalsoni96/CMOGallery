@@ -18,8 +18,9 @@ const RootNavigation = () => {
       if (credentials) {
         setIsAuthenticated(true);
         let wayOfLogin = JSON.parse(credentials.password)
+
         if(wayOfLogin.signInWith == 'google'){
-          dispatch(googleLoggedIn(credentials.password))
+          dispatch(googleLoggedIn(JSON.parse(credentials.password)))
         }
         else{
           dispatch(loginUser({mobile:wayOfLogin.user.mobile, password:wayOfLogin.password}))
