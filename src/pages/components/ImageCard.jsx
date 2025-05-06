@@ -5,10 +5,19 @@ import commonStyle from './Style';
 import { DownloadImg, LinkImg, ShareImg } from '../assets';
 import Clipboard from '@react-native-clipboard/clipboard';
 import LottieView from 'lottie-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width } = Dimensions.get('window')
 const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
     const navigation = useNavigation();
-
+    const clickEventHandle = async() => {
+      let data = JSON.parse(await AsyncStorage.getItem('events')) || [];
+      let result = data;
+      if(!data.includes(item?._id)){
+        result.unshift(item?._id)
+      }
+      AsyncStorage.setItem('events', JSON.stringify(result))
+      navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })
+    }
     const copyToClipboard = (uri) => {
         Clipboard.setString(uri);
       };
@@ -36,7 +45,7 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
       <View style={styles.imageCard}>
         <TouchableOpacity
           style={{ borderRadius: 15, overflow: 'hidden' }}
-          onPress={()=>navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })}
+          onPress={()=> clickEventHandle()}
         >
           <ImageBackground
             source={{ uri: item?.cover }}
@@ -58,7 +67,7 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
             <Text style={commonStyle.title}>{item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}</Text>
             <View style={commonStyle.linksSection}>
              
-                {downloadingImgs.includes(item._id) ?
+              {downloadingImgs.includes(item._id) ?
                 <LottieView
                 source={require('./../../images/downloading.json')} // Ensure correct path
                 autoPlay

@@ -25,39 +25,54 @@ import ImageCard from '../components/ImageCard';
 import { useNavigation } from '@react-navigation/native';
 import commonStyle from '../components/Style';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUserDownload } from '../../redux/actions/EventAction';
+import { getDistricts, getEvents, getUserDownload } from '../../redux/actions/EventAction';
 import LoaderScreen from '../components/LoaderScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import MasonryList from '@react-native-seoul/masonry-list';
+
 
 const { width, height } = Dimensions.get("window");
-
-const data = [
-  // { id: 1, uri: "https://indiacsr.in/wp-content/uploads/2024/01/Vishnu-Deo-Sai-Chief-Minister-of-Chhattisgarh-_IndiaCSR.jpg", height: 200 },
-  // { id: 2, uri: "https://i.pinimg.com/736x/7a/ad/c0/7aadc010cc350e426694132f5c4f5157.jpg", height: 250 },
-  // { id: 3, uri: "https://i.pinimg.com/736x/0a/cf/a0/0acfa0865c9b7315d4d2f2eb50615422.jpg", height: 266 },
-  // { id: 4, uri: "https://i.pinimg.com/736x/18/b7/e1/18b7e17b779525b3f0c629800f3f623d.jpg", height: 300 },
-  // { id: 5, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 200 },
-  // { id: 6, uri: "https://i.pinimg.com/474x/6e/61/c6/6e61c6d50ef83f7be2150e2a7508d411.jpg", height: 250 }
-
-];
 
 
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
+  const [data, setData] = useState([])
   const navigation = useNavigation();
   const dispatch = useDispatch()
   const user = useSelector(state=>state.login.user)
+  const event = useSelector(state=>state.event)
   const loader = useSelector(state=>state.event.loading)
   const userEventData = useSelector(state=>state.event.userDownloads)
-
+  const [downloadingImgs, setDownloadingImgs] = useState([]);
   useEffect(()=>{
     if(user.userId){
-    dispatch(getUserDownload(user.userId))
+      dispatch(getUserDownload(user.userId))
     }
   },[])
-  const renderItem = ({ item }) => {
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let result = await AsyncStorage.getItem('events');
+        let parsed = result ? JSON.parse(result) : [];
+        setData(parsed);
+      } catch (e) {
+        console.log(e, 'testing');
+      }
+    })();
+  }, []);
+
+  useEffect(()=>{
+    dispatch(getEvents({}))
+    dispatch(getDistricts({}))
+  },[])
+
+
+  const renderItem = ({ item, index }) => {
+    const customHeight = index % 2 === 0 ? 200 : 250;
     return (
       <View>
-        <ImageCard item={item} />
+        <ImageCard item={item} customHeight={customHeight} downloadingImgs={downloadingImgs} />
       </View>
     )
   };
@@ -66,13 +81,15 @@ const ProfileScreen = () => {
     <SafeAreaView style={styles.container}>
       <Header screen="Profile" />
 
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.imagesSection}
-        ListHeaderComponent={
-          <>
+      <View style={{flex:1, justifyContent:'space-between'}}>
+          <MasonryList
+          data={event?.eventsList}
+          keyExtractor={(item) => item._id}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          renderItem={renderItem}
+          ListHeaderComponent={
+            <>
             {/* 👤 Profile Section */}
             <View style={styles.profileSection}>
               <ImageBackground source={CGMapImg} style={styles.map}>
@@ -135,23 +152,17 @@ const ProfileScreen = () => {
               </Text>
             </View>
           </>
-        }
-      />
+          }
+        />
+  </View>
 
       {
-        data.length == 0 &&
+        event.length == 0 &&
         <View style={{...commonStyle.notAvailableText, position:'absolute',
          bottom:10}}>
           <Text>Recent view not available</Text>
         </View>
       }
-
-      {/* 🔍 Full Image Modal */}
-      <Modal visible={!!image} transparent onRequestClose={() => setImage(null)}>
-        <TouchableOpacity style={styles.modalContainer} onPress={() => setImage(null)}>
-          <Image source={{ uri: image }} style={styles.fullImage} resizeMode="contain" />
-        </TouchableOpacity>
-      </Modal>
 
       {loader && <LoaderScreen message2={"Signing you out..."} message={""} /> }
     </SafeAreaView>

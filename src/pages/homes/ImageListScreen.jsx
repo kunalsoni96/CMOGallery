@@ -292,7 +292,7 @@ const  shareImages = async(urls) => {
 
       <View style={styles.bottomSection}>
         <TouchableOpacity onPress={() => shareImages(selectedImages)} style={styles.link}>
-          <Image source={ShareFixImg} style={{...styles.icon, width:20}} />
+          <Image source={ShareFixImg} style={{...styles.icon}} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => downloadAndZipImages(selectedImages)} style={[styles.link, { backgroundColor: colors.primary }]}>
