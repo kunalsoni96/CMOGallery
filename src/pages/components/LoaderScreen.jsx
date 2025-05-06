@@ -5,7 +5,7 @@ import colors from '../../constants/color';
 
 const { height, width } = Dimensions.get('window');
 
-const LoaderScreen = () => {
+const LoaderScreen = ({message, message2, screen}) => {
   useEffect(() => {
     console.log("Animation file loaded");
   }, []);
@@ -22,11 +22,11 @@ const LoaderScreen = () => {
       </View>
 
       <View style={styles.textArea}>
-        <Text style={styles.searchText}>Searching Related Photo...</Text>
+        <Text style={styles.searchText}>{message}</Text>
       </View>
       
       <View style={{...styles.textArea, top:height/1.2}}>
-        <Text style={{...styles.searchText, fontSize:14}}>The latest AI image search.</Text>
+        <Text style={{...styles.searchText, fontSize:14}}>{message2}</Text>
       </View>
     </SafeAreaView>
   );

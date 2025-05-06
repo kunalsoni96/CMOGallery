@@ -153,7 +153,7 @@ const ProfileScreen = () => {
         </TouchableOpacity>
       </Modal>
 
-      {loader && <LoaderScreen /> }
+      {loader && <LoaderScreen message2={"Signing you out..."} message={""} /> }
     </SafeAreaView>
   );
 };

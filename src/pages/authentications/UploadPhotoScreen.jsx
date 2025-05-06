@@ -221,7 +221,11 @@ useEffect(()=>{
                     />
                 )}
 
-                {loader && <LoaderScreen />}
+                {loader && <LoaderScreen
+                screen={"UploadPhotoScreen"}
+                message2={"The latest AI image search."}
+                message={"Searching Related Photo..."}
+                />}
         </SafeAreaView>
     )
 }

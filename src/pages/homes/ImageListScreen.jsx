@@ -4,6 +4,7 @@ import {
   Modal,
   StyleSheet,
   Dimensions,
+  Linking,
   Text,
   View,
   ImageBackground,
@@ -22,8 +23,11 @@ import { getPhotos } from '../../redux/actions/EventAction';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import MasonryList from '@react-native-seoul/masonry-list';
+import { zip } from 'react-native-zip-archive';
+import axios from 'axios';
 const { width, height } = Dimensions.get("window");
-
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import LoaderScreen from '../components/LoaderScreen';
 // ✅ ImageCard component
 const ImageCard = ({ item, isSelected, onSelect }) => (
   <View style={{...styles.imageCard, height:item.height}}>
@@ -33,14 +37,15 @@ const ImageCard = ({ item, isSelected, onSelect }) => (
         style={styles.imageBackground}
         imageStyle={{ borderRadius: 10 }}
       >
-        {/* Checkbox Overlay */}
-        <View style={styles.checkboxContainer}>
-          {isSelected && (
+        <View style={styles.topShadow} />
+        {isSelected &&
+        (<View style={styles.checkboxContainer}>
             <View style={styles.checkbox}>
               <Text style={styles.checkmark}>✓</Text>
             </View>
-         )} 
+         
         </View>
+        )} 
       </ImageBackground>
     </TouchableOpacity>
   </View>
@@ -50,7 +55,9 @@ const ImageCard = ({ item, isSelected, onSelect }) => (
 const ImageListScreen = (props) => {
   const [image, setImage] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [loader, setLoader] = useState(false);
   const [data, setData] = useState([]);
+  const [message, setMessage] = useState("Loading event all images...")
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -112,6 +119,8 @@ setData(result);
   
 const  shareImages = async(urls) => {
     try {
+      setLoader(true)
+      setMessage("Please wait...")
       const localImagePaths = await Promise.all(
         urls.map((url, index) => downloadImageToLocal(url, index))
       );
@@ -120,18 +129,14 @@ const  shareImages = async(urls) => {
         title: 'Share images',
         urls: localImagePaths, // multiple local images
       };
-  
+      setLoader(false)
+      setMessage("Loading event all images...")
       await Share.open(shareOptions);
+      
     } catch (error) {
       // console.error('Error sharing images:', error);
     }
   }
-
-
-  
-  
-  
-  
 
   
 
@@ -146,15 +151,119 @@ const  shareImages = async(urls) => {
   }
 
 
+  const requestStoragePermission = async () => {
+    if (Platform.OS === 'ios')
+      return true;
+  
+    if (Platform.OS === 'android') {
+      let androidVersion = Platform.Version;
+      if(androidVersion > 11) return true;
+    try {
+      const granted = await request(
+        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
+      );
+  
+      return (granted === RESULTS.GRANTED);
+    } catch (err) {
+      return false;
+    }
+    }
+  };
+  
+
+
+  const downloadAndZipImages = async (imageUrls) => {
+    setLoader(true)
+    setMessage("Download in process...")
+    const hasPermission = await requestStoragePermission();
+    if (!hasPermission) {
+      console.warn('❌ Storage permission denied');
+      return;
+    }
+  
+    const tempFolderPath = `${RNFS.DocumentDirectoryPath}/tempImages`;
+  
+    // 🧹 Clean up old temp folder
+    if (await RNFS.exists(tempFolderPath)) {
+      await RNFS.unlink(tempFolderPath);
+    }
+    await RNFS.mkdir(tempFolderPath);
+  
+    // 📥 Download each image
+    for (let i = 0; i < imageUrls.length; i++) {
+      const url = imageUrls[i];
+      const filename = `image_${i}.jpg`;
+      const destPath = `${tempFolderPath}/${filename}`;
+  
+      try {
+        const result = await RNFS.downloadFile({
+          fromUrl: url,
+          toFile: destPath,
+        }).promise;
+  
+        if (result.statusCode !== 200) {
+          console.warn(`⚠️ Download failed for ${url}, status: ${result.statusCode}`);
+        }
+      } catch (err) {
+        console.error(`❌ Failed to download ${url}`, err);
+      }
+    }
+  
+    // 🗜️ Create ZIP file in Download folder
+    const zipPath = `${RNFS.DownloadDirectoryPath}/my_images_${Date.now()}.zip`;
+  
+    try {
+      const result = await zip(tempFolderPath, zipPath);
+      Alert.alert(
+        'Download Completed',
+        `File saved to Download folder:\n${result}`
+      );
+      setTimeout(() => {
+        setMessage("Loading event all images...")
+        setLoader(false)
+      }, 0);
+      return result;
+    } catch (error) {
+      setTimeout(() => {
+        setLoader(false)
+      }, 0);
+      console.error('❌ ZIP creation failed:', error);
+    }
+  };
+
+  const selectAllHandle = () => {
+    if(selectedImages?.length == event?.eventPhotos?.length) {
+      setSelectedImages([])
+    }
+    else{
+      let result = event?.eventPhotos?.map((value)=>{
+        return value.image
+      })
+      setSelectedImages(result)
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
       {props?.route?.params?.title &&
       <View style={styles.titleSection}>
-        <Text style={commonStyle.title}>
-          {props?.route?.params?.title}
+        <Text style={{...commonStyle.title, width:'75%'}}>
+          {props?.route?.params?.title} 
         </Text>
+
+        <View style={{position:'absolute', right:20, paddingTop:10}}>
+        <TouchableOpacity onPress={()=>selectAllHandle()} style={{flexDirection:'row'}}>
+          <Text style={{fontWeight:'bold'}}>Select All</Text>
+          <View style={{...styles.checkboxContainer, backgroundColor:'white', position:'relative', borderColor:'black', right:-5, top:0}}>
+            {selectedImages.length == event.eventPhotos?.length &&
+            <View style={styles.checkbox}>
+              <Text style={{...styles.checkmark, color:colors.primary}}>✓</Text>
+            </View>
+            }
+        </View>
+        </TouchableOpacity>
+        </View>
       </View>
   }
 
@@ -186,11 +295,13 @@ const  shareImages = async(urls) => {
           <Image source={ShareFixImg} style={{...styles.icon, width:20}} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.link, { backgroundColor: colors.primary }]}>
+        <TouchableOpacity onPress={() => downloadAndZipImages(selectedImages)} style={[styles.link, { backgroundColor: colors.primary }]}>
           <Image source={DownloadFixImg} style={styles.icon} />
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
+      {loader && <LoaderScreen screen="ImageListScreen" message2={message} message={""} /> }
+      
     </SafeAreaView>
   );
 };
@@ -204,6 +315,7 @@ const styles = StyleSheet.create({
   titleSection: {
     paddingHorizontal: 15,
     paddingVertical: 5,
+    flexDirection:'row'
   },
   imagesSection: {
     flex: 1,
@@ -223,6 +335,15 @@ const styles = StyleSheet.create({
   imageBackground: {
     width: '100%',
     height: 250,
+  },
+  topShadow: {
+    // position: 'absolute',
+    // top: 0,
+    // left: 0,
+    // right: 0,
+    // height: 40,
+    // backgroundColor: 'black',
+    // opacity: 0.1,
   },
   modalContainer: {
     flex: 1,
@@ -266,8 +387,9 @@ const styles = StyleSheet.create({
     position:'absolute',
     right:10,
     top:10,
-    borderColor:'white',
-    borderRadius:5
+    borderColor:colors.primary,
+    borderRadius:5,
+    backgroundColor:colors.primary
   },
   checkbox:{
 

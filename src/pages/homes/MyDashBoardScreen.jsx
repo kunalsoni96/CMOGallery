@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
      width:'93%',
+    marginTop:10
   },
   eventImg:{
     width:width/3.4,

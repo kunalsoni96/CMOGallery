@@ -52,7 +52,7 @@ const commonStyle = StyleSheet.create({
     section:{
         width:"100%",
         alignItems:"center",
-        paddingVertical:10
+        paddingVertical:10,
     },
     dividerContainer:{
         width:"100%",

@@ -95,7 +95,7 @@ const DashboardScreen = () => {
   const renderItem = ({item, index}) => {
   const customHeight = index % 2 === 0 ? 200 : 250;
   return (
-  <ImageCard item={item} customHeight={customHeight} />
+  <ImageCard item={item} customHeight={customHeight} downloadingImgs={[]} />
   );
 };
 
@@ -153,7 +153,7 @@ const filterHandle = () => {
    {/* {copy && <Toaster type={'success'} message={'Copied'} />} */}
    {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
-   {loader && <LoaderScreen />}
+   {loader && <LoaderScreen message={""} message2={"Loading event list..."} />}
    
     </>
   );

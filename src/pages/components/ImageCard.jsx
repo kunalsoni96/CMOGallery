@@ -4,8 +4,9 @@ import {View, TouchableOpacity, Text, StyleSheet,
 import commonStyle from './Style';
 import { DownloadImg, LinkImg, ShareImg } from '../assets';
 import Clipboard from '@react-native-clipboard/clipboard';
+import LottieView from 'lottie-react-native';
 const { width } = Dimensions.get('window')
-const ImageCard = ({ item,  customHeight }) => {
+const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
     const navigation = useNavigation();
 
     const copyToClipboard = (uri) => {
@@ -56,9 +57,19 @@ const ImageCard = ({ item,  customHeight }) => {
           <View style={styles.imgBottomSection}>
             <Text style={commonStyle.title}>{item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}</Text>
             <View style={commonStyle.linksSection}>
+             
+                {downloadingImgs.includes(item._id) ?
+                <LottieView
+                source={require('./../../images/downloading.json')} // Ensure correct path
+                autoPlay
+                loop
+                style={{width:30, height:30}}
+              />
+                :
               <TouchableOpacity>
-                <Image source={DownloadImg} style={commonStyle.linkIMg} />
+                <Image source={DownloadImg} style={commonStyle.linkIMg} />  
               </TouchableOpacity>
+              }
               <TouchableOpacity onPress={() => onShare(`https://nbdigital.online/album/${item?._id}`)}>
                 <Image source={ShareImg} style={commonStyle.linkIMg} />
               </TouchableOpacity>
