@@ -1,17 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { baseUrl } from "../../services/apiConfig";
+import api from "../../utils/api";
 
 export const getEvents = createAsyncThunk(
     "events/get",
     async ({}, thunkAPI) => {
         try{
-            const response = await axios(`${baseUrl}albums`,{
+            const response = await api.get(`${baseUrl}albums`,{
                 headers: {
                     Accept: 'application/json',
                   }
             })
-            
             return response.data
         }
         catch(error){
@@ -24,7 +23,7 @@ export const getPhotos = createAsyncThunk(
     'photos/get',
     async(id, thunkAPI) => {
         try{
-            const response = await axios(`${baseUrl}photos/${id}`,{
+            const response = await api.get(`${baseUrl}photos/${id}`,{
                 headers: {
                     Accept: 'application/json',
                   }
@@ -41,7 +40,7 @@ export const getDistricts = createAsyncThunk(
     'districts',
     async({}, thunkAPI) => {
         try{
-            const response = await axios(`${baseUrl}districts`,{
+            const response = await api.get(`${baseUrl}districts`,{
                 headers: {
                     Accept: 'application/json',
                   }
@@ -58,7 +57,7 @@ export const searchImage = createAsyncThunk(
     'searchImage',
     async(image, thunkAPI) => {
         try{
-            const response = await axios.post(`${baseUrl}search-by-upload`,{
+            const response = await api.post(`${baseUrl}search-by-upload`,{
                 image:image,
             })
             return response.data
@@ -73,7 +72,7 @@ export const searchEvent = createAsyncThunk(
     'eventSearch', 
     async (search, thunkAPI) => {
         try{
-            const response = await axios.post(`${baseUrl}master-search`,{
+            const response = await api.post(`${baseUrl}master-search`,{
                 query: search
             })
             return response.data
@@ -88,7 +87,7 @@ export const searchEventByDistrict = createAsyncThunk(
     'searchEventByDistrict',
     async (district, thunkAPI) => {
         try{
-        const response = await axios.get(`${baseUrl}albums-by-district?name=${district}&page=1&limit=16`)
+        const response = await api.get(`${baseUrl}albums-by-district?name=${district}&page=1&limit=16`)
         return response.data.albums
         }
         catch(error){
@@ -101,7 +100,7 @@ export const searchEventByDistrict = createAsyncThunk(
 export const getUserDownload = createAsyncThunk('getUserDownload', 
 async(userId, thunkAPI)=> {
     try{
-        const response = await axios.post(`${baseUrl}get-user-download-count`,{
+        const response = await api.post(`${baseUrl}get-user-download-count`,{
             userId
         })
         console.log(response,'get download list')
@@ -116,10 +115,9 @@ async(userId, thunkAPI)=> {
 export const getUserDownloadHistory = createAsyncThunk('getUserDownloadHistory', 
 async(userId, thunkAPI)=> {
     try{
-        const response = await axios.post(`${baseUrl}get-download-history`,{
+        const response = await api.post(`${baseUrl}get-download-history`,{
             userId
         })
-        console.log('-------res',response)
         return response?.data?.history
     }
     catch(error){

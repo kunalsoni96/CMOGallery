@@ -6,11 +6,12 @@ import { Image, StyleSheet,
 import colors from '../../constants/color';
 import Header from '../components/Header';
 import commonStyle from '../components/Style';
-import { ViewMoreImg } from '../assets';
+import { FilterImg, ViewMoreImg } from '../assets';
 const { width, height } = Dimensions.get("window");
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEvents, searchEvent } from '../../redux/actions/EventAction';
+import { openFilter } from '../../redux/reducers/filterReducer';
 
 
 const ListCard = ({item}) => {
@@ -80,20 +81,26 @@ const SearchEventScreen = () => {
     setSuggestions(filtered);
   };
 
+  const filterHandle = () => {
+    dispatch(openFilter())
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header screen='Search' />
         <View style={commonStyle.section}>
-        <View style={{width:'100%', alignItems:'center', paddingBottom:10}}>
+        <View style={styles.headerSection}>
           <TextInput 
           value={text}
           onChangeText={(text)=>handleSearch(text)}
           placeholder='Search' 
           placeholderTextColor="black" style={commonStyle.textInput} />
-          {/* <TouchableOpacity onPress={() => searchEventHandle()} style={{position:'absolute', right:'5%', top:-5, padding:20}}>
-            <Text style={{fontWeight:'bold'}}>Go</Text>
-          </TouchableOpacity> */}
-
+         
+         <TouchableOpacity style={{ width:40, justifyContent:'center', paddingTop:10, paddingLeft:10}} onPress={filterHandle}>
+                  <Image source={FilterImg} style={styles.notificationImg} />
+          </TouchableOpacity>
+         </View>
+          
           {text.length > 0 && (
           <View style={styles.suggestionBox}>
             <FlatList
@@ -114,7 +121,6 @@ const SearchEventScreen = () => {
         renderItem={renderItem}
         keyExtractor={item => item?._id}
           />
-        </View>
         
     </SafeAreaView>
   );
@@ -180,6 +186,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#eee',
   },
+  notificationImg:{
+    width:25,
+    height:25,
+    right:0,
+    top:-8
+    },
+    headerSection:{
+      width:'100%', 
+      paddingHorizontal:'6%', 
+      flexDirection:'row', 
+      justifyContent:'space-between'
+    }
 });
 
 export default SearchEventScreen;

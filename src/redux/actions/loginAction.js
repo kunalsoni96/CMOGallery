@@ -1,12 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { baseUrl } from '../../services/apiConfig';
+import api from '../../utils/api';
 
 export const loginUser = createAsyncThunk(
   'login/user',
   async ({ mobile, password }, thunkAPI) => {
     try {
-      const response = await axios.post(`${baseUrl}client-login`, {
+      const response = await api.post(`${baseUrl}client-login`, {
         mobile,
         password
       });
@@ -22,7 +23,7 @@ export const googleLoggedIn = createAsyncThunk(
   'googleLoggedIn',
   async (data, thunkAPI) => {
     try {
-      const response = await axios.post(`${baseUrl}google-login`, {
+      const response = await api.post(`${baseUrl}google-login`, {
         name:data?.user.name,
         email:data?.user.email,
         photo:data?.user.photo,

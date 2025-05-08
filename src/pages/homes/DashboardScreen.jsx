@@ -11,7 +11,7 @@ import commonStyle from '../components/Style';
 import ImageCard from '../components/ImageCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { getDistricts, getEvents } from '../../redux/actions/EventAction';
-import { Banner1Img, Banner2Img, Banner3Img, FilterImg } from '../assets';
+import { Banner1Img, Banner2Img, Banner3Img, FilterImg, RefreshImg } from '../assets';
 import LoaderScreen from '../components/LoaderScreen';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { openFilter } from '../../redux/reducers/filterReducer';
@@ -77,6 +77,7 @@ const MyCarousel = () => {
 const DashboardScreen = () => {
   const [image, setImage] = useState(null);
   // const [copy, setCopy] = useState(false)
+  const [downloadingImgs, setDownloadingImgs] = useState([])
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getEvents({}))
@@ -86,16 +87,12 @@ const DashboardScreen = () => {
   const event = useSelector(state=>state.event)
   const loginSuccess = useSelector(state=>state.login.loginSuccess)
   const loader = useSelector(state=>state.event.loading)
-  // const copyHandle = () => {
-  //   setCopy(true)
-  //   setTimeout(() => {
-  //     setCopy(false)
-  //   }, 3000);
-  // }
+  
+
   const renderItem = ({item, index}) => {
   const customHeight = index % 2 === 0 ? 200 : 250;
   return (
-  <ImageCard item={item} customHeight={customHeight} downloadingImgs={[]} />
+  <ImageCard item={item} customHeight={customHeight} downloadingImgs={downloadingImgs} />
   );
 };
 
@@ -125,7 +122,11 @@ const filterHandle = () => {
                   Recent Events
                 </Text>
                 <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
-                <View style={{flexDirection:"row"}}>
+                <View style={{flexDirection:"row",}}>
+               
+                {/* <TouchableOpacity onPress={filterHandle}>
+                  <Image source={RefreshImg} style={{...styles.notificationImg, right:30}} />
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={filterHandle}>
                   <Image source={FilterImg} style={styles.notificationImg} />
                 </TouchableOpacity>

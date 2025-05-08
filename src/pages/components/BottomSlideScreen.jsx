@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput,
   Dimensions, ScrollView, 
   TouchableOpacity, 
+  Image,
   FlatList,
   Platform} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -9,8 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {closeFilter} from '../../redux/reducers/filterReducer';
 import colors from '../../constants/color';
 import commonStyle from './Style';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { searchEventByDistrict } from '../../redux/actions/EventAction';
+import { getDistricts, getEvents, searchEventByDistrict } from '../../redux/actions/EventAction';
+import {  RefreshImg } from '../assets';
 
 
 const { height, width } = Dimensions.get('window')
@@ -18,7 +19,6 @@ export default function BottomSlideScreen(props) {
   const refRBSheet = useRef();
   const [isChecked, setChecked] = useState('');
   const isOpen = useSelector((state) => state.filter.isOpen);
-  const [date, setDate] = useState(new Date());
   const dispatch = useDispatch();
   useEffect(() => {
     if (isOpen) {
@@ -96,8 +96,14 @@ export default function BottomSlideScreen(props) {
               <Text style={styles.eventText}>Districts</Text>
             </View>
             <View style={styles.headerRight}>
-              <TouchableOpacity onPress={()=>setChecked('')} style={styles.clearAll}>
-                <Text>Clear</Text>
+              <TouchableOpacity onPress={()=>{
+                dispatch(getEvents({}))
+                dispatch(getDistricts({}))
+                dispatch(closeFilter())
+                setChecked('')
+                }} style={styles.clearAll}>
+              <Image source={RefreshImg} style={{width:20, height:20}} />
+                <Text>Reset</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -187,7 +193,7 @@ const styles = StyleSheet.create({
   },
   headerRight:{
     width:'50%',
-    alignItems:'flex-end'
+    alignItems:'flex-end',
   },
 
   checkboxContainer: {
@@ -231,7 +237,8 @@ const styles = StyleSheet.create({
     backgroundColor:colors.border,
     borderRadius:20,
     paddingHorizontal:20,
-    paddingVertical:5
+    paddingVertical:5,
+    flexDirection:'row'
   },
   list:{
     flexDirection:'row',

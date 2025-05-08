@@ -28,6 +28,9 @@ import axios from 'axios';
 const { width, height } = Dimensions.get("window");
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import LoaderScreen from '../components/LoaderScreen';
+import { downloadAndZipImages } from '../../utils/zipCreate';
+import Toaster from '../components/Toaster';
+import { useNavigation } from '@react-navigation/native';
 // ✅ ImageCard component
 const ImageCard = ({ item, isSelected, onSelect }) => (
   <View style={{...styles.imageCard, height:item.height}}>
@@ -59,7 +62,7 @@ const ImageListScreen = (props) => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("Loading event all images...")
   const dispatch = useDispatch();
-
+  const navigation = useNavigation()
   useEffect(() => {
     dispatch(getPhotos(props?.route?.params?.id));
   }, []);
@@ -151,86 +154,6 @@ const  shareImages = async(urls) => {
   }
 
 
-  const requestStoragePermission = async () => {
-    if (Platform.OS === 'ios')
-      return true;
-  
-    if (Platform.OS === 'android') {
-      let androidVersion = Platform.Version;
-      if(androidVersion > 11) return true;
-    try {
-      const granted = await request(
-        PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE
-      );
-  
-      return (granted === RESULTS.GRANTED);
-    } catch (err) {
-      return false;
-    }
-    }
-  };
-  
-
-
-  const downloadAndZipImages = async (imageUrls) => {
-    setLoader(true)
-    setMessage("Download in process...")
-    const hasPermission = await requestStoragePermission();
-    if (!hasPermission) {
-      console.warn('❌ Storage permission denied');
-      return;
-    }
-  
-    const tempFolderPath = `${RNFS.DocumentDirectoryPath}/tempImages`;
-  
-    // 🧹 Clean up old temp folder
-    if (await RNFS.exists(tempFolderPath)) {
-      await RNFS.unlink(tempFolderPath);
-    }
-    await RNFS.mkdir(tempFolderPath);
-  
-    // 📥 Download each image
-    for (let i = 0; i < imageUrls.length; i++) {
-      const url = imageUrls[i];
-      const filename = `image_${i}.jpg`;
-      const destPath = `${tempFolderPath}/${filename}`;
-  
-      try {
-        const result = await RNFS.downloadFile({
-          fromUrl: url,
-          toFile: destPath,
-        }).promise;
-  
-        if (result.statusCode !== 200) {
-          console.warn(`⚠️ Download failed for ${url}, status: ${result.statusCode}`);
-        }
-      } catch (err) {
-        console.error(`❌ Failed to download ${url}`, err);
-      }
-    }
-  
-    // 🗜️ Create ZIP file in Download folder
-    const zipPath = `${RNFS.DownloadDirectoryPath}/my_images_${Date.now()}.zip`;
-  
-    try {
-      const result = await zip(tempFolderPath, zipPath);
-      Alert.alert(
-        'Download Completed',
-        `File saved to Download folder:\n${result}`
-      );
-      setTimeout(() => {
-        setMessage("Loading event all images...")
-        setLoader(false)
-      }, 0);
-      return result;
-    } catch (error) {
-      setTimeout(() => {
-        setLoader(false)
-      }, 0);
-      console.error('❌ ZIP creation failed:', error);
-    }
-  };
-
   const selectAllHandle = () => {
     if(selectedImages?.length == event?.eventPhotos?.length) {
       setSelectedImages([])
@@ -241,6 +164,12 @@ const  shareImages = async(urls) => {
       })
       setSelectedImages(result)
     }
+  }
+
+  const downloadHandle = () => {
+    // downloadAndZipImages(selectedImages)
+    navigation.goBack()
+    navigation.navigate("MyDashboardScreen")
   }
 
   return (
@@ -295,13 +224,13 @@ const  shareImages = async(urls) => {
           <Image source={ShareFixImg} style={{...styles.icon}} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => downloadAndZipImages(selectedImages)} style={[styles.link, { backgroundColor: colors.primary }]}>
+        <TouchableOpacity onPress={() => downloadHandle()} style={[styles.link, { backgroundColor: colors.primary }]}>
           <Image source={DownloadFixImg} style={styles.icon} />
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
       {loader && <LoaderScreen screen="ImageListScreen" message2={message} message={""} /> }
-      
+
     </SafeAreaView>
   );
 };

@@ -13,6 +13,8 @@ import * as Keychain from 'react-native-keychain';
 import LoaderScreen from '../components/LoaderScreen';
 import Toaster from '../components/Toaster';
 import { loggedInSuccess } from '../../redux/reducers/loginReducer';
+import NetInfo from '@react-native-community/netinfo';
+import { updateNetwork } from '../../redux/reducers/NetworkReducer';
 const LoginScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
@@ -24,6 +26,11 @@ const LoginScreen = () => {
     const [secureTextEntry, setSecureTextEntry] = useState(true)
     const loader = useSelector(state=>state.login.loading)
     const submitHandle = async() => {
+        const netState = await NetInfo.fetch();
+        if (!netState.isConnected || !netState.isInternetReachable) {
+            dispatch(updateNetwork())
+        }
+
         try{
         if(!isValidMobile(mobile)){
             setIsInvalid({...isInvalid, mobile:true})

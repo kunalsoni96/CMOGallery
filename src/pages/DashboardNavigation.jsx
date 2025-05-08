@@ -5,41 +5,35 @@ import DashboardScreen from './homes/DashboardScreen';
 import MyDashboardScreen from './homes/MyDashBoardScreen';
 import SearchEventScreen from './homes/SearchEventScreen';
 import colors from '../constants/color';
-import { DownNavImg, SearchFaceImg, ProfileNavImg, SearchImg, SerachDarkImg, HomeDarkImg, DownloadDarkImg, ProfileDarkImg, HomeWhiteImg, UploadDarkImg } from './assets';
+import {
+  DownNavImg, SearchFaceImg, ProfileNavImg,
+  SearchImg, SerachDarkImg, HomeDarkImg,
+  DownloadDarkImg, ProfileDarkImg, HomeWhiteImg, UploadDarkImg
+} from './assets';
 import ProfileScreen from './homes/ProfileScreen';
 import UploadPhotoScreen from './authentications/UploadPhotoScreen';
 import ImageListScreen from './homes/ImageListScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UpdateProfile from './homes/UpdateProfile';
 import LoaderScreen from './components/LoaderScreen';
+import { useSelector } from 'react-redux'; // 👈 Redux selector
 
 const BottomStack = createBottomTabNavigator();
 const { width } = Dimensions.get('window');
 const Stack = createNativeStackNavigator();
-// 🔧 Custom TabBar
+
+// 🔧 Custom TabBar with badge
 const CustomTabBar = ({ state, descriptors, navigation }) => {
+  // const downloadCount = useSelector(state => state.download.newCount); // 👈 adjust if needed
+
   const icons = [
-    {
-     default:HomeWhiteImg, 
-     active:HomeDarkImg,
-    },
-    {
-      default:SearchImg, 
-      active:SerachDarkImg
-    },
-    {
-      default:SearchFaceImg,
-      active:UploadDarkImg
-    }, 
-    {
-     default:DownNavImg, 
-     active:DownloadDarkImg
-    },
-    {
-     default:ProfileNavImg,
-     active:ProfileDarkImg
-    }
-    ];
+    { default: HomeWhiteImg, active: HomeDarkImg },
+    { default: SearchImg, active: SerachDarkImg },
+    { default: SearchFaceImg, active: UploadDarkImg },
+    { default: DownNavImg, active: DownloadDarkImg },
+    { default: ProfileNavImg, active: ProfileDarkImg }
+  ];
+
   const labels = ['Home', 'Search', 'Upload', 'My Download', 'Profile'];
 
   return (
@@ -48,6 +42,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         const isFocused = state.index === index;
         const tabWidth = isFocused ? width * 0.3 : width * 0.15;
         const iconSource = isFocused ? icons[index].active : icons[index].default;
+
         const onPress = () => {
           const event = navigation.emit({
             type: 'tabPress',
@@ -72,7 +67,15 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
               },
             ]}
           >
-            <Image source={iconSource} style={styles.iconImg} />
+            <View>
+              <Image source={iconSource} style={styles.iconImg} />
+              {/* 👇 Badge only on My Download tab (index === 3) */}
+              {index === 3 && (
+                <View style={styles.badgeContainer}>
+                  <Text style={styles.badgeText}>6</Text>
+                </View>
+              )}
+            </View>
             {isFocused && <Text style={styles.labelText}>{labels[index]}</Text>}
           </TouchableOpacity>
         );
@@ -85,9 +88,7 @@ const TabNavigation = () => {
   return (
     <BottomStack.Navigator
       tabBar={(props) => <CustomTabBar {...props} />}
-      screenOptions={{
-        headerShown: false,
-      }}
+      screenOptions={{ headerShown: false }}
     >
       <BottomStack.Screen name="DashboardScreen" component={DashboardScreen} />
       <BottomStack.Screen name="SearchEventScreen" component={SearchEventScreen} />
@@ -96,7 +97,7 @@ const TabNavigation = () => {
       <BottomStack.Screen name="ProfileScreen" component={ProfileScreen} />
     </BottomStack.Navigator>
   );
-}
+};
 
 const DashboardNavigation = () => {
   return (
@@ -108,8 +109,6 @@ const DashboardNavigation = () => {
     </Stack.Navigator>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   tabBar: {
@@ -137,7 +136,25 @@ const styles = StyleSheet.create({
   labelText: {
     color: colors.primary,
     fontSize: 12,
-    fontWeight:"bold"
+    fontWeight: 'bold',
+  },
+  badgeContainer: {
+    position: 'absolute',
+    top: -5,
+    right: -10,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 99,
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });
 
