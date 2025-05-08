@@ -71,7 +71,7 @@ const ProfileScreen = () => {
   const renderItem = ({ item, index }) => {
     const customHeight = index % 2 === 0 ? 200 : 250;
     return (
-      <View>
+      <View style={{width:'100%',  justifyContent:"space-around", alignItems:'center'}}>
         <ImageCard item={item} customHeight={customHeight} downloadingImgs={downloadingImgs} />
       </View>
     )
@@ -151,13 +151,13 @@ const ProfileScreen = () => {
                 Recent View
               </Text>
             </View>
-          </>
+          </> 
           }
         />
   </View>
 
       {
-        event.length == 0 &&
+        event?.eventsList.length == 0 &&
         <View style={{...commonStyle.notAvailableText, position:'absolute',
          bottom:10}}>
           <Text>Recent view not available</Text>
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   heading:{
-    paddingHorizontal:25,
+    paddingHorizontal:10,
     paddingVertical:10  
   },
 });

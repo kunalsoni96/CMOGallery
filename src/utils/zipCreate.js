@@ -41,19 +41,13 @@ export const downloadAndZipImages = async (imageUrls) => {
   
     try {
       const result = await zip(tempFolderPath, zipPath);
-      Alert.alert(
-        'Download Completed',
-        `File saved to Download folder:\n${result}`
-      );
-      setTimeout(() => {
-      }, 0);
       return result;
     } catch (error) {
-      setTimeout(() => {
-        setLoader(false)
-      }, 0);
+      alert('Something went wrong')
       console.error('❌ ZIP creation failed:', error);
     }
+
+    return true;
   };
 
   const requestStoragePermission = async () => {

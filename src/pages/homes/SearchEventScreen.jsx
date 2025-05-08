@@ -25,7 +25,7 @@ const ListCard = ({item}) => {
                   source={{uri:item?.cover}} >
                     <View style={{...commonStyle.directoryContent}}>
                       <View>
-                      <Text style={{...commonStyle.imageCountText, fontSize:14}}>200</Text>
+                      <Text style={{...commonStyle.imageCountText, fontSize:14}}>{item?.photo_count}</Text>
                       <Text style={{...commonStyle.photosText, fontSize:12}}>photos</Text>
                       </View>
                     </View>
@@ -37,12 +37,12 @@ const ListCard = ({item}) => {
                 </Text>
 
                 <View style={{paddingVertical:15}}>
-                  <Text style={styles.date}>02 Nov 2024</Text>
+                  <Text style={styles.date}>{item?.date}</Text>
                 </View>
 
                 <TouchableOpacity onPress={()=>navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })} style={{flexDirection:'row'}}>
                   <Text style={styles.viewMore}>View More </Text>
-                  <Image source={ViewMoreImg} style={{width:25, height:15, marginTop:2}} />
+                  {/* <Image source={ViewMoreImg} style={{width:25, height:15, marginTop:2}} /> */}
                 </TouchableOpacity>
               </View>
       </View>
@@ -163,7 +163,8 @@ const styles = StyleSheet.create({
   },
   viewMore:{
     color:'gray',
-    fontSize:12
+    fontSize:14,
+    fontWeight:'bold'
   },
   suggestionBox: {
     width:width/1.2,

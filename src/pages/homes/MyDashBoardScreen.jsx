@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, 
   Dimensions, Text, View, 
-  SafeAreaView, TextInput, FlatList,
-  TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
+  SafeAreaView, FlatList,
+  TouchableOpacity, ImageBackground } from 'react-native';
 import colors from '../../constants/color';
 import Header from '../components/Header';
 import commonStyle from '../components/Style';
 import { DownloadImg } from '../assets';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserDownloadHistory } from '../../redux/actions/EventAction';
+import { useIsFocused } from '@react-navigation/native';
 const { width, height } = Dimensions.get("window");
 
 const MyDashboardScreen = () => {
@@ -16,11 +17,15 @@ const MyDashboardScreen = () => {
   const user = useSelector(state=>state.login.user)
   const loader = useSelector(state=>state.login.loading)
   const userDownloadHistory = useSelector(state=>state.event.userDownloadHistory)
-
+  const isFocused = useIsFocused();
   useEffect(()=>{
-    console.log(user, 'useruseruseruser======================')
     dispatch(getUserDownloadHistory(user.userId))
-  },[])
+
+    if (isFocused) {
+      console.log('Screen is focused');
+    }
+  },[isFocused])
+
 
   const renderItem = ({item}) => {
     return (

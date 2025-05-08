@@ -4,33 +4,28 @@ import {
   Modal,
   StyleSheet,
   Dimensions,
-  Linking,
   Text,
   View,
   ImageBackground,
   TouchableOpacity,
-  FlatList,
-  Alert,
-  Platform, PermissionsAndroid,
+  Platform,
   SafeAreaView
 } from 'react-native';
 import colors from '../../constants/color';
 import Header from '../components/Header';
-import { DownloadFixImg, ShareFixImg } from '../assets';
+import { CrossImg, DownloadFixImg, DownloadingImg, ShareFixImg } from '../assets';
 import commonStyle from '../components/Style';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPhotos } from '../../redux/actions/EventAction';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import MasonryList from '@react-native-seoul/masonry-list';
-import { zip } from 'react-native-zip-archive';
-import axios from 'axios';
 const { width, height } = Dimensions.get("window");
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import LoaderScreen from '../components/LoaderScreen';
 import { downloadAndZipImages } from '../../utils/zipCreate';
 import Toaster from '../components/Toaster';
 import { useNavigation } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 // ✅ ImageCard component
 const ImageCard = ({ item, isSelected, onSelect }) => (
   <View style={{...styles.imageCard, height:item.height}}>
@@ -56,7 +51,7 @@ const ImageCard = ({ item, isSelected, onSelect }) => (
 
 
 const ImageListScreen = (props) => {
-  const [image, setImage] = useState(null);
+  const [visible, setVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState([]);
@@ -166,10 +161,10 @@ const  shareImages = async(urls) => {
     }
   }
 
-  const downloadHandle = () => {
-    // downloadAndZipImages(selectedImages)
-    navigation.goBack()
-    navigation.navigate("MyDashboardScreen")
+  const downloadHandle = async() => {
+    setVisible(true)
+    // await downloadAndZipImages(selectedImages)
+    // setVisible(false)
   }
 
   return (
@@ -206,18 +201,6 @@ const  shareImages = async(urls) => {
         />
       </View>
 
-      <Modal visible={image !== null} onRequestClose={() => setImage(null)}>
-        <TouchableOpacity
-          style={styles.modalContainer}
-          onPress={() => setImage(null)}
-        >
-          <Image
-            source={{ uri: image }}
-            style={styles.fullImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </Modal>
 
       <View style={styles.bottomSection}>
         <TouchableOpacity onPress={() => shareImages(selectedImages)} style={styles.link}>
@@ -229,6 +212,48 @@ const  shareImages = async(urls) => {
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
+      <Modal visible={visible} transparent animationType="slide">
+        <View style={styles.modalSection}>
+        <View style={styles.modalContainer}>
+          <TouchableOpacity onPress={() => setVisible(false)} style={{position:'absolute', right:-10, top:-10}}>
+            <Image source={CrossImg} style={{width:50, height:50}} />
+          </TouchableOpacity>
+        <LottieView
+          source={DownloadingImg} // Ensure correct path
+          autoPlay
+          loop
+          style={{width:40, height:40}}
+        />
+
+        <Text style={styles.headingText}>
+        Creating your ZIP archive...
+        </Text>
+        <Text style={styles.subTitle}>
+            Your selected images are being compressed into a ZIP file.
+            You can wait here, or click the Downloads section once it's ready !
+        </Text>
+
+        <View style={{flexDirection:'row', marginTop:20, width:'100%', justifyContent:'space-around'}}>
+          <TouchableOpacity 
+          onPress={() => {
+            setSelectedImages([])
+            setVisible(false)
+          }}
+          style={{...styles.link, backgroundColor:colors.border, width:100,  borderRadius:5, height:40}}>
+            <Text>Cancel </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+          onPress={() => {}}
+          style={{...styles.link, backgroundColor:colors.primary, borderRadius:5, height:40}}>
+            <Text style={{color:'white'}}>Go to Downloads</Text>
+          </TouchableOpacity>
+        </View>
+        </View>
+        </View>
+      </Modal>
+
+
       {loader && <LoaderScreen screen="ImageListScreen" message2={message} message={""} /> }
 
     </SafeAreaView>
@@ -265,20 +290,19 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
   },
-  topShadow: {
-    // position: 'absolute',
-    // top: 0,
-    // left: 0,
-    // right: 0,
-    // height: 40,
-    // backgroundColor: 'black',
-    // opacity: 0.1,
+  modalSection:{
+    flex:1, 
+    alignItems:'center', 
+    justifyContent:'center'
   },
   modalContainer: {
-    flex: 1,
-    backgroundColor: 'black',
+    width:width/1.1,
+    height:width/1.3,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius:10,
+    paddingHorizontal:20
   },
   fullImage: {
     width: width,
@@ -328,7 +352,19 @@ const styles = StyleSheet.create({
     fontSize:16,
     marginTop:-3,
     marginLeft:3
-  }
+  },
+
+  headingText:{
+    fontSize:18,
+    color:'black',
+    fontWeight:'bold',
+    marginVertical:10
+  },
+  subTitle:{
+    textAlign:'center'
+  },
+
+ 
 });
 
 export default ImageListScreen;

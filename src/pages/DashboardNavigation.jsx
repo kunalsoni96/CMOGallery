@@ -25,7 +25,7 @@ const Stack = createNativeStackNavigator();
 // 🔧 Custom TabBar with badge
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   // const downloadCount = useSelector(state => state.download.newCount); // 👈 adjust if needed
-
+  const badgeCount = useSelector(state=>state.event.userDownloadViewLeft)
   const icons = [
     { default: HomeWhiteImg, active: HomeDarkImg },
     { default: SearchImg, active: SerachDarkImg },
@@ -72,7 +72,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
               {/* 👇 Badge only on My Download tab (index === 3) */}
               {index === 3 && (
                 <View style={styles.badgeContainer}>
-                  <Text style={styles.badgeText}>6</Text>
+                  <Text style={styles.badgeText}>{badgeCount}</Text>
                 </View>
               )}
             </View>

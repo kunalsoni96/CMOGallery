@@ -92,7 +92,9 @@ const DashboardScreen = () => {
   const renderItem = ({item, index}) => {
   const customHeight = index % 2 === 0 ? 200 : 250;
   return (
-  <ImageCard item={item} customHeight={customHeight} downloadingImgs={downloadingImgs} />
+  <View style={{width:'100%',  justifyContent:"space-around", alignItems:'center'}}>
+  <ImageCard item={item} customHeight={customHeight} />
+  </View>
   );
 };
 
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
 
   },
   heading:{
-    paddingHorizontal:25,
+    paddingHorizontal:10,
     paddingTop:20,
     flexDirection:'row'
     },

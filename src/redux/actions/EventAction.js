@@ -124,3 +124,16 @@ async(userId, thunkAPI)=> {
         return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
     }
 })
+
+export const recordDownloadHistory = createAsyncThunk('storeDownloadHistory', 
+async(userId, thunkAPI)=> {
+    try{
+        const response = await api.post(`${baseUrl}record-download-history`,{
+            userId
+        })
+        return response
+    }
+    catch(error){
+        return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
+    }
+})

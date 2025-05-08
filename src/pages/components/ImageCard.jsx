@@ -2,13 +2,19 @@ import { useNavigation } from '@react-navigation/native';
 import {View, TouchableOpacity, Text, StyleSheet, 
     ImageBackground, Image, Dimensions, Share} from 'react-native';
 import commonStyle from './Style';
-import { DownloadImg, LinkImg, ShareImg } from '../assets';
+import { DownloadImg, LinkImg, ShareImg, DownloadingImg } from '../assets';
 import Clipboard from '@react-native-clipboard/clipboard';
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { downloadAndZipImages } from '../../utils/zipCreate';
+import { useState } from 'react';
+import { getPhotos } from '../../redux/actions/EventAction';
+import { useDispatch } from 'react-redux';
 const { width } = Dimensions.get('window')
 const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
     const navigation = useNavigation();
+    const [downloadProcess, setDownloadProcess] = useState(false)
+    const dispatch = useDispatch()
     const clickEventHandle = async() => {
       let data = JSON.parse(await AsyncStorage.getItem('events')) || [];
       let result = data;
@@ -41,6 +47,23 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
         console.error(error.message);
     }
     };
+
+
+    const downloadZipHandle = async() => {
+      // setDownloadProcess(true)
+      console.log('-------')
+      let data = await dispatch(getPhotos(item._id));
+      if(data?.payload){
+       let result = data?.payload?.photos?.map((value)=>{
+          return value.image
+        })
+        console.log(result,'lsldfljsdf')
+        // await downloadAndZipImages(selectedImages)
+      }
+      // setDownloadProcess(false)
+    }
+
+    
     return (
       <View style={styles.imageCard}>
         <TouchableOpacity
@@ -67,15 +90,15 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
             <Text style={commonStyle.title}>{item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}</Text>
             <View style={commonStyle.linksSection}>
              
-              {downloadingImgs.includes(item._id) ?
+              {downloadProcess ?
                 <LottieView
-                source={require('./../../images/downloading.json')} // Ensure correct path
+                source={DownloadingImg}
                 autoPlay
                 loop
                 style={{width:30, height:30}}
               />
                 :
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()  => downloadZipHandle()}>
                 <Image source={DownloadImg} style={commonStyle.linkIMg} />  
               </TouchableOpacity>
               }
@@ -95,9 +118,8 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
 
 const styles = StyleSheet.create({
     imageCard:{
-    marginHorizontal:'1%', 
     marginVertical:10, 
-    width: width/2.1,
+    width: '95%',
     },
     
     eventDateSection:{
