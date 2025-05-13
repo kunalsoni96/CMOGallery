@@ -30,6 +30,7 @@ const eventSlice = createSlice({
             state.loading = false;
             state.eventsList = action.payload.albums
             state.error = null;
+            state.eventPhotos = []
         })
         .addCase(getEvents.rejected, (state, action)=> {
             state.loading = false;
@@ -45,7 +46,7 @@ const eventSlice = createSlice({
         })
         .addCase(getPhotos.fulfilled, (state, action)=> {
             state.loading = false;
-            state.eventPhotos = action.payload.photos
+            state.eventPhotos = [...state.eventPhotos, ...action.payload.photos]
             state.error = null;
         })
         .addCase(getPhotos.rejected, (state, action)=> {
@@ -62,7 +63,8 @@ const eventSlice = createSlice({
         })
         .addCase(getDistricts.fulfilled, (state, action)=> {
             state.loading = false;
-            state.districts = action.payload
+            state.districts = action.payload;
+            state.eventPhotos = [];
             state.error = null;
         })
         .addCase(getDistricts.rejected, (state, action)=> {
@@ -79,6 +81,7 @@ const eventSlice = createSlice({
         .addCase(searchImage.fulfilled, (state, action)=> {
             state.loading = false;
             state.searchImages = action.payload
+            state.eventPhotos = []
             state.error = null;
         })
         .addCase(searchImage.rejected, (state, action)=> {
@@ -96,7 +99,9 @@ const eventSlice = createSlice({
         .addCase(searchEvent.fulfilled, (state, action)=> {
             state.loading = false;
             state.eventsList = action.payload
+            state.eventPhotos = []
             state.error = null;
+            state.eventPhotos = []
         })
         .addCase(searchEvent.rejected, (state, action)=> {
             state.loading = false;

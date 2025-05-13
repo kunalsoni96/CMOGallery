@@ -52,7 +52,7 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
     const downloadZipHandle = async() => {
       // setDownloadProcess(true)
       console.log('-------')
-      let data = await dispatch(getPhotos(item._id));
+      let data = await dispatch(getPhotos({id:item._id, limit:1000, page:1}));
       if(data?.payload){
        let result = data?.payload?.photos?.map((value)=>{
           return value.image

@@ -21,16 +21,23 @@ export const getEvents = createAsyncThunk(
 
 export const getPhotos = createAsyncThunk(
     'photos/get',
-    async(id, thunkAPI) => {
+    async(data, thunkAPI) => {
         try{
-            const response = await api.get(`${baseUrl}photos/${id}`,{
+            let pagination = ``;
+            if(data.page>1){
+                pagination = `?page=${data.page}&limit=${data.limit}`;
+            }
+            const response = await api.get(`${baseUrl}photos/${data.id}${pagination}`,{
                 headers: {
                     Accept: 'application/json',
                   }
             })
+            console.log('yesssss', response)
+            console.log('yesssss', data.limit)
             return response.data
         }
         catch(error){
+            console.log(error)
             return thunkAPI.rejectWithValue(error.response?.data?.message || 'Fetched failed');
         }
     }

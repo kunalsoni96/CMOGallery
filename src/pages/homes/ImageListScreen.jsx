@@ -9,6 +9,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Platform,
+  FlatList,
   SafeAreaView
 } from 'react-native';
 import colors from '../../constants/color';
@@ -19,16 +20,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPhotos } from '../../redux/actions/EventAction';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
-import MasonryList from '@react-native-seoul/masonry-list';
-const { width, height } = Dimensions.get("window");
 import LoaderScreen from '../components/LoaderScreen';
-import { downloadAndZipImages } from '../../utils/zipCreate';
-import Toaster from '../components/Toaster';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+
+const {width, height} = Dimensions.get('window')
 // ✅ ImageCard component
 const ImageCard = ({ item, isSelected, onSelect }) => (
-  <View style={{...styles.imageCard, height:item.height}}>
+  <View style={{ ...styles.imageCard, height: item.height }}>
     <TouchableOpacity style={styles.imageTouchable} onPress={onSelect}>
       <ImageBackground
         source={{ uri: item.image }}
@@ -36,47 +35,65 @@ const ImageCard = ({ item, isSelected, onSelect }) => (
         imageStyle={{ borderRadius: 10 }}
       >
         <View style={styles.topShadow} />
-        {isSelected &&
-        (<View style={styles.checkboxContainer}>
+        {isSelected && (
+          <View style={styles.checkboxContainer}>
             <View style={styles.checkbox}>
               <Text style={styles.checkmark}>✓</Text>
             </View>
-         
-        </View>
-        )} 
+          </View>
+        )}
       </ImageBackground>
     </TouchableOpacity>
   </View>
 );
-
 
 const ImageListScreen = (props) => {
   const [visible, setVisible] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState([]);
-  const [message, setMessage] = useState("Loading event all images...")
+  const [message, setMessage] = useState('Loading event all images...');
+  const [page, setPage] = useState(1)
+  const [count, setCount] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
   const dispatch = useDispatch();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+
   useEffect(() => {
-    dispatch(getPhotos(props?.route?.params?.id));
+    const fetchData = async () => {
+      const result = await dispatch(getPhotos({ id: props?.route?.params?.id, limit: 16, page: 1 }));
+  
+      const photos = result.payload?.photos || [];
+      const total = result.payload?.total; 
+  
+      setData(photos);
+  
+      if (typeof total === 'number') {
+        setCount(Math.ceil(total / 16));
+      }
+  
+      if (photos.length < 16 || photos.length >= total) {
+        setHasMore(false);
+      }
+    };
+  
+    fetchData();
   }, []);
 
-  const event = useSelector(state => state.event);
+  const event = useSelector((state) => state.event);
+
   const toggleSelectImage = (id) => {
-    setSelectedImages(prev =>
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    setSelectedImages((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
-
   useEffect(() => {
-    let data = []
-    if(props.route.params.screen == "UploadPhotoScreen"){
-      data = props?.route?.params?.data?.payload?.photos
-    }
-    else{
-      data = event.eventPhotos
+    let data = [];
+    if (props.route.params.screen == 'UploadPhotoScreen') {
+      data = props?.route?.params?.data?.payload?.photos;
+    } else {
+      data = event.eventPhotos;
     }
 
     const shouldStartWithSmall = Math.random() < 0.5; // randomly true or false
@@ -96,115 +113,165 @@ const ImageListScreen = (props) => {
       return newItem;
     });
 
-setData(result);
-  },[event])
- 
+    setData(result);
+  }, [event]);
+
   async function downloadImageToLocal(url, index) {
     const extension = url.split('.').pop().split(/\#|\?/)[0]; // get file extension
     const localPath = `${RNFS.CachesDirectoryPath}/shared_image_${index}.${extension}`;
-  
+
     const res = await RNFS.downloadFile({
       fromUrl: url,
       toFile: localPath,
     }).promise;
-  
+
     if (res.statusCode === 200) {
       return Platform.OS === 'android' ? 'file://' + localPath : localPath;
     } else {
       throw new Error('Failed to download image');
     }
   }
-  
-const  shareImages = async(urls) => {
+
+  const shareImages = async (urls) => {
     try {
-      setLoader(true)
-      setMessage("Please wait...")
+      setLoader(true);
+      setMessage('Please wait...');
       const localImagePaths = await Promise.all(
         urls.map((url, index) => downloadImageToLocal(url, index))
       );
-  
+
       const shareOptions = {
         title: 'Share images',
         urls: localImagePaths, // multiple local images
       };
-      setLoader(false)
-      setMessage("Loading event all images...")
+      setLoader(false);
+      setMessage('Loading event all images...');
       await Share.open(shareOptions);
-      
     } catch (error) {
-      // console.error('Error sharing images:', error);
+      console.error('Error sharing images:', error);
     }
-  }
+  };
 
-  
-
-
-  const renderItem = (item, index) => {
-    return (
-      <ImageCard item={item}
+  // ✅ Updated renderItem function
+  const renderItem = ({ item }) => (
+    <ImageCard
+      item={item}
       isSelected={selectedImages.includes(item?.image)}
-      onSelect={() => toggleSelectImage(item.image)} 
-      />
-    )
-  }
-
+      onSelect={() => toggleSelectImage(item.image)}
+    />
+  );
 
   const selectAllHandle = () => {
-    if(selectedImages?.length == event?.eventPhotos?.length) {
-      setSelectedImages([])
+    if (selectedImages?.length == event?.eventPhotos?.length) {
+      setSelectedImages([]);
+    } else {
+      let result = event?.eventPhotos?.map((value) => {
+        return value.image;
+      });
+      setSelectedImages(result);
     }
-    else{
-      let result = event?.eventPhotos?.map((value)=>{
-        return value.image
-      })
-      setSelectedImages(result)
-    }
-  }
+  };
 
-  const downloadHandle = async() => {
-    setVisible(true)
-    // await downloadAndZipImages(selectedImages)
-    // setVisible(false)
-  }
+  const downloadHandle = async () => {
+    setVisible(true);
+    // await downloadAndZipImages(selectedImages);
+    // setVisible(false);
+  };
+  const loadMoreHandle = async (direction) => {
+    if (direction === 'next' && hasMore) {
+      const nextPage = page + 1;
+  
+      const result = await dispatch(getPhotos({
+        id: props?.route?.params?.id,
+        limit: 16,
+        page: nextPage,
+      }));
+  
+      const newPhotos = result.payload?.photos || [];
+  
+      if (newPhotos.length < 16) {
+        setHasMore(false);
+      }
+  
+      setData((prevData) => [...prevData, ...newPhotos]); 
+      setPage(nextPage);
+    }
+  
+    if (direction === 'previous' && page > 1) {
+      const prevPage = page - 1;
+  
+      const result =  data
+  
+      const newPhotos = result || [];
+  
+      setData(newPhotos); 
+      setPage(prevPage);
+      setHasMore(true); 
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Header screen="All Images" />
-      {props?.route?.params?.title &&
-      <View style={styles.titleSection}>
-        <Text style={{...commonStyle.title, width:'75%'}}>
-          {props?.route?.params?.title} 
-        </Text>
+      {props?.route?.params?.title && (
+        <View style={styles.titleSection}>
+          <Text style={{ ...commonStyle.title, width: '75%' }}>
+            {props?.route?.params?.title}
+          </Text>
 
-        <View style={{position:'absolute', right:20, paddingTop:10}}>
-        <TouchableOpacity onPress={()=>selectAllHandle()} style={{flexDirection:'row'}}>
-          <Text style={{fontWeight:'bold'}}>Select All</Text>
-          <View style={{...styles.checkboxContainer, backgroundColor:'white', position:'relative', borderColor:'black', right:-5, top:0}}>
-            {selectedImages.length == event.eventPhotos?.length &&
-            <View style={styles.checkbox}>
-              <Text style={{...styles.checkmark, color:colors.primary}}>✓</Text>
-            </View>
-            }
+          <View style={{ position: 'absolute', right: 20, paddingTop: 10 }}>
+            <TouchableOpacity onPress={() => selectAllHandle()} style={{ flexDirection: 'row' }}>
+              <Text style={{ fontWeight: 'bold' }}>Select All</Text>
+              <View
+                style={{
+                  ...styles.checkboxContainer,
+                  backgroundColor: 'white',
+                  position: 'relative',
+                  borderColor: 'black',
+                  right: -5,
+                  top: 0,
+                }}
+              >
+                {selectedImages.length == event.eventPhotos?.length && (
+                  <View style={styles.checkbox}>
+                    <Text style={{ ...styles.checkmark, color: colors.primary }}>✓</Text>
+                  </View>
+                )}
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-        </TouchableOpacity>
-        </View>
-      </View>
-  }
+      )}
 
       <View style={styles.imagesSection}>
-        <MasonryList
-          data={data}
-          keyExtractor={(item) => item._id}
+        <FlatList
+          data={data.slice((page - 1) * 16, page * 16)}
+          keyExtractor={(item, index) => `${item._id}-${index}`}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => renderItem(item)}
+          renderItem={renderItem}
         />
-      </View>
 
+        <View style={styles.pagination}>
+          <TouchableOpacity disabled={page == 1} onPress={() => loadMoreHandle('previous')} 
+          style={{...styles.paginateBtn, backgroundColor:page == 1?colors.border:colors.primary}}>
+            <Text style={{color:page == 1?"gray":"white", fontWeight:'bold'}}>Previous</Text>
+          </TouchableOpacity>
+
+            <View style={{...styles.paginateBtn, width:'35%'}}>
+              <Text style={{color:'white', fontWeight:'bold'}}>Page {page} of {count}</Text>
+            </View>
+
+          <TouchableOpacity disabled={page == count} onPress={() => loadMoreHandle('next')} 
+          style={{...styles.paginateBtn, backgroundColor:page == count?colors.border:colors.primary}}>
+            <Text style={{color:page == count?"gray":'white', fontWeight:'bold'}}>Next</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <View style={styles.bottomSection}>
         <TouchableOpacity onPress={() => shareImages(selectedImages)} style={styles.link}>
-          <Image source={ShareFixImg} style={{...styles.icon}} />
+          <Image source={ShareFixImg} style={{ ...styles.icon }} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => downloadHandle()} style={[styles.link, { backgroundColor: colors.primary }]}>
@@ -212,53 +279,48 @@ const  shareImages = async(urls) => {
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
+
       <Modal visible={visible} transparent animationType="slide">
         <View style={styles.modalSection}>
-        <View style={styles.modalContainer}>
-          <TouchableOpacity onPress={() => setVisible(false)} style={{position:'absolute', right:-10, top:-10}}>
-            <Image source={CrossImg} style={{width:50, height:50}} />
-          </TouchableOpacity>
-        <LottieView
-          source={DownloadingImg} // Ensure correct path
-          autoPlay
-          loop
-          style={{width:40, height:40}}
-        />
+          <View style={styles.modalContainer}>
+            <TouchableOpacity onPress={() => setVisible(false)} style={{ position: 'absolute', right: -10, top: -10 }}>
+              <Image source={CrossImg} style={{ width: 50, height: 50 }} />
+            </TouchableOpacity>
+            <LottieView
+              source={DownloadingImg} // Ensure correct path
+              autoPlay
+              loop
+              style={{ width: 40, height: 40 }}
+            />
+            <Text style={styles.headingText}>Creating your ZIP archive...</Text>
+            <Text style={styles.subTitle}>
+              Your selected images are being compressed into a ZIP file. You can wait here, or click the Downloads section once it's ready!
+            </Text>
 
-        <Text style={styles.headingText}>
-        Creating your ZIP archive...
-        </Text>
-        <Text style={styles.subTitle}>
-            Your selected images are being compressed into a ZIP file.
-            You can wait here, or click the Downloads section once it's ready !
-        </Text>
+            <View style={{ flexDirection: 'row', marginTop: 20, width: '100%', justifyContent: 'space-around' }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setSelectedImages([]);
+                  setVisible(false);
+                }}
+                style={{ ...styles.link, backgroundColor: colors.border, width: 100, borderRadius: 5, height: 40 }}
+              >
+                <Text>Cancel</Text>
+              </TouchableOpacity>
 
-        <View style={{flexDirection:'row', marginTop:20, width:'100%', justifyContent:'space-around'}}>
-          <TouchableOpacity 
-          onPress={() => {
-            setSelectedImages([])
-            setVisible(false)
-          }}
-          style={{...styles.link, backgroundColor:colors.border, width:100,  borderRadius:5, height:40}}>
-            <Text>Cancel </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-          onPress={() => {}}
-          style={{...styles.link, backgroundColor:colors.primary, borderRadius:5, height:40}}>
-            <Text style={{color:'white'}}>Go to Downloads</Text>
-          </TouchableOpacity>
-        </View>
-        </View>
+              <TouchableOpacity onPress={() => {}} style={{ ...styles.link, backgroundColor: colors.primary, borderRadius: 5, height: 40 }}>
+                <Text style={{ color: 'white' }}>Go to Downloads</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
 
-
-      {loader && <LoaderScreen screen="ImageListScreen" message2={message} message={""} /> }
-
+      {loader && <LoaderScreen screen="ImageListScreen" message2={message} message={''} />}
     </SafeAreaView>
   );
 };
+
 
 // ✅ Styles
 const styles = StyleSheet.create({
@@ -273,7 +335,7 @@ const styles = StyleSheet.create({
   },
   imagesSection: {
     flex: 1,
-    
+    paddingBottom:'40%'
   },
   imageCard: {
     flex: 1,
@@ -364,7 +426,26 @@ const styles = StyleSheet.create({
     textAlign:'center'
   },
 
- 
+  pagination:{
+    width:'100%', 
+    position:'absolute', 
+    bottom:'18%',
+    justifyContent:'center',
+    alignSelf:'center',
+    flexDirection:'row'
+  },
+
+  paginateBtn:{
+    backgroundColor:colors.primary,
+    padding:6,
+    borderRadius:10,
+    paddingHorizontal:20,
+    marginHorizontal:5,
+    width:'28%',
+    justifyContent:'center',
+    height:40,
+    alignItems:'center'
+  } 
 });
 
 export default ImageListScreen;
