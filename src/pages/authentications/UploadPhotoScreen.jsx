@@ -1,51 +1,30 @@
-import {useEffect, useState} from 'react';
-import {Text, View, FlatList, PermissionsAndroid, StyleSheet, Modal, TouchableOpacity, Image, TextInput, Platform} from 'react-native'
+import {useEffect, useState, useRef} from 'react';
+import {Text, View, FlatList, PermissionsAndroid, StyleSheet, Modal, TouchableOpacity, Image, TextInput, Platform, Dimensions} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
 import commonStyle from '../components/Style';
-import { DateImg, DropDownImg, uploadImg } from '../assets';
+import { CameraImg, ImageUploadImg, uploadImg } from '../assets';
 import Header from '../components/Header';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import RNFS from 'react-native-fs';
 import { searchImage } from '../../redux/actions/EventAction';
 import LoaderScreen from '../components/LoaderScreen';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+const {width, height} = Dimensions.get('window')
 const UploadPhotoScreen = () => {
   const navigation = useNavigation();
   const [selectedValue, setSelectedValue] = useState('Select An Event');
   const [showModal, setShowModal] = useState(false);
-  const [dateShow, setDateShow] = useState(false);
-  const [date, setDate] = useState(new Date());
-  const [visibleDate, setVisibleDate] = useState('DD/MM/YYYY');
   const [userImage, setUserImage] = useState('')
   const [errorMessage, setErrorMessage] = useState(false);
   const [base64, setBase64] = useState(null);
   const [loader, setLoader] = useState(false);
-
+  const refRBSheet = useRef();
 
   const event_list = useSelector(state=>state.event.eventsList)
   const dispatch = useDispatch()
-  const handleSelect = (value) => {
-    setSelectedValue(value);
-    setShowModal(false);
-  };
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // months are 0-indexed
-    const year = currentDate.getFullYear();
-    const updatedDate = `${day}/${month}/${year}`;
-    if (event.type === "set") { // user selected something
-        const currentDate = selectedDate || date;
-        setDate(currentDate);
-        setVisibleDate(updatedDate)
-      }
-     setDateShow(false); 
-  };
-
-  console.log('--------event_listevent_list-',event_list)
 
 
 async function requestStoragePermission() {
@@ -74,128 +53,128 @@ useEffect(()=>{
 },[])
 
 
-  const pickImage = () => {
-    launchImageLibrary({mediaType: 'photo'}, async(response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('Error:', response.errorMessage);
-      }
-       else {
-        const asset = response.assets?.[0];
-        const maxFileSize = 5 * 1024 * 1024;
-        if(asset.fileSize > maxFileSize){
-            setErrorMessage(true)
-        }
-        else{
-            setErrorMessage(false)
-            setUserImage(response.assets[0].uri)
-        }
-        try {
-          const base64Data = await RNFS.readFile(asset.uri, 'base64');
-          setBase64(base64Data);
-          console.log("✅ Base64 for JSON:", base64Data);
-        } catch (err) {
-          console.error("Error converting to base64:", err);
-        }
+  // const pickImage = () => {
+  //   launchImageLibrary({mediaType: 'photo'}, async(response) => {
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.errorCode) {
+  //       console.log('Error:', response.errorMessage);
+  //     }
+  //      else {
+  //       const asset = response.assets?.[0];
+  //       const maxFileSize = 5 * 1024 * 1024;
+  //       if(asset.fileSize > maxFileSize){
+  //           setErrorMessage(true)
+  //       }
+  //       else{
+  //           setErrorMessage(false)
+  //           setUserImage(response.assets[0].uri)
+  //       }
+  //       try {
+  //         const base64Data = await RNFS.readFile(asset.uri, 'base64');
+  //         setBase64(base64Data);
+  //         console.log("✅ Base64 for JSON:", base64Data);
+  //       } catch (err) {
+  //         console.error("Error converting to base64:", err);
+  //       }
         
 
-        console.log('Selected Image URI:', asset.fileSize);
-      }
-    });
-  };
+  //       console.log('Selected Image URI:', asset.fileSize);
+  //     }
+  //   });
+  // };
+
+
+  useEffect(() => {
+    if (showModal) {
+      refRBSheet.current?.open();
+    } else {
+      refRBSheet.current?.close(); 
+    }
+  }, [showModal]);
 
 
   const submitHandle = async() => {
     setLoader(true)
-    const data = await dispatch(searchImage(base64))
     setLoader(false)
-    navigation.navigate('ImageListScreen',{data:data, screen:'UploadPhotoScreen'})
+    navigation.navigate('ImageListScreen',{image:base64, screen:'UploadPhotoScreen'})
   }
+
+
+  const openCamera = () => {
+    const options = {
+      mediaType: 'photo',
+      saveToPhotos: true,
+      cameraType: 'back', 
+    };
+  
+    launchCamera(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled camera');
+      } else if (response.errorCode) {
+        console.log('Camera Error: ', response.errorMessage);
+      } else {
+        setUserImage(response.assets[0].uri)
+        console.log('Image URI: ', response.assets[0].uri);
+        // aap response.assets[0].uri ko upload ya local state me rakh sakte ho
+      }
+    });
+    setShowModal(false)
+  };
+
+
+  const openGallery = () => {
+    const options = {
+      mediaType: 'photo', // 'video' bhi use kar sakte ho
+      selectionLimit: 1,
+    };
+  
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorCode) {
+        console.log('Image Picker Error: ', response.errorMessage);
+      } else {
+        setUserImage(response.assets[0].uri)
+        console.log('Selected Image URI:', response.assets[0].uri);
+      }
+    });
+
+    setShowModal(false)
+  };
+
     return (
         <SafeAreaView style={styles.container}>
-            <Header screen='Upload Photo' />
+            <Header screen='Image Search' />
             <View style={{...commonStyle.contentBox, justifyContent:'center', flex:1, borderRadius:0}}>
                 <View style={commonStyle.section}>
                 <Text style={styles.title}>Upload Photo</Text>
-                <Text style={styles.subTitle}>& Event Details</Text>
+                {/* <Text style={styles.subTitle}>& Event Details</Text> */}
                 </View>
 
-                <View style={commonStyle.section}>
-                    {Platform.OS == 'android' ?
-                    <TouchableOpacity 
-                    onPress={()=>setDateShow(true)}
-                    style={{...commonStyle.textInput, ...styles.dateInput}} >
-                        <Text>{visibleDate}</Text>
-                    <View style={{position:'absolute', right:20}}>
-                      <Image source={DateImg} style={styles.dropDownImg} />
-                    </View> 
-                    </TouchableOpacity>
-                    :
-                    <>
-                    <DateTimePicker
-                    value={date}
-                    mode="date" // or "time"
-                    display="spinner"
-                    onChange={onChange}
-                    />
-
-                    </>
-                    }
-                    {/* <Image source={} /> */}
-                </View>
-
-                <View  style={commonStyle.section}>
-                <TouchableOpacity
-                style={{...commonStyle.textInput, alignItems:'flex-start'}}
-                onPress={() => setShowModal(true)}
-                >
-                <Text>{selectedValue}</Text>
-                <View style={{position:'absolute', right:20}}>
-                      <Image source={DropDownImg} style={styles.dropDownImg} />
-                </View> 
-                </TouchableOpacity>
-
-            <Modal visible={showModal} transparent animationType="slide">
-                <TouchableOpacity
-                style={{...styles.modalOverlay}}
-                activeOpacity={1}
-                onPressOut={() => setShowModal(false)}
-                >
-                <View style={styles.modalContent}>
-                    <FlatList
-                    data={event_list}
-                    keyExtractor={(item) => item._id}
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                        style={{...styles.option}}
-                        onPress={() => handleSelect(item._id)}
-                        >
-                        <Text>{item?.name}</Text>
-                        </TouchableOpacity>
-                    )}
-                    />
-                </View>
-                </TouchableOpacity>
-            </Modal>
-                </View>
-
-               
-
+          
                 <View style={{...commonStyle.section}}>
                     <TouchableOpacity 
-                    onPress={pickImage}
-                    style={{...commonStyle.textInput, flexDirection:'row', justifyContent:'flex-start'}} >
-                        <Image source={uploadImg} style={{width:15, height:15}} />
-                        <Text> Upload A Photo</Text>
-
-                        <View style={{position:'absolute', right:20}}>
-                        {userImage !="" &&
+                    onPress={() => setShowModal(true)}
+                    style={{...commonStyle.textInput, paddingLeft:0,  height:width/1.2, width:width/1.2,
+                    borderWidth: 2,
+                    borderColor: colors.primary,
+                    borderStyle: 'dotted', 
+                    justifyContent:'center',
+                    alignItems:'center',
+                    borderRadius: 8,}} >
+                        {userImage == "" ?
+                        <>
+                        <Image source={uploadImg} style={{width:100, height:100}} />
+                        {/* <Text style={{color:colors.primary, fontWeight:'bold', marginTop:10}}> Upload A Photo</Text> */}
+                        </>
+                        :
+                        <View style={{position:'absolute'}}>
                         <Image source={{uri:userImage}} style={styles.userImg} />
-                        }
                         </View> 
+                      }
                     </TouchableOpacity>
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10}}>Upload an Image (Jpg, Jpeg, Png)</Text>
+                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10}}>Image Format (Jpg, Jpeg, Png)</Text>
                    {errorMessage &&
                    <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red'}}>File size is too large! (Max - 5 MB)</Text>
                    }
@@ -212,20 +191,58 @@ useEffect(()=>{
 
             </View>
 
-                {dateShow && Platform.OS == 'android' && (
-                    <DateTimePicker
-                    value={date}
-                    mode="date" // or "time"
-                    display="compact"
-                    onChange={onChange}
-                    />
-                )}
-
+          
                 {loader && <LoaderScreen
                 screen={"UploadPhotoScreen"}
                 message2={"The latest AI image search."}
                 message={"Searching Related Photo..."}
                 />}
+
+
+
+<View>
+      <RBSheet
+        ref={refRBSheet}
+        closeOnDragDown={true}
+        closeOnPressMask={true}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'rgba(0,0,0,0.5)',
+          },
+          draggableIcon: {
+            backgroundColor: "#000"
+          },
+          container:{
+            height:height/3,
+            borderTopEndRadius:30,
+            borderTopLeftRadius:30
+          }
+        }}
+        onClose={() => setShowModal(false)}
+      >
+        
+        <View style={styles.sheetContent}>
+          <View style={styles.topHR}></View>
+          <View style={{position:'absolute', top:30}}>
+            <Text style={{fontSize:16, color:colors.primary, fontWeight:'bold'}}>Choose an Action</Text>
+          </View>
+          <View style={styles.header}>
+              <TouchableOpacity onPress={() => openGallery()} style={styles.uploadImg}>
+                 <Image style={styles.uploadImg} source={ImageUploadImg} />
+                 <Text style={{color:colors.primary, fontWeight:'bold', marginTop:5}}>Gallery</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => openCamera()} style={styles.uploadImg}>
+                 <Image style={styles.uploadImg} source={CameraImg} />
+                 <Text style={{color:colors.primary, fontWeight:'bold', marginTop:5}}>Camera</Text>
+              </TouchableOpacity>
+              </View>
+        </View>
+        <TouchableOpacity>
+          <Text>Cancel</Text>
+        </TouchableOpacity>
+      </RBSheet>
+    </View>
         </SafeAreaView>
     )
 }
@@ -278,13 +295,36 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ddd',
       },
       userImg:{
-        width:30,
-        height:30, 
+        width:width/1.24,
+        height:width/1.24,
         borderRadius:5
     },
     dropDownImg:{
       width:20, 
       height:20
+    },
+    sheetContent: {
+      paddingVertical: 40,
+      alignItems: 'center',
+      paddingHorizontal:20,
+      height:height/3,
+      justifyContent:'center'
+    },
+    topHR:{
+      width:width/3,
+      height:2,
+      backgroundColor:colors.secondary,
+      position:'absolute',
+      top:10
+    },
+    header:{
+      flexDirection:'row',
+      justifyContent:'space-around',
+      width:'100%'
+    },
+    uploadImg:{
+      width:50,
+      height:50
     }
 })
 

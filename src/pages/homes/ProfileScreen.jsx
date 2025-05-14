@@ -131,7 +131,7 @@ const ProfileScreen = () => {
             <View style={styles.boxContainer}>
               <View style={[styles.box, { backgroundColor: colors.primaryBox }]}>
                 <View style={styles.boxContent}>
-                  <Image source={uploadImg} style={styles.boxIcon} />
+                <Image source={DownloadDarkImg} style={styles.boxIcon} />
                   <Text style={styles.boxValue}>{userEventData?.downloads}</Text>
                   <Text style={styles.boxLabel}>Total Download</Text>
                 </View>

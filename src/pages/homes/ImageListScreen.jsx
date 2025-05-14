@@ -17,7 +17,7 @@ import Header from '../components/Header';
 import { CrossImg, DownloadFixImg, DownloadingImg, ShareFixImg } from '../assets';
 import commonStyle from '../components/Style';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPhotos } from '../../redux/actions/EventAction';
+import { getPhotos, searchImage } from '../../redux/actions/EventAction';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import LoaderScreen from '../components/LoaderScreen';
@@ -89,9 +89,12 @@ const ImageListScreen = (props) => {
   };
 
   useEffect(() => {
-    let data = [];
+    
+    const getImage = async() => {
+      let data = [];
     if (props.route.params.screen == 'UploadPhotoScreen') {
-      data = props?.route?.params?.data?.payload?.photos;
+      data = await dispatch(searchImage(props.route.params.image));
+      data = data.payload.photos
     } else {
       data = event.eventPhotos;
     }
@@ -104,17 +107,16 @@ const ImageListScreen = (props) => {
       const isEven = index % 2 === 0;
       const assignSmall = shouldStartWithSmall ? isEven : !isEven;
 
-      if (assignSmall) {
-        newItem.height = Math.floor(Math.random() * (220 - 200 + 1)) + 200;
-      } else {
-        newItem.height = Math.floor(Math.random() * (270 - 250 + 1)) + 250;
-      }
+      newItem.height = 250
 
       return newItem;
     });
 
     setData(result);
-  }, [event]);
+    }
+
+    getImage()
+  }, []);
 
   async function downloadImageToLocal(url, index) {
     const extension = url.split('.').pop().split(/\#|\?/)[0]; // get file extension
@@ -134,21 +136,32 @@ const ImageListScreen = (props) => {
 
   const shareImages = async (urls) => {
     try {
+      if(urls.length == 0) return;
       setLoader(true);
       setMessage('Please wait...');
+      
       const localImagePaths = await Promise.all(
         urls.map((url, index) => downloadImageToLocal(url, index))
       );
-
+  
       const shareOptions = {
         title: 'Share images',
-        urls: localImagePaths, // multiple local images
+        urls: localImagePaths,
       };
+  
       setLoader(false);
       setMessage('Loading event all images...');
+      
       await Share.open(shareOptions);
     } catch (error) {
-      console.error('Error sharing images:', error);
+      
+      if (error?.message?.includes('User did not share') || error?.message?.includes('User cancelled')) {
+        console.log('User cancelled sharing');
+      } else {
+        console.error('Error sharing images:', error);
+      }
+      setLoader(false); 
+      setMessage('');
     }
   };
 
@@ -179,6 +192,7 @@ const ImageListScreen = (props) => {
   };
   const loadMoreHandle = async (direction) => {
     if (direction === 'next' && hasMore) {
+      setLoader(true)
       const nextPage = page + 1;
   
       const result = await dispatch(getPhotos({
@@ -195,9 +209,20 @@ const ImageListScreen = (props) => {
   
       setData((prevData) => [...prevData, ...newPhotos]); 
       setPage(nextPage);
+      setLoader(false)
+    }
+
+    else if(direction === 'next' && !hasMore){
+      const result =  data
+  
+      const newPhotos = result || [];
+  
+      setData(newPhotos); 
+      setPage(prevPage);
+      setHasMore(true); 
     }
   
-    if (direction === 'previous' && page > 1) {
+   else if (direction === 'previous' && page > 1) {
       const prevPage = page - 1;
   
       const result =  data

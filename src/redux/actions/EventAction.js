@@ -67,6 +67,7 @@ export const searchImage = createAsyncThunk(
             const response = await api.post(`${baseUrl}search-by-upload`,{
                 image:image,
             })
+            console.log(response.data, 'testing iiiiii')
             return response.data
         }
         catch(error){
