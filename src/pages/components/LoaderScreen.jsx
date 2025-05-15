@@ -25,7 +25,7 @@ const LoaderScreen = ({message, message2, screen}) => {
         <Text style={styles.searchText}>{message}</Text>
       </View>
       
-      <View style={{...styles.textArea, top:height/1.2}}>
+      <View style={{...styles.textArea, top:height/1.4}}>
         <Text style={{...styles.searchText, fontSize:14}}>{message2}</Text>
       </View>
     </SafeAreaView>

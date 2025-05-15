@@ -80,6 +80,13 @@ const ImageListScreen = (props) => {
     if(props?.route?.params?.screen != 'UploadPhotoScreen'){
       fetchData();
     }
+    else{
+      let total = event.eventPhotos?.length;
+      setCount(Math.ceil(total / 16));
+      if (event.eventPhotos.length < 16) {
+        setHasMore(false);
+      }
+    }
    
   }, []);
 

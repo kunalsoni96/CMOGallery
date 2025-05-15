@@ -36,7 +36,6 @@ export const getPhotos = createAsyncThunk(
             return {data:response.data, eventId:data.id}
         }
         catch(error){
-            console.log(error)
             return thunkAPI.rejectWithValue(error.response?.data?.message || 'Fetched failed');
         }
     }
@@ -62,11 +61,10 @@ export const getDistricts = createAsyncThunk(
 export const searchImage = createAsyncThunk(
     'searchImage',
     async (formData, thunkAPI) => {
-        // console.log(formData, 'testing=========')
       try {
         const response = await RNFetchBlob.fetch(
           'POST',
-          `${baseUrl}search-by-upload`, // ❌ Fixed extra quote here
+          `${baseUrl}search-by-upload`, 
           {
             'Content-Type': 'multipart/form-data',
           },
@@ -79,8 +77,7 @@ export const searchImage = createAsyncThunk(
             },
           ]
         );
-
-        console.log(response, '=====')
+        if(response.error) return [];
         return response.json(); 
       } catch (error) {
         console.log('error in searchImage', error);

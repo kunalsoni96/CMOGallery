@@ -1,5 +1,5 @@
 import {useEffect, useState, useRef} from 'react';
-import {Text, View, FlatList, PermissionsAndroid, StyleSheet, Modal, TouchableOpacity, Image, TextInput, Platform, Dimensions} from 'react-native'
+import {Text, View, FlatList, PermissionsAndroid, StyleSheet, BackHandler, TouchableOpacity, Image, TextInput, Platform, Dimensions} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
@@ -18,7 +18,7 @@ const UploadPhotoScreen = () => {
   const [userData, setUserData] = useState();
   const [showModal, setShowModal] = useState(false);
   const [userImage, setUserImage] = useState('')
-  const [errorMessage, setErrorMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [loader, setLoader] = useState(false);
   const refRBSheet = useRef();
   let isCancelled = false;
@@ -52,38 +52,7 @@ useEffect(()=>{
 },[])
 
 
-  // const pickImage = () => {
-  //   launchImageLibrary({mediaType: 'photo'}, async(response) => {
-  //     if (response.didCancel) {
-  //       console.log('User cancelled image picker');
-  //     } else if (response.errorCode) {
-  //       console.log('Error:', response.errorMessage);
-  //     }
-  //      else {
-  //       const asset = response.assets?.[0];
-  //       const maxFileSize = 5 * 1024 * 1024;
-  //       if(asset.fileSize > maxFileSize){
-  //           setErrorMessage(true)
-  //       }
-  //       else{
-  //           setErrorMessage(false)
-  //           setUserImage(response.assets[0].uri)
-  //       }
-  //       try {
-  //         const base64Data = await RNFS.readFile(asset.uri, 'base64');
-  //         setBase64(base64Data);
-  //         console.log("✅ Base64 for JSON:", base64Data);
-  //       } catch (err) {
-  //         console.error("Error converting to base64:", err);
-  //       }
-        
-
-  //       console.log('Selected Image URI:', asset.fileSize);
-  //     }
-  //   });
-  // };
-
-
+ 
   useEffect(() => {
     if (showModal) {
       refRBSheet.current?.open();
@@ -92,17 +61,40 @@ useEffect(()=>{
     }
   }, [showModal]);
 
+  useEffect(() => {
+    const backAction = () => {
+      if (loader) {
+        console.log('Back disabled during loading');
+        return true; // Back button ko disable karo jab loader chalu ho
+      }
+      return false; // Normal back
+    };
+  
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+  
+    return () => backHandler.remove();
+  }, [loader]);
 
-  const submitHandle = async() => {
-    setLoader(true)
-    let response = await dispatch(searchImage(userData))
-    if(!isCancelled){
-    setUserData({})
-    setUserImage("")
-    setLoader(false)
-    navigation.navigate('ImageListScreen',{screen:'UploadPhotoScreen'})
+  const submitHandle = async () => {
+    setLoader(true);
+    try {
+      const response = await dispatch(searchImage(userData));
+      
+      if (response?.error || response?.payload?.error) {
+        setErrorMessage('Image not matched');
+        setUserImage('');
+      } else {
+        setUserImage('');
+        setUserData(null);
+        navigation.navigate('ImageListScreen', {screen:'UploadPhotoScreen'});
+      }
+    } catch (err) {
+      setErrorMessage('Something went wrong');
+      console.log('API error:', err);
+    } finally {
+      setLoader(false); // Ye loader hataega and tab back allow hoga
     }
-  }
+  };
 
 
   useEffect(() => {
@@ -116,6 +108,7 @@ useEffect(()=>{
       mediaType: 'photo',
       saveToPhotos: true,
       cameraType: 'back', 
+      quality: 0.6,
     };
   
     launchCamera(options, (response) => {
@@ -146,9 +139,16 @@ useEffect(()=>{
       } else if (response.errorCode) {
         console.log('Image Picker Error: ', response.errorMessage);
       } else {
+        const fileSizeInMB = response.assets[0].fileSize / (1024 * 1024);
+        if(fileSizeInMB>5){
+          setErrorMessage('File size is too large! (Max - 5 MB)')
+          setTimeout(() => {
+            setErrorMessage('')
+          }, 3000);
+          return;
+        }
         setUserImage(response.assets[0].uri)
         setUserData(response.assets[0])
-        console.log('Selected Image URI:', response.assets[0].uri);
       }
     });
 
@@ -187,8 +187,8 @@ useEffect(()=>{
                       }
                     </TouchableOpacity>
                    <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10}}>Image Format (Jpg, Jpeg, Png)</Text>
-                   {errorMessage &&
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red'}}>File size is too large! (Max - 5 MB)</Text>
+                   {errorMessage!="" &&
+                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red'}}>{errorMessage}</Text>
                    }
                    </View>
 
