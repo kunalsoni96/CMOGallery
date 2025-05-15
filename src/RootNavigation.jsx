@@ -5,13 +5,16 @@ import * as Keychain from 'react-native-keychain';
 import { useDispatch, useSelector } from 'react-redux';
 import SplashScreen from './pages/authentications/SplashScreen';
 import { googleLoggedIn, loginUser } from './redux/actions/loginAction';
-
+import { StatusBar,  } from 'react-native'
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import DeviceInfo from 'react-native-device-info';
 const RootNavigation = () => {
+  const insets = useSafeAreaInsets();
   const dispatch = useDispatch()
   const isloggedUser = useSelector(state => state.login.isloggedIn);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  
   const checkLoginStatus = async () => {
     try {
       const credentials = await Keychain.getGenericPassword();
@@ -46,7 +49,13 @@ const RootNavigation = () => {
     return <SplashScreen />;
   }
 
-  return isAuthenticated ? <DashboardNavigation /> : <AuthStackNavigation />;
+  return (
+    <SafeAreaProvider style={{marginTop:35, marginBottom:insets.bottom}}>
+  {isAuthenticated ? 
+  <DashboardNavigation /> : <AuthStackNavigation />
+}
+  </SafeAreaProvider>
+  )
 };
 
 export default RootNavigation;

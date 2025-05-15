@@ -58,15 +58,15 @@ const ImageListScreen = (props) => {
   const [hasMore, setHasMore] = useState(true)
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const event = useSelector((state) => state.event);
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await dispatch(getPhotos({ id: props?.route?.params?.id, limit: 16, page: 1 }));
   
-      const photos = result.payload?.photos || [];
-      const total = result.payload?.total; 
+      const photos = result.payload?.data?.photos || [];
+      const total = result.payload?.data?.total; 
   
-      setData(photos);
   
       if (typeof total === 'number') {
         setCount(Math.ceil(total / 16));
@@ -77,10 +77,12 @@ const ImageListScreen = (props) => {
       }
     };
   
-    fetchData();
+    if(props?.route?.params?.screen != 'UploadPhotoScreen'){
+      fetchData();
+    }
+   
   }, []);
 
-  const event = useSelector((state) => state.event);
 
   const toggleSelectImage = (id) => {
     setSelectedImages((prev) =>
@@ -88,35 +90,7 @@ const ImageListScreen = (props) => {
     );
   };
 
-  useEffect(() => {
-    
-    const getImage = async() => {
-      let data = [];
-    if (props.route.params.screen == 'UploadPhotoScreen') {
-      data = await dispatch(searchImage(props.route.params.image));
-      data = data.payload.photos
-    } else {
-      data = event.eventPhotos;
-    }
-
-    const shouldStartWithSmall = Math.random() < 0.5; // randomly true or false
-
-    let result = data.map((value, index) => {
-      const newItem = { ...value };
-
-      const isEven = index % 2 === 0;
-      const assignSmall = shouldStartWithSmall ? isEven : !isEven;
-
-      newItem.height = 250
-
-      return newItem;
-    });
-
-    setData(result);
-    }
-
-    getImage()
-  }, []);
+  
 
   async function downloadImageToLocal(url, index) {
     const extension = url.split('.').pop().split(/\#|\?/)[0]; // get file extension
@@ -201,23 +175,16 @@ const ImageListScreen = (props) => {
         page: nextPage,
       }));
   
-      const newPhotos = result.payload?.photos || [];
-  
+      const newPhotos = result.payload?.data?.photos || [];
       if (newPhotos.length < 16) {
         setHasMore(false);
       }
-  
-      setData((prevData) => [...prevData, ...newPhotos]); 
+      
       setPage(nextPage);
       setLoader(false)
     }
 
     else if(direction === 'next' && !hasMore){
-      const result =  data
-  
-      const newPhotos = result || [];
-  
-      setData(newPhotos); 
       setPage(prevPage);
       setHasMore(true); 
     }
@@ -270,7 +237,7 @@ const ImageListScreen = (props) => {
 
       <View style={styles.imagesSection}>
         <FlatList
-          data={data.slice((page - 1) * 16, page * 16)}
+          data={event?.eventPhotos?.slice((page - 1) * 16, page * 16)}
           keyExtractor={(item, index) => `${item._id}-${index}`}
           numColumns={2}
           showsVerticalScrollIndicator={false}

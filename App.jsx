@@ -5,6 +5,8 @@ import store from './src/redux/store';
 import NetworkListner from './src/pages/components/NetWorkListner';
 import { useEffect, useState } from 'react';
 import NetInfo from '@react-native-community/netinfo';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusBar } from 'react-native';
 
 const AppContent = () => {
   const loading = useSelector(state => state.network.on); 
@@ -34,7 +36,13 @@ const AppContent = () => {
 const App = () => {
   return (
     <Provider store={store}>
+      <SafeAreaProvider>
+      <StatusBar
+      backgroundColor="white"
+      translucent={true}
+    />
       <AppContent />
+      </SafeAreaProvider>
     </Provider>
   );
 };

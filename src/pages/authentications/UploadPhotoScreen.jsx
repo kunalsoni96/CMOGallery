@@ -15,14 +15,13 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 const {width, height} = Dimensions.get('window')
 const UploadPhotoScreen = () => {
   const navigation = useNavigation();
-  const [selectedValue, setSelectedValue] = useState('Select An Event');
+  const [userData, setUserData] = useState();
   const [showModal, setShowModal] = useState(false);
   const [userImage, setUserImage] = useState('')
   const [errorMessage, setErrorMessage] = useState(false);
-  const [base64, setBase64] = useState(null);
   const [loader, setLoader] = useState(false);
   const refRBSheet = useRef();
-
+  let isCancelled = false;
   const event_list = useSelector(state=>state.event.eventsList)
   const dispatch = useDispatch()
 
@@ -96,10 +95,21 @@ useEffect(()=>{
 
   const submitHandle = async() => {
     setLoader(true)
+    let response = await dispatch(searchImage(userData))
+    if(!isCancelled){
+    setUserData({})
+    setUserImage("")
     setLoader(false)
-    navigation.navigate('ImageListScreen',{image:base64, screen:'UploadPhotoScreen'})
+    navigation.navigate('ImageListScreen',{screen:'UploadPhotoScreen'})
+    }
   }
 
+
+  useEffect(() => {
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   const openCamera = () => {
     const options = {
@@ -115,6 +125,7 @@ useEffect(()=>{
         console.log('Camera Error: ', response.errorMessage);
       } else {
         setUserImage(response.assets[0].uri)
+        setUserData(response.assets[0])
         console.log('Image URI: ', response.assets[0].uri);
         // aap response.assets[0].uri ko upload ya local state me rakh sakte ho
       }
@@ -136,6 +147,7 @@ useEffect(()=>{
         console.log('Image Picker Error: ', response.errorMessage);
       } else {
         setUserImage(response.assets[0].uri)
+        setUserData(response.assets[0])
         console.log('Selected Image URI:', response.assets[0].uri);
       }
     });

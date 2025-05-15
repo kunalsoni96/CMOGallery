@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { baseUrl } from "../../services/apiConfig";
 import api from "../../utils/api";
-
+import RNFetchBlob from 'rn-fetch-blob';
 export const getEvents = createAsyncThunk(
     "events/get",
     async ({}, thunkAPI) => {
@@ -32,9 +32,8 @@ export const getPhotos = createAsyncThunk(
                     Accept: 'application/json',
                   }
             })
-            console.log('yesssss', response)
-            console.log('yesssss', data.limit)
-            return response.data
+            
+            return {data:response.data, eventId:data.id}
         }
         catch(error){
             console.log(error)
@@ -62,19 +61,33 @@ export const getDistricts = createAsyncThunk(
 
 export const searchImage = createAsyncThunk(
     'searchImage',
-    async(image, thunkAPI) => {
-        try{
-            const response = await api.post(`${baseUrl}search-by-upload`,{
-                image:image,
-            })
-            console.log(response.data, 'testing iiiiii')
-            return response.data
-        }
-        catch(error){
-            return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
-        }
+    async (formData, thunkAPI) => {
+        // console.log(formData, 'testing=========')
+      try {
+        const response = await RNFetchBlob.fetch(
+          'POST',
+          `${baseUrl}search-by-upload`, // ❌ Fixed extra quote here
+          {
+            'Content-Type': 'multipart/form-data',
+          },
+          [
+            {
+              name: 'image',
+              filename: formData.fileName || 'upload.jpg',
+              type: formData.type || 'image/jpeg',
+              data: RNFetchBlob.wrap(formData.uri.replace('file://', '')),
+            },
+          ]
+        );
+
+        console.log(response, '=====')
+        return response.json(); 
+      } catch (error) {
+        console.log('error in searchImage', error);
+        return thunkAPI.rejectWithValue(error.message || 'Upload failed');
+      }
     }
-)
+  );
 
 export const searchEvent = createAsyncThunk(
     'eventSearch', 

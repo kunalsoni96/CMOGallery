@@ -13,6 +13,7 @@ const eventSlice = createSlice({
         userDownloads:{},
         userDownloadHistory:[],
         userDownloadViewLeft:0,
+        eventId:''
     },
     reducers:{
         removeBadge:() => {
@@ -45,8 +46,22 @@ const eventSlice = createSlice({
             state.error = null;
         })
         .addCase(getPhotos.fulfilled, (state, action)=> {
+            let result = [];
+            if(state.eventId == action?.payload?.eventId){
+            result = action.payload?.data?.photos?.filter((value) => {
+                let check = state.eventPhotos?.find((item)=> item.photo_id == value.photo_id)
+                if(!check){
+                    return value
+                }
+            })
+            state.eventPhotos = [...state.eventPhotos, ...result]
+            }
+            else{
+            state.eventPhotos = action?.payload?.data?.photos
+            }
+            state.eventId = action?.payload?.eventId
             state.loading = false;
-            state.eventPhotos = [...state.eventPhotos, ...action.payload.photos]
+           
             state.error = null;
         })
         .addCase(getPhotos.rejected, (state, action)=> {
@@ -81,7 +96,7 @@ const eventSlice = createSlice({
         .addCase(searchImage.fulfilled, (state, action)=> {
             state.loading = false;
             state.searchImages = action.payload
-            state.eventPhotos = []
+            state.eventPhotos = action.payload.photos
             state.error = null;
         })
         .addCase(searchImage.rejected, (state, action)=> {

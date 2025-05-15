@@ -9,6 +9,10 @@ buildscript {
         googlePlayServicesAuthVersion = "20.7.0"
     }
     repositories {
+        maven {
+            url("$rootDir/../node_modules/react-native-device-info/android/libs")
+        }
+        maven { url 'https://jitpack.io' }
         google()
         mavenCentral()
     }

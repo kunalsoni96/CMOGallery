@@ -1,1 +1,1 @@
-export const baseUrl = "http://147.93.106.153:5000/";
+export const baseUrl = "https://api.homecomputer.online/";
