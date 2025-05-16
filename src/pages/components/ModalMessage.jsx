@@ -2,9 +2,11 @@ import {Modal, View, Text, Image, TouchableOpacity, StyleSheet, Dimensions} from
 import { CrossImg, DownloadingImg } from '../assets';
 import colors from '../../constants/color';
 import LottieView from 'lottie-react-native';
+import { useNavigation } from '@react-navigation/native';
 const { width, height } = Dimensions.get("window");
 
-const ModalMessage = ({closeModal}) => {
+const ModalMessage = ({closeModal, message}) => {
+    const navigation = useNavigation()
     return (
         <Modal visible={true} transparent animationType="slide">
         <View style={styles.modalSection}>
@@ -18,9 +20,9 @@ const ModalMessage = ({closeModal}) => {
               loop
               style={{ width: 40, height: 40 }}
             /> */}
-            <Text style={styles.headingText}>Creating your ZIP archive...</Text>
+            <Text style={styles.headingText}>Your selected images have been zipped successfully. Download Path : -</Text>
             <Text style={styles.subTitle}>
-              Your selected images are being compressed into a ZIP file. You can wait here, or click the Downloads section once it's ready!
+            {message}
             </Text>
 
             <View style={{ flexDirection: 'row', marginTop: 20, width: '100%', justifyContent: 'space-around' }}>
@@ -31,9 +33,9 @@ const ModalMessage = ({closeModal}) => {
               </TouchableOpacity> */}
 
               <TouchableOpacity
-              
-              onPress={() => {}} style={{ ...styles.link, backgroundColor: colors.primary, borderRadius: 5, height: 40 }}>
-                <Text style={{ color: 'white' }}>Go to Downloads</Text>
+              onPress={() => closeModal()}
+               style={{ ...styles.link, backgroundColor: colors.primary, borderRadius: 5, height: 40 }}>
+                <Text style={{ color: 'white' }}>Okay</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -66,7 +68,8 @@ const styles = StyleSheet.create({
         marginVertical:10
       },
       subTitle:{
-        textAlign:'center'
+        // textAlign:'center',
+        fontSize:16
       },
       link: {
         width: width / 2.4,

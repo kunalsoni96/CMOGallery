@@ -108,7 +108,10 @@ const SearchEventScreen = () => {
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => (
                 <TouchableOpacity 
-                onPress={()=>navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })}>
+                onPress={()=>{
+                  setText("")
+                  navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })}
+                }>
                   <Text style={styles.suggestion}>{item.name}</Text>
                 </TouchableOpacity>
               )}

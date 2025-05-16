@@ -183,7 +183,7 @@ const LoginScreen = () => {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
 
-      {loading && <LoaderScreen message2={'Authenticating'} message="Signing you in" />}
+      {loading && <LoaderScreen backgroundColor={"white"} message2={'Authenticating'} message="Signing you in" />}
       {error && !loading && <Toaster type="error" message="Mobile or Password is Invalid" />}
     </SafeAreaView>
   );

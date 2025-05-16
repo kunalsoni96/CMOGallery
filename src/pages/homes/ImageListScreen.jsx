@@ -17,12 +17,14 @@ import Header from '../components/Header';
 import { CrossImg, DownloadFixImg, DownloadingImg, ShareFixImg } from '../assets';
 import commonStyle from '../components/Style';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPhotos, searchImage } from '../../redux/actions/EventAction';
+import { getPhotos, recordDownloadHistory, searchImage } from '../../redux/actions/EventAction';
 import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import LoaderScreen from '../components/LoaderScreen';
 import { useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+import { downloadAndZipImages } from '../../utils/zipCreate';
+import ModalMessage from '../components/ModalMessage';
 
 const {width, height} = Dimensions.get('window')
 // ✅ ImageCard component
@@ -48,7 +50,7 @@ const ImageCard = ({ item, isSelected, onSelect }) => (
 );
 
 const ImageListScreen = (props) => {
-  const [visible, setVisible] = useState(false);
+  const [downloadProcess, setDownloadProcess] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState([]);
@@ -56,9 +58,12 @@ const ImageListScreen = (props) => {
   const [page, setPage] = useState(1)
   const [count, setCount] = useState(1)
   const [hasMore, setHasMore] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [downloadPath, setDownloadPath] = useState("")
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const event = useSelector((state) => state.event);
+  const user = useSelector(state=>state.login.user)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,11 +171,35 @@ const ImageListScreen = (props) => {
     }
   };
 
-  const downloadHandle = async () => {
-    setVisible(true);
-    // await downloadAndZipImages(selectedImages);
-    // setVisible(false);
-  };
+  
+  const downloadZipHandle = async() => {
+    setDownloadProcess(true)
+    
+    if(selectedImages?.length>0){
+    let getFilePath = await downloadAndZipImages(selectedImages)
+    
+    const date = new Date();
+
+    const day = String(date.getDate()).padStart(2, '0');  
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+     let object = {
+        title: "Custom Download",
+        image: selectedImages[0],
+        photoCount: selectedImages?.length,
+        date: formattedDate,
+        photoUrls: selectedImages
+      }
+     console.log(user, '----sdfsdfsdsdfsdf')
+     let response = await dispatch(recordDownloadHistory({download:object, userId:user.userId}))
+     setDownloadPath(getFilePath)
+    }
+    setModalOpen(true)
+    setDownloadProcess(false)
+  }
+
   const loadMoreHandle = async (direction) => {
     if (direction === 'next' && hasMore) {
       setLoader(true)
@@ -273,13 +302,14 @@ const ImageListScreen = (props) => {
           <Image source={ShareFixImg} style={{ ...styles.icon }} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => downloadHandle()} style={[styles.link, { backgroundColor: colors.primary }]}>
+        <TouchableOpacity onPress={() => downloadZipHandle()} style={[styles.link, { backgroundColor: colors.primary }]}>
           <Image source={DownloadFixImg} style={styles.icon} />
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
 
-      {loader && <LoaderScreen backgroundColor="white" screen="ImageListScreen" message2={message} message={''} />}
+      {(loader || downloadProcess) && <LoaderScreen backgroundColor="white" screen="ImageListScreen" message2={message} message={''} />}
+      {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} />}
     </SafeAreaView>
   );
 };

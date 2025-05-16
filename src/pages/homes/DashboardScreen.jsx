@@ -78,6 +78,7 @@ const DashboardScreen = () => {
   const [message, setMessage] = useState("")
   const [message2, setMessage2] = useState("Loading event list...");
   const [downloadLoader, setDownloadLoader] = useState(false)
+  const [downloadPath, setDownloadPath] = useState("")
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getEvents({}))
@@ -94,7 +95,7 @@ const DashboardScreen = () => {
   return (
   <View style={{width:'100%',
     justifyContent:"space-around", alignItems:'center'}}>
-    <ImageCard item={item} customHeight={customHeight} downloadProcess={(key) => downloadProcess(key)} />
+    <ImageCard item={item} customHeight={customHeight} downloadProcess={(key, path = "") => downloadProcess(key, path)} />
   </View>
   );
 };
@@ -103,7 +104,7 @@ const filterHandle = () => {
   dispatch(openFilter())
 }
 
-const downloadProcess = (key) => {
+const downloadProcess = (key, path = "") => {
   if(key){
   setMessage("Your Image is downloading")
   setMessage2("Please Wait...")
@@ -114,6 +115,7 @@ const downloadProcess = (key) => {
   setMessage2("Loading event list...")
   setDownloadLoader(false)
   setModalOpen(true)
+  setDownloadPath(path)
   }
 }
 
@@ -168,7 +170,7 @@ const downloadProcess = (key) => {
    {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
    {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}
-   {modalOpen && <ModalMessage closeModal={() => setModalOpen(false)} /> }
+   {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
     </>
   );
 };

@@ -1,12 +1,14 @@
 import {use, useEffect, useState} from 'react';
 import {Text, View, StyleSheet, 
-    TouchableOpacity, TextInput} from 'react-native'
+    TouchableOpacity, TextInput, Image, Dimensions} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
 import commonStyle from '../components/Style';
 import Header from '../components/Header';
 import { useSelector } from 'react-redux';
+
+const { width, height } = Dimensions.get("window");
 const UpdateProfile = () => {
   const navigation = useNavigation();
   const [isInvalid, setIsInvalid] = useState({mobile:false, password:false})
@@ -24,13 +26,17 @@ const UpdateProfile = () => {
 const user = useSelector(state=>state.login.user)
 
 useEffect(() => {
-    if(user.email){
-        setEmail(user.email)
+    let userDetails = user
+    if(user.signInWith == "google"){
+        userDetails = user.user
     }
-    if(user.mobile){
+    if(userDetails.email){
+        setEmail(userDetails.email)
+    }
+    if(userDetails.mobile){
         setMobile(user.mobile)
     }
-    setName(user.name)
+    setName(userDetails.name)
 },[])
     return (
         <SafeAreaView style={styles.container}>
@@ -40,8 +46,17 @@ useEffect(() => {
                 <Text style={styles.title}>Update</Text>
                 </View>
                 <View style={commonStyle.section}>
+                {user?.signInWith == 'google' &&
+                <Image
+                    style={styles.profileImg}
+                    source={{
+                      uri: user?.user.photo,
+                    }}
+                  />
+                }
                     <View style={styles.inputSection}>
                     <TextInput placeholder='Full Name'
+                     editable={false}
                      placeholderTextColor="#888"
                      value={name}
                      style={commonStyle.textInput} />
@@ -49,7 +64,8 @@ useEffect(() => {
                         <Text style={commonStyle.errorMessage}>Please enter your name</Text>
                     }
                     </View>
-
+                   {
+                    mobile &&
                     <View style={styles.inputSection}>
                     <TextInput placeholder='Enter Mobile No.'
                      editable={false}
@@ -62,7 +78,8 @@ useEffect(() => {
                         <Text style={commonStyle.errorMessage}>Please enter 10 digit valid mobile</Text>
                     }
                     </View>
-
+                    }
+                  {email &&
                     <View style={styles.inputSection}>
                     <TextInput placeholder='Enter Email'
                      placeholderTextColor="#888"
@@ -73,16 +90,17 @@ useEffect(() => {
                         <Text style={commonStyle.errorMessage}>Please enter valid email</Text>
                     }
                     </View>
+                   }
 
 
-                    <View style={styles.inputSection}>
+                    {/* <View style={styles.inputSection}>
                     <TextInput placeholder='Enter your new password'
                      placeholderTextColor="#888"
                      style={commonStyle.textInput} />
 
-                    </View>
-                    <TouchableOpacity style={commonStyle.submitBtn}>
-                            <Text style={styles.btnText}>Proceed</Text>
+                    </View> */}
+                    <TouchableOpacity disabled style={{...commonStyle.submitBtn, backgroundColor:colors.border}}>
+                            <Text style={{...styles.btnText, color:"gray"}}>Proceed</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -112,7 +130,14 @@ const styles = StyleSheet.create({
     paddingVertical:10, 
     width:'100%',
     alignItems:'center'
-    }
+    },
+    profileImg: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginTop: -width / 6,
+        marginBottom: 10,
+      },
 })
 
 export default UpdateProfile

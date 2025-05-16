@@ -72,7 +72,7 @@ const ProfileScreen = () => {
     const customHeight = index % 2 === 0 ? 200 : 250;
     return (
       <View style={{width:'100%',  justifyContent:"space-around", alignItems:'center'}}>
-        <ImageCard item={item} customHeight={customHeight} downloadingImgs={downloadingImgs} />
+        <ImageCard item={item} customHeight={customHeight} downloadProcess={(key, path = "") => downloadProcess(key, path)} />
       </View>
     )
   };
@@ -127,7 +127,6 @@ const ProfileScreen = () => {
               </ImageBackground>
             </View>
 
-            {/* 📦 Box Stats Section */}
             <View style={styles.boxContainer}>
               <View style={[styles.box, { backgroundColor: colors.primaryBox }]}>
                 <View style={styles.boxContent}>
@@ -164,7 +163,7 @@ const ProfileScreen = () => {
         </View>
       }
 
-      {loader && <LoaderScreen message2={"Signing you out..."} message={""} /> }
+      {loader && <LoaderScreen backgroundColor={"white"} message2={"Signing you out..."} message={""} /> }
     </SafeAreaView>
   );
 };

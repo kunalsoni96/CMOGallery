@@ -60,16 +60,15 @@ const ImageCard = ({ item,  customHeight, downloadProcess }) => {
           return value.image
         })
        
-      await downloadAndZipImages(result)
+      let getFilePath = await downloadAndZipImages(result)
       
-      const date = new Date(item?.date);
+      const date = new Date();
 
       const day = String(date.getDate()).padStart(2, '0');  
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
 
       const formattedDate = `${day}/${month}/${year}`;
-      console.log(user)
        let object = {
           title: item.name,
           image: item.cover,
@@ -79,9 +78,12 @@ const ImageCard = ({ item,  customHeight, downloadProcess }) => {
         }
 
        let response = await dispatch(recordDownloadHistory({download:object, userId:user.userId}))
-    
+       downloadProcess(false, getFilePath)
       }
+
+      else{
       downloadProcess(false)
+      }
     }
 
     
