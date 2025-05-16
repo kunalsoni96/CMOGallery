@@ -162,7 +162,7 @@ const LoginScreen = () => {
                 </TouchableOpacity>
               </View>
 
-              <View style={commonStyle.section}>
+              {/* <View style={commonStyle.section}>
                 <TouchableOpacity
                   style={{ marginBottom: 10 }}
                   onPress={() => navigation.navigate('ForgotPasswordScreen')}
@@ -175,7 +175,7 @@ const LoginScreen = () => {
                     <Text style={commonStyle.linkText}>Register Now</Text>
                   </TouchableOpacity>
                 </View>
-              </View>
+              </View> */}
 
               <Footer />
             </View>
