@@ -24,8 +24,11 @@ export const getPhotos = createAsyncThunk(
     async(data, thunkAPI) => {
         try{
             let pagination = ``;
-            if(data.page>1){
+            if(data.page>1 && data.limit != 'full'){
                 pagination = `?page=${data.page}&limit=${data.limit}`;
+            }
+            else if(data.limit == 'full'){
+                pagination = "?limit=0"
             }
             const response = await api.get(`${baseUrl}photos/${data.id}${pagination}`,{
                 headers: {
@@ -144,14 +147,17 @@ async(userId, thunkAPI)=> {
 })
 
 export const recordDownloadHistory = createAsyncThunk('storeDownloadHistory', 
-async(userId, thunkAPI)=> {
+async(data, thunkAPI)=> {
     try{
         const response = await api.post(`${baseUrl}record-download-history`,{
-            userId
+            download:data.download,
+            userId:data.userId
         })
-        return response
+     
+        return response.data
     }
     catch(error){
+        console.log('eeeee', error)
         return thunkAPI.rejectWithValue(error.response || 'Fetched failed');
     }
 })

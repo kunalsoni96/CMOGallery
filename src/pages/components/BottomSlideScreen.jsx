@@ -79,7 +79,7 @@ export default function BottomSlideScreen(props) {
             backgroundColor: "#000"
           },
           container:{
-            height:height/1.2,
+            height:height/1.6,
             borderTopEndRadius:30,
             borderTopLeftRadius:30
           }

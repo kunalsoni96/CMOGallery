@@ -8,10 +8,11 @@ import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { downloadAndZipImages } from '../../utils/zipCreate';
 import { useState } from 'react';
-import { getPhotos } from '../../redux/actions/EventAction';
-import { useDispatch } from 'react-redux';
+import { getPhotos, recordDownloadHistory } from '../../redux/actions/EventAction';
+import { useDispatch, useSelector } from 'react-redux';
 const { width } = Dimensions.get('window')
 const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
+    const user = useSelector(state=>state.login.user)
     const navigation = useNavigation();
     const [downloadProcess, setDownloadProcess] = useState(false)
     const dispatch = useDispatch()
@@ -51,13 +52,33 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
 
     const downloadZipHandle = async() => {
       // setDownloadProcess(true)
-      let data = await dispatch(getPhotos({id:item._id, limit:1000, page:1}));
+      let data = await dispatch(getPhotos({id:item._id, limit:'full', page:2}));
+      
       if(data?.payload){
-       let result = data?.payload?.photos?.map((value)=>{
+       let result = data?.payload?.data?.photos?.map((value)=>{
           return value.image
         })
        
         // await downloadAndZipImages(selectedImages)
+      
+      const date = new Date(item?.date);
+
+      const day = String(date.getDate()).padStart(2, '0');  
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+
+      const formattedDate = `${day}/${month}/${year}`;
+      console.log(user)
+       let object = {
+          title: item.name,
+          image: item.cover,
+          photoCount: item?.photo_count,
+          date: formattedDate,
+          photoUrls: result
+        }
+
+       let response = await dispatch(recordDownloadHistory({download:object, userId:user.userId}))
+       console.log(response, 'response--')
       }
       // setDownloadProcess(false)
     }

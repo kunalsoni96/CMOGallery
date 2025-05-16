@@ -90,13 +90,12 @@ const eventSlice = createSlice({
         //search images
         builder
         .addCase(searchImage.pending, (state)=> {
-            state.loading = true;
+            // state.loading = true;
             state.error = null;
         })
         .addCase(searchImage.fulfilled, (state, action)=> {
             state.loading = false;
             // state.searchImages = action.payload
-            console.log('--------sdfsdfsd', action.payload)
             state.eventPhotos = action.payload.photos
             state.error = null;
         })

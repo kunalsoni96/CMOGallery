@@ -8,7 +8,7 @@ import Header from '../components/Header';
 import commonStyle from '../components/Style';
 import { DownloadImg } from '../assets';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserDownloadHistory } from '../../redux/actions/EventAction';
+import { getPhotos, getUserDownloadHistory } from '../../redux/actions/EventAction';
 import { useIsFocused } from '@react-navigation/native';
 const { width, height } = Dimensions.get("window");
 
@@ -26,6 +26,17 @@ const MyDashboardScreen = () => {
     }
   },[isFocused])
 
+  const downloadHandle = async() => {
+      let data = await dispatch(getPhotos({id:item._id, limit:'full', page:2}));
+      
+      if(data?.payload){
+       let result = data?.payload?.data?.photos?.map((value)=>{
+          return value.image
+        })
+
+        await downloadAndZipImages(result)
+      }
+  }
 
   const renderItem = ({item}) => {
     return (
@@ -52,7 +63,9 @@ const MyDashboardScreen = () => {
                     <Text style={styles.date}>{item?.date}</Text>
                   </View>
 
-                  <TouchableOpacity style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
+                  <TouchableOpacity 
+                  onPress={() => downloadHandle(item?._id)}
+                  style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
                     <Text style={styles.viewMore}> Download </Text>
                     <Image source={DownloadImg} style={{width:25, height:25}} />
                   </TouchableOpacity>
