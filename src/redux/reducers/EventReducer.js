@@ -16,7 +16,7 @@ const eventSlice = createSlice({
         eventId:''
     },
     reducers:{
-        removeBadge:() => {
+        removeBadge:(state) => {
             state.userDownloadViewLeft = 0
         }
     },
@@ -193,3 +193,4 @@ const eventSlice = createSlice({
 })
 
 export default eventSlice.reducer
+export const {removeBadge} = eventSlice.actions

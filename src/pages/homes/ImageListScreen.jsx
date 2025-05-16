@@ -279,43 +279,7 @@ const ImageListScreen = (props) => {
         </TouchableOpacity>
       </View>
 
-      <Modal visible={visible} transparent animationType="slide">
-        <View style={styles.modalSection}>
-          <View style={styles.modalContainer}>
-            <TouchableOpacity onPress={() => setVisible(false)} style={{ position: 'absolute', right: -10, top: -10 }}>
-              <Image source={CrossImg} style={{ width: 50, height: 50 }} />
-            </TouchableOpacity>
-            <LottieView
-              source={DownloadingImg} // Ensure correct path
-              autoPlay
-              loop
-              style={{ width: 40, height: 40 }}
-            />
-            <Text style={styles.headingText}>Creating your ZIP archive...</Text>
-            <Text style={styles.subTitle}>
-              Your selected images are being compressed into a ZIP file. You can wait here, or click the Downloads section once it's ready!
-            </Text>
-
-            <View style={{ flexDirection: 'row', marginTop: 20, width: '100%', justifyContent: 'space-around' }}>
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedImages([]);
-                  setVisible(false);
-                }}
-                style={{ ...styles.link, backgroundColor: colors.border, width: 100, borderRadius: 5, height: 40 }}
-              >
-                <Text>Cancel</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => {}} style={{ ...styles.link, backgroundColor: colors.primary, borderRadius: 5, height: 40 }}>
-                <Text style={{ color: 'white' }}>Go to Downloads</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {loader && <LoaderScreen screen="ImageListScreen" message2={message} message={''} />}
+      {loader && <LoaderScreen backgroundColor="white" screen="ImageListScreen" message2={message} message={''} />}
     </SafeAreaView>
   );
 };
@@ -351,20 +315,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
   },
-  modalSection:{
-    flex:1, 
-    alignItems:'center', 
-    justifyContent:'center'
-  },
-  modalContainer: {
-    width:width/1.1,
-    height:width/1.3,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius:10,
-    paddingHorizontal:20
-  },
+  
   fullImage: {
     width: width,
     height: height,
@@ -413,16 +364,6 @@ const styles = StyleSheet.create({
     fontSize:16,
     marginTop:-3,
     marginLeft:3
-  },
-
-  headingText:{
-    fontSize:18,
-    color:'black',
-    fontWeight:'bold',
-    marginVertical:10
-  },
-  subTitle:{
-    textAlign:'center'
   },
 
   pagination:{

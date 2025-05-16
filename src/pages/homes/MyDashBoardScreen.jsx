@@ -10,6 +10,7 @@ import { DownloadImg } from '../assets';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPhotos, getUserDownloadHistory } from '../../redux/actions/EventAction';
 import { useIsFocused } from '@react-navigation/native';
+import { removeBadge } from '../../redux/reducers/EventReducer';
 const { width, height } = Dimensions.get("window");
 
 const MyDashboardScreen = () => {
@@ -22,7 +23,7 @@ const MyDashboardScreen = () => {
     dispatch(getUserDownloadHistory(user.userId))
 
     if (isFocused) {
-      console.log('Screen is focused');
+      dispatch(removeBadge())
     }
   },[isFocused])
 
@@ -37,6 +38,8 @@ const MyDashboardScreen = () => {
         await downloadAndZipImages(result)
       }
   }
+
+
 
   const renderItem = ({item}) => {
     return (

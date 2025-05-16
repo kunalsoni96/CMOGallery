@@ -10,11 +10,11 @@ import { downloadAndZipImages } from '../../utils/zipCreate';
 import { useState } from 'react';
 import { getPhotos, recordDownloadHistory } from '../../redux/actions/EventAction';
 import { useDispatch, useSelector } from 'react-redux';
+import LoaderScreen from './LoaderScreen';
 const { width } = Dimensions.get('window')
-const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
+const ImageCard = ({ item,  customHeight, downloadProcess }) => {
     const user = useSelector(state=>state.login.user)
     const navigation = useNavigation();
-    const [downloadProcess, setDownloadProcess] = useState(false)
     const dispatch = useDispatch()
     const clickEventHandle = async() => {
       let data = JSON.parse(await AsyncStorage.getItem('events')) || [];
@@ -51,7 +51,8 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
 
 
     const downloadZipHandle = async() => {
-      // setDownloadProcess(true)
+      downloadProcess(true)
+
       let data = await dispatch(getPhotos({id:item._id, limit:'full', page:2}));
       
       if(data?.payload){
@@ -59,7 +60,7 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
           return value.image
         })
        
-        // await downloadAndZipImages(selectedImages)
+      await downloadAndZipImages(result)
       
       const date = new Date(item?.date);
 
@@ -78,9 +79,9 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
         }
 
        let response = await dispatch(recordDownloadHistory({download:object, userId:user.userId}))
-       console.log(response, 'response--')
+    
       }
-      // setDownloadProcess(false)
+      downloadProcess(false)
     }
 
     
@@ -110,18 +111,10 @@ const ImageCard = ({ item,  customHeight, downloadingImgs }) => {
             <Text style={commonStyle.title}>{item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}</Text>
             <View style={commonStyle.linksSection}>
              
-              {downloadProcess ?
-                <LottieView
-                source={DownloadingImg}
-                autoPlay
-                loop
-                style={{width:30, height:30}}
-              />
-                :
               <TouchableOpacity onPress={()  => downloadZipHandle()}>
                 <Image source={DownloadImg} style={commonStyle.linkIMg} />  
               </TouchableOpacity>
-              }
+      
               <TouchableOpacity onPress={() => onShare(`https://nbdigital.online/album/${item?._id}`)}>
                 <Image source={ShareImg} style={commonStyle.linkIMg} />
               </TouchableOpacity>

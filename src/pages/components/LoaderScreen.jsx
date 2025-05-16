@@ -5,22 +5,21 @@ import colors from '../../constants/color';
 
 const { height, width } = Dimensions.get('window');
 
-const LoaderScreen = ({message, message2, screen}) => {
+const LoaderScreen = ({message, message2, backgroundColor}) => {
   useEffect(() => {
     console.log("Animation file loaded");
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
+    <SafeAreaView style={{...styles.container, backgroundColor:backgroundColor&&backgroundColor}}>
+      <View style={{marginTop:-100}}>
         <LottieView
           source={require('./../../images/animation.json')} // Ensure correct path
           autoPlay
           loop
           style={{width:100, height:100}}
         />
-      </View>
-
+   </View>
       <View style={styles.textArea}>
         <Text style={styles.searchText}>{message}</Text>
       </View>
@@ -28,6 +27,7 @@ const LoaderScreen = ({message, message2, screen}) => {
       <View style={{...styles.textArea, top:height/1.4}}>
         <Text style={{...styles.searchText, fontSize:14}}>{message2}</Text>
       </View>
+     
     </SafeAreaView>
   );
 };
@@ -35,7 +35,7 @@ const LoaderScreen = ({message, message2, screen}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',

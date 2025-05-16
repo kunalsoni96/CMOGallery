@@ -208,6 +208,7 @@ useEffect(()=>{
                 screen={"UploadPhotoScreen"}
                 message2={"The latest AI image search."}
                 message={"Searching Related Photo..."}
+                backgroundColor="white"
                 />}
 
 

@@ -15,6 +15,7 @@ import { Banner1Img, Banner2Img, Banner3Img, FilterImg, RefreshImg } from '../as
 import LoaderScreen from '../components/LoaderScreen';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { openFilter } from '../../redux/reducers/filterReducer';
+import ModalMessage from '../components/ModalMessage';
 
 const { width, height } = Dimensions.get("window");
 
@@ -27,7 +28,7 @@ const images = [
 
 const MyCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+ 
   const onViewableItemsChanged = ({ viewableItems }) => {
     if (viewableItems.length > 0) {
       setCurrentIndex(viewableItems[0].index);
@@ -66,9 +67,6 @@ const MyCarousel = () => {
       </View>
 
   
-      {/* <Text style={styles.paginationText}>
-        {currentIndex + 1} / {images.length}
-      </Text> */}
     </View>
   );
 };
@@ -76,8 +74,10 @@ const MyCarousel = () => {
 
 const DashboardScreen = () => {
   const [image, setImage] = useState(null);
-  // const [copy, setCopy] = useState(false)
-  const [downloadingImgs, setDownloadingImgs] = useState([])
+  const [modalOpen, setModalOpen] = useState(false)
+  const [message, setMessage] = useState("")
+  const [message2, setMessage2] = useState("Loading event list...");
+  const [downloadLoader, setDownloadLoader] = useState(false)
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getEvents({}))
@@ -92,8 +92,9 @@ const DashboardScreen = () => {
   const renderItem = ({item, index}) => {
   const customHeight = index % 2 === 0 ? 200 : 250;
   return (
-  <View style={{width:'100%',  justifyContent:"space-around", alignItems:'center'}}>
-  <ImageCard item={item} customHeight={customHeight} />
+  <View style={{width:'100%',
+    justifyContent:"space-around", alignItems:'center'}}>
+    <ImageCard item={item} customHeight={customHeight} downloadProcess={(key) => downloadProcess(key)} />
   </View>
   );
 };
@@ -102,6 +103,19 @@ const filterHandle = () => {
   dispatch(openFilter())
 }
 
+const downloadProcess = (key) => {
+  if(key){
+  setMessage("Your Image is downloading")
+  setMessage2("Please Wait...")
+  setDownloadLoader(true)
+  }
+  else{
+  setMessage("")
+  setMessage2("Loading event list...")
+  setDownloadLoader(false)
+  setModalOpen(true)
+  }
+}
 
   return (
     <>
@@ -126,9 +140,6 @@ const filterHandle = () => {
                 <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
                 <View style={{flexDirection:"row",}}>
                
-                {/* <TouchableOpacity onPress={filterHandle}>
-                  <Image source={RefreshImg} style={{...styles.notificationImg, right:30}} />
-                </TouchableOpacity> */}
                 <TouchableOpacity onPress={filterHandle}>
                   <Image source={FilterImg} style={styles.notificationImg} />
                 </TouchableOpacity>
@@ -156,8 +167,8 @@ const filterHandle = () => {
    {/* {copy && <Toaster type={'success'} message={'Copied'} />} */}
    {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
-   {loader && <LoaderScreen message={""} message2={"Loading event list..."} />}
-   
+   {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}
+   {modalOpen && <ModalMessage closeModal={() => setModalOpen(false)} /> }
     </>
   );
 };

@@ -70,7 +70,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
             <View>
               <Image source={iconSource} style={styles.iconImg} />
               {/* 👇 Badge only on My Download tab (index === 3) */}
-              {index === 3 && (
+              {index === 3 && badgeCount>0 && (
                 <View style={styles.badgeContainer}>
                   <Text style={styles.badgeText}>{badgeCount}</Text>
                 </View>
