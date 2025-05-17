@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingHorizontal:10
   },
   tabButton: {
     height: 40,

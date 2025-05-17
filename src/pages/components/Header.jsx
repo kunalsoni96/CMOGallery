@@ -14,6 +14,7 @@ const Header = (props) => {
 
     const handleLogout = async () => {
       try {
+        props.onLogout()
         await Keychain.resetGenericPassword();
         dispatch(logoutUser(false))
       } catch (error) {

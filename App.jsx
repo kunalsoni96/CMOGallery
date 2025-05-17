@@ -37,10 +37,6 @@ const App = () => {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-      <StatusBar
-      backgroundColor="white"
-      translucent={true}
-    />
       <AppContent />
       </SafeAreaProvider>
     </Provider>

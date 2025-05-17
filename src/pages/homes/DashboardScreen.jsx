@@ -79,6 +79,7 @@ const DashboardScreen = () => {
   const [message2, setMessage2] = useState("Loading event list...");
   const [downloadLoader, setDownloadLoader] = useState(false)
   const [downloadPath, setDownloadPath] = useState("")
+  const [copy, setCopy] = useState(false)
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getEvents({}))
@@ -95,7 +96,14 @@ const DashboardScreen = () => {
   return (
   <View style={{width:'100%',
     justifyContent:"space-around", alignItems:'center'}}>
-    <ImageCard item={item} customHeight={customHeight} downloadProcess={(key, path = "") => downloadProcess(key, path)} />
+    <ImageCard item={item} setCopy={() => {
+      setCopy(true)
+      setTimeout(() => {
+        setCopy(false)
+      }, 3000);
+    }
+      } customHeight={customHeight} 
+      downloadProcess={(key, path = "") => downloadProcess(key, path)} />
   </View>
   );
 };
@@ -130,6 +138,7 @@ const downloadProcess = (key, path = "") => {
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
+          style={{ padding: 10}}
           ListHeaderComponent={
             <>
               <View style={{ height: height / 4 }}>
@@ -166,7 +175,7 @@ const downloadProcess = (key, path = "") => {
     </TouchableOpacity>
   </Modal>
 </SafeAreaView>
-   {/* {copy && <Toaster type={'success'} message={'Copied'} />} */}
+   {copy && <Toaster type={'success'} message={'Copied'} />}
    {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
    {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}
@@ -242,7 +251,7 @@ const styles = StyleSheet.create({
 
   },
   heading:{
-    paddingHorizontal:10,
+    paddingHorizontal:15,
     paddingTop:20,
     flexDirection:'row'
     },

@@ -37,6 +37,7 @@ const { width, height } = Dimensions.get("window");
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
   const [data, setData] = useState([])
+  const [localLoader, setLocalLoader] = useState(false)
   const navigation = useNavigation();
   const dispatch = useDispatch()
   const user = useSelector(state=>state.login.user)
@@ -79,7 +80,9 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header screen="Profile" />
+      <Header onLogout={() => {
+        setLocalLoader(true)
+      }} screen="Profile" />
 
       <View style={{flex:1, justifyContent:'space-between'}}>
           <MasonryList
@@ -88,6 +91,7 @@ const ProfileScreen = () => {
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
+          style={{ padding: 10}}
           ListHeaderComponent={
             <>
             {/* 👤 Profile Section */}
@@ -163,7 +167,7 @@ const ProfileScreen = () => {
         </View>
       }
 
-      {loader && <LoaderScreen backgroundColor={"white"} message2={"Signing you out..."} message={""} /> }
+      {(loader || localLoader) && <LoaderScreen backgroundColor={"white"} message2={"Signing you out..."} message={""} /> }
     </SafeAreaView>
   );
 };
@@ -205,7 +209,7 @@ const styles = StyleSheet.create({
   boxContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 20,
+    paddingHorizontal: 12,
     paddingVertical: 20,
     alignItems: "center",
   },
@@ -274,8 +278,7 @@ const styles = StyleSheet.create({
     alignItems:'center'
   },
   heading:{
-    paddingHorizontal:10,
-    paddingVertical:10  
+    paddingHorizontal:15,
   },
 });
 

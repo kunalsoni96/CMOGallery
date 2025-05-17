@@ -12,7 +12,7 @@ import { getPhotos, recordDownloadHistory } from '../../redux/actions/EventActio
 import { useDispatch, useSelector } from 'react-redux';
 import LoaderScreen from './LoaderScreen';
 const { width } = Dimensions.get('window')
-const ImageCard = ({ item,  customHeight, downloadProcess }) => {
+const ImageCard = ({ item,  customHeight, downloadProcess, setCopy }) => {
     const user = useSelector(state=>state.login.user)
     const navigation = useNavigation();
     const dispatch = useDispatch()
@@ -26,6 +26,7 @@ const ImageCard = ({ item,  customHeight, downloadProcess }) => {
       navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })
     }
     const copyToClipboard = (uri) => {
+        setCopy()
         Clipboard.setString(uri);
       };
 
@@ -95,7 +96,7 @@ const ImageCard = ({ item,  customHeight, downloadProcess }) => {
         >
           <ImageBackground
             source={{ uri: item?.cover }}
-            style={{ width: '100%', height: customHeight }}
+            style={{ width: '100%', height: 220 }}
             resizeMode="cover"
             imageStyle={{borderRadius:15}}
           >

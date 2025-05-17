@@ -286,7 +286,7 @@ const ImageListScreen = (props) => {
             <Text style={{color:page == 1?"gray":"white", fontWeight:'bold'}}>Previous</Text>
           </TouchableOpacity>
 
-            <View style={{...styles.paginateBtn, width:'35%'}}>
+            <View style={{...styles.paginateBtn, width:'33%'}}>
               <Text style={{color:'white', fontWeight:'bold'}}>Page {page} of {count}</Text>
             </View>
 
@@ -328,7 +328,8 @@ const styles = StyleSheet.create({
   },
   imagesSection: {
     flex: 1,
-    paddingBottom:'40%'
+    paddingBottom:'40%',
+    paddingHorizontal:10
   },
   imageCard: {
     flex: 1,
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     width: '100%',
-    height: 250,
+    height: 220,
   },
   
   fullImage: {
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
     borderRadius:10,
     paddingHorizontal:20,
     marginHorizontal:5,
-    width:'28%',
+    width:'29%',
     justifyContent:'center',
     height:40,
     alignItems:'center'

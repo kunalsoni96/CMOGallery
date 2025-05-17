@@ -11,13 +11,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getPhotos, getUserDownloadHistory } from '../../redux/actions/EventAction';
 import { useIsFocused } from '@react-navigation/native';
 import { removeBadge } from '../../redux/reducers/EventReducer';
+import { downloadAndZipImages } from '../../utils/zipCreate';
+import LoaderScreen from '../components/LoaderScreen';
+import ModalMessage from '../components/ModalMessage';
 const { width, height } = Dimensions.get("window");
 
 const MyDashboardScreen = () => {
   const dispatch = useDispatch()
+  const [message, setMessage] = useState("Downloads list is loading...")
+  const [message2, setMessage2] = useState("Please wait...");
+  const [downloadLoader, setDownloadLoader] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [downloadPath, setDownloadPath] = useState("")
   const user = useSelector(state=>state.login.user)
-  const loader = useSelector(state=>state.login.loading)
+  const loader = useSelector(state=>state.event.loading)
   const userDownloadHistory = useSelector(state=>state.event.userDownloadHistory)
+ 
   const isFocused = useIsFocused();
   useEffect(()=>{
     dispatch(getUserDownloadHistory(user.userId))
@@ -27,16 +36,17 @@ const MyDashboardScreen = () => {
     }
   },[isFocused])
 
-  const downloadHandle = async() => {
-      let data = await dispatch(getPhotos({id:item._id, limit:'full', page:2}));
-      
-      if(data?.payload){
-       let result = data?.payload?.data?.photos?.map((value)=>{
-          return value.image
-        })
-
-        await downloadAndZipImages(result)
-      }
+  const downloadZipHandle = async(item) => {
+    setDownloadLoader(true)
+    setMessage("Your image is download")
+    if(item?.photoUrls?.length>0){
+    let getFilePath = await downloadAndZipImages(item?.photoUrls)
+    
+     setDownloadPath(getFilePath)
+    }
+    setModalOpen(true)
+    setMessage("Download list is loading")
+    setDownloadLoader(true)
   }
 
 
@@ -67,7 +77,7 @@ const MyDashboardScreen = () => {
                   </View>
 
                   <TouchableOpacity 
-                  onPress={() => downloadHandle(item?._id)}
+                  onPress={() => downloadZipHandle(item)}
                   style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
                     <Text style={styles.viewMore}> Download </Text>
                     <Image source={DownloadImg} style={{width:25, height:25}} />
@@ -79,14 +89,22 @@ const MyDashboardScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header screen='My Downloads' />
-        <View style={commonStyle.section}>
+        <View style={{...commonStyle.section,}}>
             <FlatList
-            data={userDownloadHistory}
+            data={[]}
             renderItem={renderItem}
             keyExtractor={(item, index)=>index}
             />
+            
         </View>
-       
+        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+             <Text>No download history</Text>
+        </View>
+
+        
+     {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}
+     {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
+    
     </SafeAreaView>
   );
 };
