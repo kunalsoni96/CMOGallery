@@ -8,7 +8,7 @@ import Header from '../components/Header';
 import commonStyle from '../components/Style';
 import { DownloadImg } from '../assets';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPhotos, getUserDownloadHistory } from '../../redux/actions/EventAction';
+import { getPhotos, getUserDownloadHistory, recordDownloadHistory } from '../../redux/actions/EventAction';
 import { useIsFocused } from '@react-navigation/native';
 import { removeBadge } from '../../redux/reducers/EventReducer';
 import { downloadAndZipImages } from '../../utils/zipCreate';
@@ -46,7 +46,7 @@ const MyDashboardScreen = () => {
     }
     setModalOpen(true)
     setMessage("Download list is loading")
-    setDownloadLoader(true)
+    setDownloadLoader(false)
   }
 
 
@@ -80,7 +80,7 @@ const MyDashboardScreen = () => {
                   onPress={() => downloadZipHandle(item)}
                   style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
                     <Text style={styles.viewMore}> Download </Text>
-                    <Image source={DownloadImg} style={{width:25, height:25}} />
+                    {/* <Image source={DownloadImg} style={{width:25, height:25}} /> */}
                   </TouchableOpacity>
                 </View>
             </View>
@@ -91,15 +91,17 @@ const MyDashboardScreen = () => {
       <Header screen='My Downloads' />
         <View style={{...commonStyle.section,}}>
             <FlatList
-            data={[]}
+            data={userDownloadHistory}
             renderItem={renderItem}
             keyExtractor={(item, index)=>index}
             />
             
         </View>
+        {userDownloadHistory.length == 0 &&
         <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
              <Text>No download history</Text>
         </View>
+         }
 
         
      {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}

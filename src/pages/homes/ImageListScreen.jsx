@@ -192,7 +192,6 @@ const ImageListScreen = (props) => {
         date: formattedDate,
         photoUrls: selectedImages
       }
-     console.log(user, '----sdfsdfsdsdfsdf')
      let response = await dispatch(recordDownloadHistory({download:object, userId:user.userId}))
      setDownloadPath(getFilePath)
     }
@@ -248,6 +247,7 @@ const ImageListScreen = (props) => {
           </Text>
 
           <View style={{ position: 'absolute', right: 20, paddingTop: 10 }}>
+            {event?.eventPhotos?.length>0 &&
             <TouchableOpacity onPress={() => selectAllHandle()} style={{ flexDirection: 'row' }}>
               <Text style={{ fontWeight: 'bold' }}>Select All</Text>
               <View
@@ -267,6 +267,7 @@ const ImageListScreen = (props) => {
                 )}
               </View>
             </TouchableOpacity>
+             }
           </View>
         </View>
       )}
@@ -279,7 +280,7 @@ const ImageListScreen = (props) => {
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
         />
-
+   {event?.eventPhotos?.length>0 &&
         <View style={styles.pagination}>
           <TouchableOpacity disabled={page == 1} onPress={() => loadMoreHandle('previous')} 
           style={{...styles.paginateBtn, backgroundColor:page == 1?colors.border:colors.primary}}>
@@ -295,8 +296,16 @@ const ImageListScreen = (props) => {
             <Text style={{color:page == count?"gray":'white', fontWeight:'bold'}}>Next</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      }
 
+      {event.eventPhotos.length == 0 &&
+        <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+             <Text>No event photos</Text>
+        </View>
+         }
+      </View>
+      
+      {event?.eventPhotos?.length>0 &&
       <View style={styles.bottomSection}>
         <TouchableOpacity onPress={() => shareImages(selectedImages)} style={styles.link}>
           <Image source={ShareFixImg} style={{ ...styles.icon }} />
@@ -307,6 +316,8 @@ const ImageListScreen = (props) => {
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
+      }
+  
 
       {(loader || downloadProcess) && <LoaderScreen backgroundColor="white" screen="ImageListScreen" message2={message} message={''} />}
       {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} />}
