@@ -55,6 +55,7 @@ const ImageListScreen = (props) => {
   const [loader, setLoader] = useState(false);
   const [data, setData] = useState([]);
   const [message, setMessage] = useState('Loading event all images...');
+  const [message2, setMessage2] = useState('');
   const [page, setPage] = useState(1)
   const [count, setCount] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -173,8 +174,10 @@ const ImageListScreen = (props) => {
 
   
   const downloadZipHandle = async() => {
+    if(selectedImages?.length==0)return;
     setDownloadProcess(true)
-    
+    setMessage("Your selected images are downloading")
+    setMessage2("Please wait...")
     if(selectedImages?.length>0){
     let getFilePath = await downloadAndZipImages(selectedImages)
     
@@ -298,7 +301,7 @@ const ImageListScreen = (props) => {
         </View>
       }
 
-      {event.eventPhotos.length == 0 &&
+      {event.eventPhotos?.length == 0 &&
         <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
              <Text>No event photos</Text>
         </View>
@@ -319,7 +322,7 @@ const ImageListScreen = (props) => {
       }
   
 
-      {(loader || downloadProcess) && <LoaderScreen backgroundColor="white" screen="ImageListScreen" message2={message} message={''} />}
+      {(loader || downloadProcess) && <LoaderScreen  backgroundColor="rgba(255, 255, 255, 0.8)" screen="ImageListScreen" message={message} message2={message2}  />}
       {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} />}
     </SafeAreaView>
   );

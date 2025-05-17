@@ -140,12 +140,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     marginHorizontal:15,
-    
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    borderWidth:1,
+    borderColor:colors.border,
     width:'91%',
     marginVertical:5
   },
