@@ -10,6 +10,7 @@ import RNFS from 'react-native-fs';
 import { searchImage } from '../../redux/actions/EventAction';
 import LoaderScreen from '../components/LoaderScreen';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import {Image as CompressImage} from 'react-native-compressor';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 const {width, height} = Dimensions.get('window')
 const UploadPhotoScreen = () => {
@@ -107,18 +108,22 @@ useEffect(()=>{
       mediaType: 'photo',
       saveToPhotos: true,
       cameraType: 'back', 
-      quality: 0.6,
+      quality: 0.8,
     };
   
-    launchCamera(options, (response) => {
+    launchCamera(options, async(response) => {
       if (response.didCancel) {
         console.log('User cancelled camera');
       } else if (response.errorCode) {
         console.log('Camera Error: ', response.errorMessage);
       } else {
+        const compressedUri = await CompressImage.compress(response.assets[0].uri, {
+          compressionMethod: 'auto',
+          maxSize: 2, // in MB
+        })
+        response.assets[0].uri = compressedUri;
         setUserImage(response.assets[0].uri)
         setUserData(response.assets[0])
-        console.log('Image URI: ', response.assets[0].uri);
         // aap response.assets[0].uri ko upload ya local state me rakh sakte ho
       }
     });
@@ -132,7 +137,7 @@ useEffect(()=>{
       selectionLimit: 1,
     };
   
-    launchImageLibrary(options, (response) => {
+    launchImageLibrary(options, async(response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorCode) {
@@ -146,6 +151,12 @@ useEffect(()=>{
           }, 3000);
           return;
         }
+
+        const compressedUri = await CompressImage.compress(response.assets[0].uri, {
+          compressionMethod: 'auto',
+          maxSize: 2, // in MB
+        })
+        response.assets[0].uri = compressedUri;
         setUserImage(response.assets[0].uri)
         setUserData(response.assets[0])
       }

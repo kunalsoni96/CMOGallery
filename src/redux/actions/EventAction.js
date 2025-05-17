@@ -81,6 +81,7 @@ export const searchImage = createAsyncThunk(
           ]
         );
         if(response.error) return [];
+        console.log('-lsjldjflsjdlfsdf', response)
         return response.json(); 
       } catch (error) {
         console.log('error in searchImage', error);

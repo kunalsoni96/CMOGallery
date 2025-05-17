@@ -70,12 +70,14 @@ const ProfileScreen = () => {
 
 
   const renderItem = ({ item, index }) => {
+    if(data.includes(item?._id)){
     const customHeight = index % 2 === 0 ? 200 : 250;
     return (
       <View style={{width:'100%',  justifyContent:"space-around", alignItems:'center'}}>
         <ImageCard item={item} customHeight={customHeight} downloadProcess={(key, path = "") => downloadProcess(key, path)} />
       </View>
     )
+    }
   };
 
   return (
@@ -160,7 +162,7 @@ const ProfileScreen = () => {
   </View>
 
       {
-        event?.eventsList.length == 0 &&
+        data?.length == 0 &&
         <View style={{...commonStyle.notAvailableText, position:'absolute',
          bottom:10}}>
           <Text>Recent view not available</Text>
