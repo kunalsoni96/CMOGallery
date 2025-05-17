@@ -89,11 +89,12 @@ const MyDashboardScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Header screen='My Downloads' />
-        <View style={{...commonStyle.section,}}>
+        <View style={{...commonStyle.section}}>
             <FlatList
             data={userDownloadHistory}
             renderItem={renderItem}
             keyExtractor={(item, index)=>index}
+            style={{paddingBottom:20}} 
             />
             
         </View>
@@ -103,10 +104,10 @@ const MyDashboardScreen = () => {
         </View>
          }
 
-        
      {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}
      {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
-    
+   
+
     </SafeAreaView>
   );
 };
@@ -115,19 +116,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor:"white",
+    width:'100%',
+    paddingBottom:50
   },
   card:{
     flexDirection:"row",
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 16,
-    marginHorizontal:15, 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-     width:'93%',
+    borderWidth:1,
+    borderColor:colors.border,
+    width:width/1.1,
     marginTop:10
   },
   eventImg:{
@@ -147,7 +146,8 @@ const styles = StyleSheet.create({
   viewMore:{
     color:'gray',
     fontSize:12,
-    marginTop:4
+    marginTop:4,
+    height:20
   }
 });
 
