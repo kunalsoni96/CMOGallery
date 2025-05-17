@@ -1,8 +1,7 @@
 import {use, useEffect, useState} from 'react';
 import {Text, View, StyleSheet, 
-    TouchableOpacity, TextInput, Image, Dimensions} from 'react-native'
+    TouchableOpacity, TextInput, Image, Dimensions, SafeAreaView} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
 import commonStyle from '../components/Style';
 import Header from '../components/Header';

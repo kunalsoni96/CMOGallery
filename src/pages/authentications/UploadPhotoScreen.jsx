@@ -1,7 +1,6 @@
 import {useEffect, useState, useRef} from 'react';
-import {Text, View, FlatList, PermissionsAndroid, StyleSheet, BackHandler, TouchableOpacity, Image, TextInput, Platform, Dimensions} from 'react-native'
+import {Text, View, FlatList, SafeAreaView, PermissionsAndroid, StyleSheet, BackHandler, TouchableOpacity, Image, TextInput, Platform, Dimensions} from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../../constants/color'; 
 import commonStyle from '../components/Style';
 import { CameraImg, ImageUploadImg, uploadImg } from '../assets';

@@ -1,48 +1,52 @@
-import DashboardNavigation from './pages/DashboardNavigation';
-import AuthStackNavigation from './pages/AuthStackNavigation';
 import { useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 import { useDispatch, useSelector } from 'react-redux';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
+import DashboardNavigation from './pages/DashboardNavigation';
+import AuthStackNavigation from './pages/AuthStackNavigation';
 import SplashScreen from './pages/authentications/SplashScreen';
 import { googleLoggedIn, loginUser } from './redux/actions/loginAction';
-import { StatusBar,  } from 'react-native'
-import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import DeviceInfo from 'react-native-device-info';
+
 const RootNavigation = () => {
-  const insets = useSafeAreaInsets();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const isloggedUser = useSelector(state => state.login.isloggedIn);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   const checkLoginStatus = async () => {
     try {
       const credentials = await Keychain.getGenericPassword();
       if (credentials) {
         setIsAuthenticated(true);
-        let wayOfLogin = JSON.parse(credentials.password)
+        let wayOfLogin = JSON.parse(credentials.password);
 
-        if(wayOfLogin.signInWith == 'google'){
-          dispatch(googleLoggedIn(JSON.parse(credentials.password)))
-        }
-        else{
-          dispatch(loginUser({mobile:wayOfLogin.user.mobile, password:wayOfLogin.password}))
+        if (wayOfLogin.signInWith === 'google') {
+          dispatch(googleLoggedIn(wayOfLogin));
+        } else {
+          dispatch(loginUser({
+            mobile: wayOfLogin.user.mobile,
+            password: wayOfLogin.password,
+          }));
         }
       } else {
         setIsAuthenticated(false);
       }
     } catch (error) {
-      console.log('Error', error);
+      console.log('Keychain Error:', error);
       setIsAuthenticated(false);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    const init = setTimeout(() => {
       checkLoginStatus();
-    }, 1000); 
+    }, 1000); // splash screen delay
+    return () => clearTimeout(init);
   }, [isloggedUser]);
 
   if (isLoading) {
@@ -50,12 +54,19 @@ const RootNavigation = () => {
   }
 
   return (
-    <SafeAreaProvider style={{marginTop:35, marginBottom:insets.bottom}}>
-  {isAuthenticated ? 
-  <DashboardNavigation /> : <AuthStackNavigation />
-}
-  </SafeAreaProvider>
-  )
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+        {/* <StatusBar
+          backgroundColor="#ffffff" 
+        /> */}
+        {isAuthenticated ? (
+          <DashboardNavigation />
+        ) : (
+          <AuthStackNavigation />
+        )}
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
 };
 
 export default RootNavigation;
