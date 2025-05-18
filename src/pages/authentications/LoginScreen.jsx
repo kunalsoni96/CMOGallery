@@ -9,7 +9,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  Image
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,6 +27,7 @@ import Toaster from '../components/Toaster';
 import { loggedInSuccess } from '../../redux/reducers/loginReducer';
 import NetInfo from '@react-native-community/netinfo';
 import { updateNetwork } from '../../redux/reducers/NetworkReducer';
+import { LogoWhiteImg } from '../assets';
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
@@ -88,11 +90,15 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+     
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       >
+         <View style={{width:'100%', alignItems:'center'}}>
+      <Image style={{width:100, height:100}} source={LogoWhiteImg} />
+      </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent:'center' }}>
             <View style={commonStyle.contentBox}>

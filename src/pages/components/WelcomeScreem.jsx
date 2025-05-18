@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
-import { LogoImg, WelcomeImg } from '../assets';
+import { LogoWhiteImg, WelcomeImg } from '../assets';
 import colors from '../../constants/color';
 
 const { width, height } = Dimensions.get('window');
@@ -23,7 +23,7 @@ const WelcomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.background} source={WelcomeImg} resizeMode="cover">
-        <Image style={styles.logo} source={LogoImg} />
+        <Image style={styles.logo} source={LogoWhiteImg} />
         <Text style={styles.title}>Chhattisgarh</Text>
 
         <View style={styles.textRow}>
@@ -33,7 +33,7 @@ const WelcomeScreen = () => {
         </View>
 
         <Text style={styles.subTitle}>Photo Gallery App</Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')} style={styles.button}>
             <Text style={styles.buttonText}>Click To Proceed</Text>
         </TouchableOpacity>
 
@@ -46,13 +46,13 @@ const WelcomeScreen = () => {
             </View>
     
             <View style={styles.layer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('TermServiceScreen')}>
                 <Text style={styles.linkText}> Terms Of Services </Text>
             </TouchableOpacity>
             <Text style={styles.footerText}>
                 And Out
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>navigation.navigate('PrivacyPolicyScreen')}>
                 <Text style={styles.linkText}> Privacy Policy </Text>
             </TouchableOpacity>
             </View>
@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 20,
-    backgroundColor:'white',
     marginTop:-height/5
   },
   title: {

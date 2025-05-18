@@ -15,7 +15,7 @@ import WelcomeScreen from './components/WelcomeScreem';
 const Stack = createNativeStackNavigator();
 const AuthStackNavigation = () => {
   return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='SplashScreen'>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='WelcomeScreen'>
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
             <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />

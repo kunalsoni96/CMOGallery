@@ -1,5 +1,6 @@
 export const SplashImg = require('./../images/splash.png')
 export const LogoImg = require('./../images/cglogo.png')
+export const LogoWhiteImg = require('./../images/cg_logo_white.png')
 export const ViewMoreImg = require('./../images/view_more.png')
 export const BackArrowImg = require('./../images/back_arrow.png')
 export const BackWImg = require('./../images/back_w.png')

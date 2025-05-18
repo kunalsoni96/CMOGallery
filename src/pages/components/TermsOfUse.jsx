@@ -7,7 +7,7 @@ const { height, width } = Dimensions.get('window');
 const TermsOfUse = () => {
   return (
     <SafeAreaView style={styles.container}>
-        <Header screen="Terms & Conditions"/>
+        <Header screen="Terms Of Use"/>
       <WebView
         source={{ uri: 'https://nbdigital.online/info/terms-of-use' }}
         style={styles.webview}
