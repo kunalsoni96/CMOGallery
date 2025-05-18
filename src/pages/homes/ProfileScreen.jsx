@@ -44,7 +44,9 @@ const ProfileScreen = () => {
   const event = useSelector(state=>state.event)
   const loader = useSelector(state=>state.event.loading)
   const userEventData = useSelector(state=>state.event.userDownloads)
-  const [downloadingImgs, setDownloadingImgs] = useState([]);
+  const [message, setMessage] = useState("");
+  const [message2, setMessage2] = useState("");
+  const [modalOpen, setModalOpen] = useState(false)
   useEffect(()=>{
     if(user.userId){
       dispatch(getUserDownload(user.userId))
@@ -68,6 +70,20 @@ const ProfileScreen = () => {
     dispatch(getDistricts({}))
   },[])
 
+  const downloadProcess = (key, path = "") => {
+    if(key){
+    setMessage("Your Image is downloading")
+    setMessage2("Please Wait...")
+    setDownloadLoader(true)
+    }
+    else{
+    setMessage("")
+    setMessage2("Loading event list...")
+    setDownloadLoader(false)
+    setModalOpen(true)
+    setDownloadPath(path)
+    }
+  }
 
   const renderItem = ({ item, index }) => {
     if(data.includes(item?._id)){
@@ -169,7 +185,9 @@ const ProfileScreen = () => {
         </View>
       }
 
-      {(loader || localLoader) && <LoaderScreen backgroundColor={"white"} message2={"Signing you out..."} message={""} /> }
+      {(loader || localLoader) && <LoaderScreen backgroundColor={"white"} message2={message2} message={message} /> }
+      {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
+    
     </SafeAreaView>
   );
 };

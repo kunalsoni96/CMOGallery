@@ -13,11 +13,35 @@ const eventSlice = createSlice({
         userDownloads:{},
         userDownloadHistory:[],
         userDownloadViewLeft:0,
-        eventId:''
+        eventId:'',
+        downloadTrigger:false,
+        downloadWarningModal:false,
+        messageModal:false,
+        downloadPath:false
     },
     reducers:{
         removeBadge:(state) => {
             state.userDownloadViewLeft = 0
+        },
+        downloadTrigger:(state) => {
+            state.downloadTrigger = true
+            state.downloadWarningModal = false
+        },
+        resetDownloadTrigger:(state) => {
+            state.downloadTrigger = false
+            state.downloadWarningModal = false
+        },
+        downloadWarningModal:(state) => {
+            state.downloadWarningModal = true
+        },
+        openMessageModal:(state) => {
+            state.messageModal = true
+        },
+        resetMessageModal:(state) => {
+            state.messageModal = false
+        },
+        setDownloadPath:(state, action) =>{
+           state.downloadPath = action.payload
         }
     },
     extraReducers:(builder)=>{
@@ -193,4 +217,5 @@ const eventSlice = createSlice({
 })
 
 export default eventSlice.reducer
-export const {removeBadge} = eventSlice.actions
+export const { removeBadge, resetDownloadTrigger,  openMessageModal,
+    downloadTrigger, downloadWarningModal, setDownloadPath, resetMessageModal } = eventSlice.actions

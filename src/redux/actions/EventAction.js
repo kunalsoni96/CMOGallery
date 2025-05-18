@@ -149,6 +149,7 @@ async(userId, thunkAPI)=> {
 
 export const recordDownloadHistory = createAsyncThunk('storeDownloadHistory', 
 async(data, thunkAPI)=> {
+    console.log(data, 'datadatadatadata')
     try{
         const response = await api.post(`${baseUrl}record-download-history`,{
             download:data.download,

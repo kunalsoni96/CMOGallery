@@ -7,13 +7,16 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { downloadAndZipImages } from '../../utils/zipCreate';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getPhotos, recordDownloadHistory } from '../../redux/actions/EventAction';
 import { useDispatch, useSelector } from 'react-redux';
 import LoaderScreen from './LoaderScreen';
+import { downloadWarningModal, resetDownloadTrigger } from '../../redux/reducers/EventReducer';
 const { width } = Dimensions.get('window')
-const ImageCard = ({ item,  customHeight, downloadProcess, setCopy }) => {
+const ImageCard = ({ item,  customHeight, downloadProcess, setCopy, startDownload }) => {
     const user = useSelector(state=>state.login.user)
+    const eventTrigger = useSelector(state=>state.event.downloadTrigger)
+    const [itemId, setItemId] = useState("")
     const navigation = useNavigation();
     const dispatch = useDispatch()
     const clickEventHandle = async() => {
@@ -50,42 +53,55 @@ const ImageCard = ({ item,  customHeight, downloadProcess, setCopy }) => {
     }
     };
 
-
-    const downloadZipHandle = async() => {
-      downloadProcess(true)
-
-      let data = await dispatch(getPhotos({id:item._id, limit:'full', page:2}));
-      
-      if(data?.payload){
-       let result = data?.payload?.data?.photos?.map((value)=>{
-          return value.image
-        })
-       
-      let getFilePath = await downloadAndZipImages(result)
-      
-      const date = new Date();
-
-      const day = String(date.getDate()).padStart(2, '0');  
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-
-      const formattedDate = `${day}/${month}/${year}`;
-       let object = {
-          title: item.name,
-          image: item.cover,
-          photoCount: item?.photo_count,
-          date: formattedDate,
-          photoUrls: result
-        }
-
-       let response = await dispatch(recordDownloadHistory({download:object, userId:user.userId}))
-       downloadProcess(false, getFilePath)
-      }
-
-      else{
+useEffect(() => {
+  if(eventTrigger && itemId){
+  const downloadZipHandle = async() => {
+    dispatch(resetDownloadTrigger())
+    downloadProcess(true)
+    let data = await dispatch(getPhotos({id:itemId, limit:'full', page:2}));
+    
+    if(data?.payload){
+     let result = data?.payload?.data?.photos?.map((value)=>{
+        return value.image
+      })
+    if(result?.length == 0){
       downloadProcess(false)
-      }
+      return;
     }
+     
+    let getFilePath = await downloadAndZipImages(result)
+    
+    const date = new Date();
+
+    const day = String(date.getDate()).padStart(2, '0');  
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+     let object = {
+        title: item.name,
+        image: item.cover,
+        photoCount: item?.photo_count,
+        date: formattedDate,
+        photoUrls: result
+      }
+
+     let response = await dispatch(recordDownloadHistory({download:object, userId:user.userId}))
+     setItemId("")
+     downloadProcess(false, getFilePath)
+    }
+
+    else{
+    downloadProcess(false)
+    }
+  }
+  downloadZipHandle()
+}
+else{
+  dispatch(resetDownloadTrigger())
+}
+},[eventTrigger])
+    
 
     
     return (
@@ -110,11 +126,19 @@ const ImageCard = ({ item,  customHeight, downloadProcess, setCopy }) => {
               </View>
             </View>
           </ImageBackground>
-          <View style={styles.imgBottomSection}>
+          <View 
+          onStartShouldSetResponder={() => true}
+          onResponderStart={(event) => event.stopPropagation()}
+          style={styles.imgBottomSection}>
             <Text style={commonStyle.title}>{item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}</Text>
             <View style={commonStyle.linksSection}>
              
-              <TouchableOpacity onPress={()  => downloadZipHandle()}>
+              <TouchableOpacity disabled={item?.photo_count == 0} onPress={()  => 
+              {
+                setItemId(item?._id)
+                dispatch(downloadWarningModal())
+              }
+                }>
                 <Image source={DownloadImg} style={commonStyle.linkIMg} />  
               </TouchableOpacity>
       

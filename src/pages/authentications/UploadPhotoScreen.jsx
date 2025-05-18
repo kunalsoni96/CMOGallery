@@ -196,10 +196,13 @@ useEffect(()=>{
                         </View> 
                       }
                     </TouchableOpacity>
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10}}>Image Format (Jpg, Jpeg, Png)</Text>
+                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, fontWeight:'bold'}}>Image Format (Jpg, Jpeg, Png)</Text>
                    {errorMessage!="" &&
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red'}}>{errorMessage}</Text>
+                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red', fontWeight:'bold'}}>{errorMessage}</Text>
                    }
+                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red', fontWeight:'bold'}}>
+                   Dont use photos with filters, heavy editing, or blurred backgrounds
+                   </Text>
                    </View>
 
                 <View style={commonStyle.section}>

@@ -10,12 +10,14 @@ import PrivacyPolicyScreen from './components/PrivacyPolicyScreen';
 import TermServiceScreen from './components/TermServiceScreen';
 import GoogleAuthentication from './authentications/GoogleAuthentication';
 import TermsOfUse from './components/TermsOfUse';
+import WelcomeScreen from './components/WelcomeScreem';
 // import ProfileScreen from './homes/ProfileScreen';
 const Stack = createNativeStackNavigator();
 const AuthStackNavigation = () => {
   return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='LoginScreen'>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName='SplashScreen'>
             <Stack.Screen name="SplashScreen" component={SplashScreen} />
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="UploadPhotoScreen" component={UploadPhotoScreen} />

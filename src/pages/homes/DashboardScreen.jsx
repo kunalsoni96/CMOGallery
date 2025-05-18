@@ -16,6 +16,7 @@ import LoaderScreen from '../components/LoaderScreen';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { openFilter } from '../../redux/reducers/filterReducer';
 import ModalMessage from '../components/ModalMessage';
+import WarningModal from '../components/WarningModal';
 
 const { width, height } = Dimensions.get("window");
 
@@ -78,7 +79,7 @@ const DashboardScreen = () => {
   const [message, setMessage] = useState("")
   const [message2, setMessage2] = useState("Loading event list...");
   const [downloadLoader, setDownloadLoader] = useState(false)
-  const [downloadPath, setDownloadPath] = useState("")
+  
   const [copy, setCopy] = useState(false)
   const dispatch = useDispatch();
   useEffect(()=>{
@@ -89,6 +90,9 @@ const DashboardScreen = () => {
   const event = useSelector(state=>state.event)
   const loginSuccess = useSelector(state=>state.login.loginSuccess)
   const loader = useSelector(state=>state.event.loading)
+  const warningModal = useSelector(state=>state.event.downloadWarningModal)
+  const messageModal = useSelector(state=>state.event.messageModal)
+  const downloadPath = useSelector(state=>state.event.downloadPath)
   
 
   const renderItem = ({item, index}) => {
@@ -123,7 +127,6 @@ const downloadProcess = (key, path = "") => {
   setMessage2("Loading event list...")
   setDownloadLoader(false)
   setModalOpen(true)
-  setDownloadPath(path)
   }
 }
 
@@ -179,7 +182,8 @@ const downloadProcess = (key, path = "") => {
    {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
    {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}
-   {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
+   {messageModal && <ModalMessage message={downloadPath} /> }
+   {warningModal &&<WarningModal /> }
     </>
   );
 };
