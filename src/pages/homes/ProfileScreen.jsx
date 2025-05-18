@@ -32,6 +32,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MasonryList from '@react-native-seoul/masonry-list';
 import WarningModal from '../components/WarningModal';
 import ModalMessage from '../components/ModalMessage';
+import Toaster from '../components/Toaster';
 
 
 const { width, height } = Dimensions.get("window");
@@ -51,6 +52,7 @@ const ProfileScreen = () => {
   const [message2, setMessage2] = useState("");
   const [modalOpen, setModalOpen] = useState(false)
   const [downloadPath, setDownloadPath] = useState("")
+  const [copy, setCopy] = useState(false)
   const [downloadLoader, setDownloadLoader] = useState(false)
   const warningModal = useSelector(state=>state.event.downloadWarningModal)
   const isFocused = useIsFocused();
@@ -107,7 +109,14 @@ const ProfileScreen = () => {
     const customHeight = index % 2 === 0 ? 200 : 250;
     return (
       <View style={{width:'100%',  justifyContent:"space-around", alignItems:'center'}}>
-        <ImageCard item={item} customHeight={customHeight} downloadProcess={(key, path = "") => downloadProcess(key, path)} />
+        <ImageCard item={item}
+        setCopy={() => {
+          setCopy(true)
+          setTimeout(() => {
+            setCopy(false)
+          }, 3000);
+        }}
+         customHeight={customHeight} downloadProcess={(key, path = "") => downloadProcess(key, path)} />
       </View>
     )
     }
@@ -206,7 +215,7 @@ const ProfileScreen = () => {
 
       {(loader || localLoader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message2={message2} message={message} /> }
       {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
-    
+      {copy && <Toaster type={'success'} message={'Copied'} />}
        {/* {localWarningCheck &&<WarningModal /> } */}
     </SafeAreaView>
   );

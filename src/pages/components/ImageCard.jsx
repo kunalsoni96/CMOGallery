@@ -33,7 +33,9 @@ const ImageCard = ({ item,  customHeight, downloadProcess, setCopy, startDownloa
       navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })
     }
     const copyToClipboard = (uri) => {
-        setCopy()
+      if (typeof setCopy === 'function') {
+        setCopy();
+      } 
         Clipboard.setString(uri);
       };
 
