@@ -22,6 +22,7 @@ import {
 } from '../assets';
 import Header from '../components/Header';
 import ImageCard from '../components/ImageCard';
+import { useIsFocused } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import commonStyle from '../components/Style';
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,6 +30,8 @@ import { getDistricts, getEvents, getUserDownload } from '../../redux/actions/Ev
 import LoaderScreen from '../components/LoaderScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MasonryList from '@react-native-seoul/masonry-list';
+import WarningModal from '../components/WarningModal';
+import ModalMessage from '../components/ModalMessage';
 
 
 const { width, height } = Dimensions.get("window");
@@ -47,6 +50,10 @@ const ProfileScreen = () => {
   const [message, setMessage] = useState("");
   const [message2, setMessage2] = useState("");
   const [modalOpen, setModalOpen] = useState(false)
+  const [downloadPath, setDownloadPath] = useState("")
+  const [downloadLoader, setDownloadLoader] = useState(false)
+  const warningModal = useSelector(state=>state.event.downloadWarningModal)
+  const isFocused = useIsFocused();
   useEffect(()=>{
     if(user.userId){
       dispatch(getUserDownload(user.userId))
@@ -63,7 +70,7 @@ const ProfileScreen = () => {
         console.log(e, 'testing');
       }
     })();
-  }, []);
+  }, [isFocused]);
 
   useEffect(()=>{
     dispatch(getEvents({}))
@@ -80,6 +87,7 @@ const ProfileScreen = () => {
     setMessage("")
     setMessage2("Loading event list...")
     setDownloadLoader(false)
+    setLocalLoader(false)
     setModalOpen(true)
     setDownloadPath(path)
     }
@@ -185,9 +193,10 @@ const ProfileScreen = () => {
         </View>
       }
 
-      {(loader || localLoader) && <LoaderScreen backgroundColor={"white"} message2={message2} message={message} /> }
+      {(loader || localLoader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message2={message2} message={message} /> }
       {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
     
+       {warningModal &&<WarningModal /> }
     </SafeAreaView>
   );
 };

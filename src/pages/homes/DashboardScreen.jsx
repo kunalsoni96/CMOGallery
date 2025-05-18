@@ -79,7 +79,7 @@ const DashboardScreen = () => {
   const [message, setMessage] = useState("")
   const [message2, setMessage2] = useState("Loading event list...");
   const [downloadLoader, setDownloadLoader] = useState(false)
-  
+  const [path, setPath] = useState("")
   const [copy, setCopy] = useState(false)
   const dispatch = useDispatch();
   useEffect(()=>{
@@ -92,7 +92,7 @@ const DashboardScreen = () => {
   const loader = useSelector(state=>state.event.loading)
   const warningModal = useSelector(state=>state.event.downloadWarningModal)
   const messageModal = useSelector(state=>state.event.messageModal)
-  const downloadPath = useSelector(state=>state.event.downloadPath)
+  // const downloadPath = useSelector(state=>state.event.downloadPath)
   
 
   const renderItem = ({item, index}) => {
@@ -127,6 +127,7 @@ const downloadProcess = (key, path = "") => {
   setMessage2("Loading event list...")
   setDownloadLoader(false)
   setModalOpen(true)
+  setPath(path)
   }
 }
 
@@ -182,7 +183,10 @@ const downloadProcess = (key, path = "") => {
    {loginSuccess && <Toaster type={'success'} message={'LoggedIn Successfully'} />}
    <BottomSlideScreen />
    {(loader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message={message} message2={message2} />}
-   {messageModal && <ModalMessage message={downloadPath} /> }
+   {modalOpen && <ModalMessage closeModal={() => {
+    setPath("")
+    setModalOpen(false)
+   }} message={path} /> }
    {warningModal &&<WarningModal /> }
     </>
   );

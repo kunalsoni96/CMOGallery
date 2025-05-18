@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
     modalSection:{
         flex:1, 
         alignItems:'center', 
-        justifyContent:'center'
+        justifyContent:'center',
+       
       },
       modalContainer: {
         width:width/1.1,
@@ -54,7 +55,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius:10,
-        paddingHorizontal:20
+        paddingHorizontal:20,
+        borderColor:colors.primary,
+        borderWidth:1
       },
 
       headingText:{

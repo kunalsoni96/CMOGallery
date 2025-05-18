@@ -58,7 +58,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius:10,
-        paddingHorizontal:20
+        paddingHorizontal:20,
+        borderColor:colors.primary,
+        borderWidth:1
       },
 
       headingText:{

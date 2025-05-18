@@ -84,12 +84,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 28,
     color: 'white',
-    marginBottom: 10,
   },
   textRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
   },
   subTitle: {
     fontWeight: 'bold',
@@ -102,9 +100,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   button:{
-    marginTop:10,
+    marginTop:30,
     backgroundColor:'white',
-    width:width/1.5,
+    width:width/1.2,
     height:50,
     borderRadius:40,
     justifyContent:'center',
