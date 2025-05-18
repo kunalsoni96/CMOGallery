@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
       },
       link: {
         width:'auto',
-        paddingHorizontal:40,
+        paddingHorizontal:30,
         height: 55,
         borderRadius: 30,
         justifyContent: 'center',

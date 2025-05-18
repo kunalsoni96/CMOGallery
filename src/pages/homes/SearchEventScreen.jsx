@@ -124,7 +124,12 @@ const SearchEventScreen = () => {
         renderItem={renderItem}
         keyExtractor={item => item?._id}
           />
-        
+        {
+        event?.eventsList?.length == 0 &&
+        <View style={commonStyle.notAvailableText}>
+          <Text>No result found</Text>
+        </View>
+      }
     </SafeAreaView>
   );
 };

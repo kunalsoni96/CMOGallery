@@ -25,6 +25,10 @@ const ImageCard = ({ item,  customHeight, downloadProcess, setCopy, startDownloa
       if(!data.includes(item?._id)){
         result.unshift(item?._id)
       }
+      else{
+        result = data.filter(id => id !== item?._id);
+        result.unshift(item?._id)
+      }
       AsyncStorage.setItem('events', JSON.stringify(result))
       navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })
     }

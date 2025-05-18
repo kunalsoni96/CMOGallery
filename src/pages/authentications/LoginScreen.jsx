@@ -42,6 +42,7 @@ const LoginScreen = () => {
   const loader = useSelector(state => state.login.loading);
 
   const submitHandle = async () => {
+    setLoading(true);
     const netState = await NetInfo.fetch();
     if (!netState.isConnected || !netState.isInternetReachable) {
       dispatch(updateNetwork());
@@ -77,17 +78,20 @@ const LoginScreen = () => {
     } catch (error) {
       console.log('---', error);
     }
+   setTimeout(() => {
+    setLoading(false)
+   }, 2000);
   };
 
   useEffect(() => {
-    if (loader) {
+    if (loading) {
       setLoading(true);
     } else {
       setTimeout(() => {
         setLoading(false);
-      }, 1500);
+      }, 2000);
     }
-  }, [loader]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,7 +112,7 @@ const LoginScreen = () => {
                 {/* <Text style={styles.subTitle}>On Click Download</Text> */}
               </View>
 
-              <GoogleSignIn callback={() => setLoader(true)} />
+              <GoogleSignIn callback={() => setLoading(true)} />
 
               <View style={commonStyle.dividerContainer}>
                 <View style={{ ...commonStyle.hr, width: '20%' }}></View>
@@ -190,7 +194,7 @@ const LoginScreen = () => {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
 
-      {loading && <LoaderScreen backgroundColor={"white"} message2={'Authenticating'} message="Signing you in" />}
+      {(loading || loader) && <LoaderScreen backgroundColor={"white"} message2={'Authenticating'} message="Signing you in" />}
       {error && !loading && <Toaster type="error" message="Mobile or Password is Invalid" />}
       {/* </ImageBackground> */}
     </SafeAreaView>

@@ -113,6 +113,8 @@ const ProfileScreen = () => {
     }
   };
 
+
+ const result = data.map(id => event?.eventsList.find(item => item._id === id));
   return (
     <SafeAreaView style={styles.container}>
       <Header onLogout={() => {
@@ -121,8 +123,8 @@ const ProfileScreen = () => {
 
       <View style={{flex:1, justifyContent:'space-between'}}>
           <MasonryList
-          data={event?.eventsList}
-          keyExtractor={(item) => item._id}
+          data={result}
+          keyExtractor={(item) => item?._id}
           numColumns={2}
           showsVerticalScrollIndicator={false}
           renderItem={renderItem}
