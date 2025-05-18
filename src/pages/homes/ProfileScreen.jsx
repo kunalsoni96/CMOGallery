@@ -38,7 +38,7 @@ const { width, height } = Dimensions.get("window");
 
 
 const ProfileScreen = () => {
-  const [image, setImage] = useState(null);
+  // const [localWarningCheck, setLocalWarningCheck] = useState(null);
   const [data, setData] = useState([])
   const [localLoader, setLocalLoader] = useState(false)
   const navigation = useNavigation();
@@ -92,6 +92,15 @@ const ProfileScreen = () => {
     setDownloadPath(path)
     }
   }
+
+//   useEffect(() => {
+//     if(warningModal){
+//      setLocalWarningCheck(true)
+//     }
+//     else{
+//      setLocalWarningCheck(false)
+//     }
+//  },[warningModal])
 
   const renderItem = ({ item, index }) => {
     if(data.includes(item?._id)){
@@ -151,7 +160,7 @@ const ProfileScreen = () => {
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>navigation.navigate('UpdateProfile')} style={styles.profileColumn}>
                     <Image source={EditImg} style={styles.iconImg} />
-                    <Text style={styles.iconText}>Edit Profile</Text>
+                    <Text style={styles.iconText}>View Profile</Text>
                   </TouchableOpacity>
                 </View>
               </ImageBackground>
@@ -196,7 +205,7 @@ const ProfileScreen = () => {
       {(loader || localLoader || downloadLoader) && <LoaderScreen backgroundColor="rgba(255, 255, 255, 0.8)" message2={message2} message={message} /> }
       {modalOpen && <ModalMessage message={downloadPath} closeModal={() => setModalOpen(false)} /> }
     
-       {warningModal &&<WarningModal /> }
+       {/* {localWarningCheck &&<WarningModal /> } */}
     </SafeAreaView>
   );
 };

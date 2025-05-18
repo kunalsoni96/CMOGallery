@@ -50,7 +50,7 @@ const WelcomeScreen = () => {
                 <Text style={styles.linkText}> Terms Of Services </Text>
             </TouchableOpacity>
             <Text style={styles.footerText}>
-                And Out
+                And Our
             </Text>
             <TouchableOpacity onPress={()=>navigation.navigate('PrivacyPolicyScreen')}>
                 <Text style={styles.linkText}> Privacy Policy </Text>
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     marginTop:-height/5
   },
   title: {
-    fontWeight: '600',
-    fontSize: 28,
+    fontWeight: '900',
+    fontSize: 26,
     color: 'white',
   },
   textRow: {
@@ -90,17 +90,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   subTitle: {
-    fontWeight: 'bold',
+    fontWeight: '900',
     fontSize: 26,
     color: 'white',
     marginHorizontal: 5,
+    marginVertical:-3
   },
   highlightText: {
     color: colors.secondary,
-    fontWeight: 'bold',
+    fontWeight: '900',
   },
   button:{
-    marginTop:30,
+    marginTop:40,
     backgroundColor:'white',
     width:width/1.2,
     height:50,

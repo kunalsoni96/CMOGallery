@@ -10,7 +10,8 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Image
+  Image,
+  ImageBackground
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -90,7 +91,7 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-     
+     {/* <ImageBackground source={{}}> */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -104,7 +105,7 @@ const LoginScreen = () => {
             <View style={commonStyle.contentBox}>
               <View style={commonStyle.section}>
                 <Text style={styles.title}>AI Based CMO Gallery</Text>
-                <Text style={styles.subTitle}>On Click Download</Text>
+                {/* <Text style={styles.subTitle}>On Click Download</Text> */}
               </View>
 
               <GoogleSignIn callback={() => setLoader(true)} />
@@ -191,6 +192,7 @@ const LoginScreen = () => {
 
       {loading && <LoaderScreen backgroundColor={"white"} message2={'Authenticating'} message="Signing you in" />}
       {error && !loading && <Toaster type="error" message="Mobile or Password is Invalid" />}
+      {/* </ImageBackground> */}
     </SafeAreaView>
   );
 };

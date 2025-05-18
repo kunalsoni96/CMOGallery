@@ -79,6 +79,7 @@ const DashboardScreen = () => {
   const [message, setMessage] = useState("")
   const [message2, setMessage2] = useState("Loading event list...");
   const [downloadLoader, setDownloadLoader] = useState(false)
+  const [localWarningCheck, setLocalWarningCheck] = useState(false)
   const [path, setPath] = useState("")
   const [copy, setCopy] = useState(false)
   const dispatch = useDispatch();
@@ -130,6 +131,15 @@ const downloadProcess = (key, path = "") => {
   setPath(path)
   }
 }
+
+useEffect(() => {
+   if(warningModal){
+    setLocalWarningCheck(true)
+   }
+   else{
+    setLocalWarningCheck(false)
+   }
+},[warningModal])
 
   return (
     <>
@@ -187,7 +197,7 @@ const downloadProcess = (key, path = "") => {
     setPath("")
     setModalOpen(false)
    }} message={path} /> }
-   {warningModal &&<WarningModal /> }
+   {localWarningCheck &&<WarningModal /> }
     </>
   );
 };

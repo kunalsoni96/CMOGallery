@@ -45,7 +45,7 @@ const RootNavigation = () => {
   useEffect(() => {
     const init = setTimeout(() => {
       checkLoginStatus();
-    }, 1000); // splash screen delay
+    }, 2000); // splash screen delay
     return () => clearTimeout(init);
   }, [isloggedUser]);
 

@@ -31,7 +31,7 @@ const WarningModal = () => {
               <TouchableOpacity
               onPress={() => dispatch(downloadTrigger())}
                style={{ ...styles.link, backgroundColor: colors.primary, borderRadius: 5, height: 40 }}>
-                <Text style={{ color: 'white' }}>Yes Proceed</Text>
+                <Text style={{ color: 'white' }}>Yes To Proceed</Text>
               </TouchableOpacity>
             </View>
           </View>
