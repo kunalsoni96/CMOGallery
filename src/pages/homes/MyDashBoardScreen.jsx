@@ -38,7 +38,7 @@ const MyDashboardScreen = () => {
 
   const downloadZipHandle = async(item) => {
     setDownloadLoader(true)
-    setMessage("Your image is download")
+    setMessage("Your image is downloading")
     if(item?.photoUrls?.length>0){
     let getFilePath = await downloadAndZipImages(item?.photoUrls)
     

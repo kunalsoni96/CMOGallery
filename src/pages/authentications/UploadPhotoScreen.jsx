@@ -133,11 +133,13 @@ useEffect(()=>{
 
   const openGallery = () => {
     const options = {
-      mediaType: 'photo', // 'video' bhi use kar sakte ho
+      mediaType: 'photo', 
       selectionLimit: 1,
     };
-  
+    
     launchImageLibrary(options, async(response) => {
+      // console.log(response, 'testing')
+     
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorCode) {
@@ -161,8 +163,6 @@ useEffect(()=>{
         setUserData(response.assets[0])
       }
     });
-
-    setShowModal(false)
   };
 
     return (
@@ -253,12 +253,25 @@ useEffect(()=>{
             <Text style={{fontSize:16, color:colors.primary, fontWeight:'bold'}}>Choose an Action</Text>
           </View>
           <View style={styles.header}>
-              <TouchableOpacity onPress={() => openGallery()} style={styles.uploadImg}>
+              <TouchableOpacity onPress={() => {
+                setShowModal(false)
+                setTimeout(() => {
+                  openGallery()
+                }, 500);
+              }
+              } style={styles.uploadImg}>
                  <Image style={styles.uploadImg} source={ImageUploadImg} />
                  <Text style={{color:colors.primary, fontWeight:'bold', marginTop:5}}>Gallery</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => openCamera()} style={styles.uploadImg}>
+              <TouchableOpacity onPress={() => 
+              {
+                setShowModal(false)
+                setTimeout(() => {
+                  openCamera()
+                }, 500);
+              }
+              } style={styles.uploadImg}>
                  <Image style={styles.uploadImg} source={CameraImg} />
                  <Text style={{color:colors.primary, fontWeight:'bold', marginTop:5}}>Camera</Text>
               </TouchableOpacity>

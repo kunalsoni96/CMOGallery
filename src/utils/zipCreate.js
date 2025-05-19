@@ -37,7 +37,14 @@ export const downloadAndZipImages = async (imageUrls) => {
     }
   
     // 🗜️ Create ZIP file in Download folder
-    const zipPath = `${RNFS.DownloadDirectoryPath}/my_images_${Date.now()}.zip`;
+    let zipPath = "";
+    if(Platform.OS == 'ios'){
+      zipPath = `${RNFS.DocumentDirectoryPath}/my_images_${Date.now()}.zip`;
+    }
+    else{
+      zipPath = `${RNFS.DownloadDirectoryPath}/my_images_${Date.now()}.zip`;
+    }
+    
   
     try {
       const result = await zip(tempFolderPath, zipPath);
