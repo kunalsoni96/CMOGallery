@@ -42,7 +42,7 @@ const LoginScreen = () => {
   const loader = useSelector(state => state.login.loading);
 
   const submitHandle = async () => {
-    setLoading(true);
+    
     const netState = await NetInfo.fetch();
     if (!netState.isConnected || !netState.isInternetReachable) {
       dispatch(updateNetwork());
@@ -56,7 +56,7 @@ const LoginScreen = () => {
         setIsInvalid({ ...isInvalid, password: true });
         return;
       }
-
+      setLoading(true);
       let result = await dispatch(loginUser({ mobile, password }));
 
       if (result.error) {
