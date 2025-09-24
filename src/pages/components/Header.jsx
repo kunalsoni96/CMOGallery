@@ -1,5 +1,5 @@
 import {View, TouchableOpacity, Text, Image, StyleSheet} from 'react-native'
-import { LogoImg, NotImg, FilterImg, BackArrowImg, BackWImg, EditImg, LogoutImg  } from '../assets';
+import { LogoImg, NotImg, FilterImg, BackArrowImg, BackWImg, EditImg, LogoutImg, SearchImg, SerachDarkImg  } from '../assets';
 import { useNavigation } from '@react-navigation/native';
 import {  useDispatch } from 'react-redux';
 import colors from '../../constants/color';
@@ -23,7 +23,7 @@ const Header = (props) => {
     };
 
     const getEventHandle = ()  => {
-      dispatch(getEvents({}))
+      dispatch(getEvents({with_cm:'with'}))
       dispatch(getDistricts({}))
     }
 
@@ -32,8 +32,8 @@ const Header = (props) => {
       <View style={{...styles.headerColumn, flexDirection:"row", width:"100%"}}>
       {props.screen=='DashboardScreen' ?
         <TouchableOpacity onPress={() => getEventHandle()} style={{flexDirection:"row",  width:"50%"}}>
-          <Image source={LogoImg} style={styles.logo} />
-          <Text style={styles.dashboardText}> Dashboard</Text>
+          {/* <Image source={LogoImg} style={styles.logo} /> */}
+          <Text style={styles.dashboardText}> CMO AI Gallery</Text>
         </TouchableOpacity>
         :
         <View  style={{flexDirection:"row",  width:"100%"}}>
@@ -43,16 +43,16 @@ const Header = (props) => {
           <Text  style={[styles.searchText, { color: props.screen === 'Profile' ? 'white' : colors.primary }]}>{props.screen}</Text>
         </View>
       }
-        {/* {props.screen=='DashboardScreen' &&
+        {props.screen=='DashboardScreen' &&
         <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
           <View style={{flexDirection:"row"}}>
-          <TouchableOpacity onPress={filterHandle}>
-            <Image source={FilterImg} style={styles.notificationImg} />
+          <TouchableOpacity onPress={() => navigation.navigate('SearchEventScreen')}>
+            <Image source={SerachDarkImg} style={styles.notificationImg} />
           </TouchableOpacity>
-          <Image source={NotImg} style={styles.notificationImg} />
+          {/* <Image source={SearchImg} style={styles.notificationImg} /> */}
           </View>
         </View>
-        } */}
+        }
 
       {props.screen=='Profile' &&
         <View style={styles.rightSection}>

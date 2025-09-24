@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import colors from '../../constants/color';
 import Header from '../components/Header';
-import { CrossImg, DownloadFixImg, DownloadingImg, ShareFixImg } from '../assets';
+import { CrossImg, DownNavImg, DownloadDarkImg, DownloadFixImg, DownloadingImg, Share4Img, ShareFixImg } from '../assets';
 import commonStyle from '../components/Style';
 import { useDispatch, useSelector } from 'react-redux';
 import { getPhotos, recordDownloadHistory, searchImage } from '../../redux/actions/EventAction';
@@ -311,11 +311,11 @@ const ImageListScreen = (props) => {
       {event?.eventPhotos?.length>0 &&
       <View style={styles.bottomSection}>
         <TouchableOpacity onPress={() => shareImages(selectedImages)} style={styles.link}>
-          <Image source={ShareFixImg} style={{ ...styles.icon }} />
+          <Image source={Share4Img} style={{ ...styles.icon }} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => downloadZipHandle()} style={[styles.link, { backgroundColor: colors.primary }]}>
-          <Image source={DownloadFixImg} style={styles.icon} />
+          <Image source={DownNavImg} style={styles.icon} />
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
       </View>
@@ -378,7 +378,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.secondary,
+    borderWidth:1,
+    borderColor:colors.primary,
     flexDirection: 'row',
   },
   linkText: {

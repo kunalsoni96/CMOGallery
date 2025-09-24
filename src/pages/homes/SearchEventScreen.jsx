@@ -57,7 +57,7 @@ const SearchEventScreen = () => {
   const [suggestions, setSuggestions] = useState([]);
   const dispatch = useDispatch();
   useEffect(()=>{
-    dispatch(getEvents({}))
+    dispatch(getEvents({with_cm:'with'}))
   },[])
 
   const event = useSelector(state=>state.event)

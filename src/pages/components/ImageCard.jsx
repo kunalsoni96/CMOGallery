@@ -118,7 +118,7 @@ else{
         >
           <ImageBackground
             source={{ uri: item?.cover }}
-            style={{ width: '100%', height: 220 }}
+            style={{ width: '100%', height: 200 }}
             resizeMode="cover"
             imageStyle={{borderRadius:15}}
           >

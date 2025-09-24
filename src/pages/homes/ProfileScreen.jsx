@@ -75,7 +75,7 @@ const ProfileScreen = () => {
   }, [isFocused]);
 
   useEffect(()=>{
-    dispatch(getEvents({}))
+    dispatch(getEvents({with_cm:'with'}))
     dispatch(getDistricts({}))
   },[])
 
@@ -286,7 +286,8 @@ const styles = StyleSheet.create({
   },
   boxLabel: {
     fontSize: 15,
-    color:colors.primary
+    color:'black',
+    fontWeight:'bold'
   },
   imagesSection: {
     flexDirection: "row",

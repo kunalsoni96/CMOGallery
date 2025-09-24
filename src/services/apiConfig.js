@@ -1,1 +1,1 @@
-export const baseUrl = "https://api.homecomputer.online/";
+export const baseUrl = "https://api.homecomputer.online/light/";

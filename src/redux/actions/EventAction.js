@@ -4,12 +4,12 @@ import api from "../../utils/api";
 import RNFetchBlob from 'rn-fetch-blob';
 export const getEvents = createAsyncThunk(
     "events/get",
-    async ({}, thunkAPI) => {
+    async (data, thunkAPI) => {
         try{
-            const response = await api.get(`${baseUrl}albums`,{
+            const response = await api.get(`${baseUrl}albums?with_cm=${data.with_cm}`,{
                 headers: {
                     Accept: 'application/json',
-                  }
+                  },
             })
             return response.data
         }

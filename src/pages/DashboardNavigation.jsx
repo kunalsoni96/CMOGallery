@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity } from 'react-native';
 import DashboardScreen from './homes/DashboardScreen';
 import MyDashboardScreen from './homes/MyDashBoardScreen';
+import EventCornerDetailsScreen from './homes/EventCornerDetailsScreen';
 import SearchEventScreen from './homes/SearchEventScreen';
 import colors from '../constants/color';
 import {
@@ -17,6 +18,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import UpdateProfile from './homes/UpdateProfile';
 import LoaderScreen from './components/LoaderScreen';
 import { useSelector } from 'react-redux'; // 👈 Redux selector
+import EventCornerScreen from './homes/EventCornerScreen';
+import JanPatrikaScreen from './homes/JanPatrikaScreen';
+import JanPatrikaDetailsScreen from './homes/JanPatrikaDetailsScreen';
+import PhotoGalleryScreen from './homes/PhotoGalleryScreen';
+import VideoGalleryScreen from './homes/VideoGalleryScreen';
 
 const BottomStack = createBottomTabNavigator();
 const { width } = Dimensions.get('window');
@@ -104,6 +110,12 @@ const DashboardNavigation = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={TabNavigation} />
       <Stack.Screen name="ImageListScreen" component={ImageListScreen} />
+      <Stack.Screen name="EventCornerDetailsScreen" component={EventCornerDetailsScreen} />
+      <Stack.Screen name="EventCornerScreen" component={EventCornerScreen} />
+      <Stack.Screen name="JanPatrikaScreen" component={JanPatrikaScreen} />
+      <Stack.Screen name="VideoGalleryScreen" component={VideoGalleryScreen} />
+      <Stack.Screen name="JanPatrikaDetailsScreen" component={JanPatrikaDetailsScreen} />
+      <Stack.Screen name="PhotoGalleryScreen" component={PhotoGalleryScreen} />
       <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
       <Stack.Screen name="LoaderScreen" component={LoaderScreen} />
     </Stack.Navigator>
