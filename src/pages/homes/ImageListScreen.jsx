@@ -316,7 +316,7 @@ const ImageListScreen = (props) => {
           <Image source={Share4Img} style={{ ...styles.icon }} />
           <Text style={styles.linkText}> Share</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => downloadZipHandle()} style={[styles.link, { backgroundColor: colors.primary }]}>
+        <TouchableOpacity onPress={() => downloadZipHandle()} style={[styles.link, { backgroundColor: colors.primary, borderColor:colors.primary }]}>
           <Image source={DownNavImg} style={styles.icon} />
           <Text style={[styles.linkText, { color: colors.secondary }]}> Download</Text>
         </TouchableOpacity>
@@ -381,12 +381,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth:1,
-    borderColor:colors.primary,
+    // borderColor:colors.primary,
     flexDirection: 'row',
   },
   linkText: {
     fontSize: 16,
-    color: colors.primary,
+    // color: colors.primary,
   },
   icon: {
     width: 20,
