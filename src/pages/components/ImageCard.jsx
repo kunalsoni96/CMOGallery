@@ -123,7 +123,7 @@ else{
             imageStyle={{borderRadius:15}}
           >
             <View style={commonStyle.directoryContent}>
-              <View>
+              <View style={{marginLeft:10}}>
                 <Text style={commonStyle.imageCountText}>{item.photo_count}</Text>
                 <Text style={commonStyle.photosText}>photos</Text>
               </View>
@@ -139,14 +139,14 @@ else{
             <Text style={commonStyle.title}>{item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}</Text>
             <View style={commonStyle.linksSection}>
              
-              <TouchableOpacity disabled={item?.photo_count == 0} onPress={()  => 
+              {/* <TouchableOpacity disabled={item?.photo_count == 0} onPress={()  => 
               {
                 setItemId(item?._id)
                 dispatch(downloadWarningModal())
               }
                 }>
                 <Image source={DownloadImg} style={commonStyle.linkIMg} />  
-              </TouchableOpacity>
+              </TouchableOpacity> */}
       
               <TouchableOpacity onPress={() => onShare(`https://nbdigital.online/album/${item?._id}`)}>
                 <Image source={ShareImg} style={commonStyle.linkIMg} />
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     },
     
     eventDateSection:{
-    width: width / 4, 
+    width: width / 1.5, 
     justifyContent: "center", 
     alignItems: "flex-end" 
 },

@@ -108,14 +108,14 @@ const commonStyle = StyleSheet.create({
       },
 
     title:{
-        fontSize:16,
-        color:colors.primary,
+        fontSize:18,
+        // color:colors.primary,
         fontWeight:'500'
     },
     linksSection:{
         flexDirection:"row",
         justifyContent:"space-between",
-        width:width/3,
+        width:width/5,
         marginTop:10
       },
       linkIMg:{

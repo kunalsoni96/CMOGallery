@@ -8,6 +8,7 @@ import {
   Image,
   FlatList,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeFilter } from '../../redux/reducers/filterReducer';
@@ -28,7 +29,7 @@ export default function BottomSlideScreen(props) {
   const isOpen = useSelector((state) => state.filter.isOpen);
   const districts = useSelector((state) => state.event?.districts);
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   useEffect(() => {
     if (isOpen) {
       refRBSheet.current?.open();
@@ -46,6 +47,7 @@ export default function BottomSlideScreen(props) {
     setTimeout(async () => {
       await dispatch(searchEventByDistrict(isChecked));
     }, 0);
+    navigation.navigate('PhotoGalleryScreen')
   };
 
   const renderItem = ({ item }) => {

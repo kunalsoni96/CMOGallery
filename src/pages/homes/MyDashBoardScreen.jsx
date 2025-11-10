@@ -78,8 +78,15 @@ const MyDashboardScreen = () => {
 
                   <TouchableOpacity 
                   onPress={() => downloadZipHandle(item)}
-                  style={{flexDirection:'row', borderWidth:1, width:'70%', borderColor:colors.border, borderRadius:5, padding:5, justifyContent:'center'}}>
-                    <Text style={styles.viewMore}> Download </Text>
+                  style={{
+                  // borderWidth:1, 
+                  width:'70%', 
+                  // borderColor:colors.border, borderRadius:5, 
+                  // padding:5, 
+                  // justifyContent:'center'
+                  }}>
+                    <Text style={styles.viewMore}> Downloaded </Text>
+                    <View style={{width:78, marginTop:-2, marginLeft:4, height:1, backgroundColor:'#686868'}}></View>
                     {/* <Image source={DownloadImg} style={{width:25, height:25}} /> */}
                   </TouchableOpacity>
                 </View>
@@ -141,13 +148,15 @@ const styles = StyleSheet.create({
     padding:10
   },
   date:{
-    fontSize:12
+    fontSize:14,
+    color:'#686868'
   },
   viewMore:{
-    color:'gray',
-    fontSize:12,
+    color:'#686868',
+    fontSize:14,
     marginTop:4,
-    height:20
+    height:20,
+    // textDecorationLine: 'underline' 
   }
 });
 

@@ -191,7 +191,7 @@ useEffect(() => {
   return (
     <>
    <SafeAreaView style={styles.container}>
-  <Header screen='DashboardScreen' />
+  <Header screen='DashboardScreen' filterHandle={filterHandle} />
   <View style={{flex:1}}>
 
   <ScrollView>
@@ -291,9 +291,13 @@ useEffect(() => {
                 <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
                 <View style={{flexDirection:"row",}}>
                
-                <TouchableOpacity onPress={filterHandle}>
+                {/* <TouchableOpacity onPress={filterHandle}>
                   <Image source={FilterImg} style={styles.notificationImg} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+
+                <TouchableOpacity onPress={() => navigation.navigate('PhotoGalleryScreen')}>
+                        <Text>View More</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
               </View>
@@ -336,11 +340,7 @@ useEffect(() => {
     </View>
 
             <View>
-      <View style={{width:'100%', alignItems:'center', paddingBottom:30}}>
-      <TouchableOpacity onPress={() => navigation.navigate('PhotoGalleryScreen')}>
-            <Text style={{textDecorationLine: 'underline'}}>View More...</Text>
-      </TouchableOpacity>
-      </View>
+      
 
 
       <View>

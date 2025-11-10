@@ -89,12 +89,14 @@ const ImageListScreen = (props) => {
     else{
       let total = event.eventPhotos?.length;
       setCount(Math.ceil(total / 16));
-      if (event.eventPhotos.length < 16) {
+      if (event.eventPhotos && event.eventPhotos.length < 16) {
         setHasMore(false);
       }
     }
    
   }, []);
+
+  console.log(event, 'eventeventevent')
 
 
   const toggleSelectImage = (id) => {

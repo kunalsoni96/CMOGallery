@@ -32,17 +32,17 @@ const ListCard = ({item}) => {
                     </ImageBackground>
               </View>
               <View style={styles.right}>
-                <Text style={commonStyle.title}>
+                <Text style={{...commonStyle.title, fontSize:18, color:'black', fontWeight:'bold'}}>
                 {item?.name?.length > 15 ? item?.name?.substring(0, 15) + '...' : item?.name}
                 </Text>
 
-                <View style={{paddingVertical:15}}>
+                <View style={{paddingVertical:10}}>
                   <Text style={styles.date}>{item?.date}</Text>
                 </View>
 
                 <TouchableOpacity onPress={()=>navigation.navigate('ImageListScreen', { id: item?._id, title:item?.name })} style={{flexDirection:'row'}}>
                   <Text style={styles.viewMore}>View More </Text>
-                  {/* <Image source={ViewMoreImg} style={{width:25, height:15, marginTop:2}} /> */}
+                  <Image source={ViewMoreImg} style={{width:18, height:15, marginTop:3}} />
                 </TouchableOpacity>
               </View>
       </View>
@@ -93,7 +93,7 @@ const SearchEventScreen = () => {
           <TextInput 
           value={text}
           onChangeText={(text)=>handleSearch(text)}
-          placeholder='Search' 
+          placeholder='Search Photo Album By Event Name' 
           placeholderTextColor="black" style={commonStyle.textInput} />
          
          <TouchableOpacity style={{ width:40, justifyContent:'center', paddingTop:10, paddingLeft:10}} onPress={filterHandle}>
@@ -163,12 +163,13 @@ const styles = StyleSheet.create({
     justifyContent:'center'
   },
   date:{
-    fontSize:12
+    fontSize:14,
+    color:'#686868'
   },
   viewMore:{
-    color:'gray',
+    color:'#686868',
     fontSize:14,
-    fontWeight:'bold'
+    // fontWeight:'bold'
   },
   suggestionBox: {
     width:width/1.2,

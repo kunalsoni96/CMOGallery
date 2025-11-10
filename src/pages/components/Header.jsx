@@ -31,24 +31,24 @@ const Header = (props) => {
     <View style={[styles.header, { backgroundColor: props.screen === 'Profile' ? colors.primary : 'white' }]}>
       <View style={{...styles.headerColumn, flexDirection:"row", width:"100%"}}>
       {props.screen=='DashboardScreen' ?
-        <TouchableOpacity onPress={() => getEventHandle()} style={{flexDirection:"row",  width:"50%"}}>
+        <TouchableOpacity onPress={() => getEventHandle()} style={{flexDirection:"row",  width:"80%"}}>
           {/* <Image source={LogoImg} style={styles.logo} /> */}
-          <Text style={styles.dashboardText}> CMO AI Gallery</Text>
+          <Text style={styles.dashboardText}> CMO AI Photo Gallery</Text>
         </TouchableOpacity>
         :
         <View  style={{flexDirection:"row",  width:"100%"}}>
           <TouchableOpacity onPress={()=>navigation.goBack()}>
           <Image source={props.screen === 'Profile'?BackWImg:BackArrowImg} style={styles.backImg} />
           </TouchableOpacity>
-          <Text  style={[styles.searchText, { color: props.screen === 'Profile' ? 'white' : colors.primary }]}>{props.screen}</Text>
+          <Text  style={[styles.searchText, { color: props.screen === 'Profile' && 'white' }]}>{props.screen}</Text>
         </View>
       }
         {props.screen=='DashboardScreen' &&
-        <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
+        <View style={{width:"20%", alignItems:"flex-end", justifyContent:"center"}}>
           <View style={{flexDirection:"row"}}>
-          <TouchableOpacity onPress={() => navigation.navigate('SearchEventScreen')}>
-            <Image source={SerachDarkImg} style={styles.notificationImg} />
-          </TouchableOpacity>
+          <TouchableOpacity onPress={() => props.filterHandle()}>
+                  <Image source={FilterImg} style={styles.notificationImg} />
+            </TouchableOpacity>
           {/* <Image source={SearchImg} style={styles.notificationImg} /> */}
           </View>
         </View>

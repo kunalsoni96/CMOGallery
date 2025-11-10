@@ -67,7 +67,7 @@ export const searchImage = createAsyncThunk(
       try {
         const response = await RNFetchBlob.fetch(
           'POST',
-          `${baseUrl}search-by-upload`, 
+          `https://api.homecomputer.online/heavy/search-by-upload`, 
           {
             'Content-Type': 'multipart/form-data',
           },

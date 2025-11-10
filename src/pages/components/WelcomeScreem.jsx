@@ -26,13 +26,13 @@ const WelcomeScreen = () => {
         <Image style={styles.logo} source={LogoWhiteImg} />
         <Text style={styles.title}>Chhattisgarh</Text>
 
-        <View style={styles.textRow}>
+        <View style={{...styles.textRow, marginTop:2}}>
           <Text style={styles.subTitle}>First</Text>
-          <Text style={[styles.subTitle, styles.highlightText]}>AI</Text>
+          <Text style={[styles.subTitle,styles.highlightText]}>AI</Text>
           <Text style={styles.subTitle}>Based</Text>
         </View>
 
-        <Text style={styles.subTitle}>Photo Gallery App</Text>
+        <Text style={{...styles.subTitle, marginTop:5, fontSize:16,}}>CMO Photo Gallery App</Text>
         <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')} style={styles.button}>
             <Text style={styles.buttonText}>Click To Proceed</Text>
         </TouchableOpacity>
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     marginVertical:-3
   },
   highlightText: {
-    color: colors.secondary,
+    color: colors.primary,
     fontWeight: '900',
   },
   button:{
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     
   },
   buttonText:{
-    color:colors.primary,
+    // color:colors.primary,
     fontWeight:'bold',
     fontSize:14
   },
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     fontWeight:'bold'
   },
   linkText:{
-    color:colors.secondary
+    color:colors.primary
   }
 });
 

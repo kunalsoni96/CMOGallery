@@ -170,7 +170,8 @@ useEffect(()=>{
             <Header screen='Image Search' />
             <View style={{...commonStyle.contentBox, justifyContent:'center', flex:1, borderRadius:0}}>
                 <View style={commonStyle.section}>
-                <Text style={styles.title}>Upload Photo</Text>
+                <Text style={styles.title}>Search Your Photo Through</Text>
+                <Text style={styles.title}>AI Match</Text>
                 {/* <Text style={styles.subTitle}>& Event Details</Text> */}
                 </View>
 
@@ -196,6 +197,7 @@ useEffect(()=>{
                         </View> 
                       }
                     </TouchableOpacity>
+                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, fontWeight:'bold'}}>Upload Your Photo</Text>
                    <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, fontWeight:'bold'}}>Image Format (Jpg, Jpeg, Png)</Text>
                    {errorMessage!="" &&
                    <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red', fontWeight:'bold'}}>{errorMessage}</Text>
@@ -292,7 +294,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     title:{
-        color:colors.primary,
+        // color:colors.primary,
         fontWeight:"bold",
         fontSize:20,
     },

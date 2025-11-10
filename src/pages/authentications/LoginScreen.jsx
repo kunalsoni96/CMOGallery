@@ -108,7 +108,7 @@ const LoginScreen = () => {
           <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent:'center' }}>
             <View style={commonStyle.contentBox}>
               <View style={commonStyle.section}>
-                <Text style={styles.title}>AI Based CMO Gallery</Text>
+                <Text style={styles.title}> CMO AI Photo Gallery</Text>
                 {/* <Text style={styles.subTitle}>On Click Download</Text> */}
               </View>
 
@@ -188,7 +188,7 @@ const LoginScreen = () => {
                 </View>
               </View> */}
 
-              <Footer />
+              {/* <Footer /> */}
             </View>
           </ScrollView>
         </TouchableWithoutFeedback>
