@@ -24,7 +24,7 @@ const WelcomeScreen = () => {
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.background} source={WelcomeImg} resizeMode="cover">
         <Image style={styles.logo} source={LogoWhiteImg} />
-        <Text style={styles.title}>Chhattisgarh</Text>
+        <Text style={styles.title}>Chhattisgarh's</Text>
 
         <View style={{...styles.textRow, marginTop:2}}>
           <Text style={styles.subTitle}>First</Text>
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   footerText:{
     color:'white',
-    fontWeight:'bold'
+    // fontWeight:'bold'
   },
   linkText:{
     color:colors.primary

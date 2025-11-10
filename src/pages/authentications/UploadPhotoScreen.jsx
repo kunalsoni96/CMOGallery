@@ -197,13 +197,16 @@ useEffect(()=>{
                         </View> 
                       }
                     </TouchableOpacity>
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, fontWeight:'bold'}}>Upload Your Photo</Text>
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, fontWeight:'bold'}}>Image Format (Jpg, Jpeg, Png)</Text>
+                   <Text style={{alignSelf:'center', marginTop:10, fontWeight:'bold'}}>Upload Your Photo</Text>
+                   <Text style={{alignSelf:'center', marginTop:10, fontSize:13, fontWeight:'bold'}}>Image Format (Jpg, Jpeg, Png)</Text>
                    {errorMessage!="" &&
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red', fontWeight:'bold'}}>{errorMessage}</Text>
+                   <Text style={{alignSelf:'center',  marginTop:10, color:'red', fontWeight:'bold'}}>{errorMessage}</Text>
                    }
-                   <Text style={{alignSelf:'flex-start', marginLeft:25, marginTop:10, color:'red', fontWeight:'bold'}}>
-                   Dont use photos with filters, heavy editing, or blurred backgrounds
+                   <Text style={{alignSelf:'center', marginTop:3,fontSize:12, color:'red'}}>
+                   Don't use photos with filters, heavy editing,
+                   </Text>
+                   <Text style={{alignSelf:'center', fontSize:12, marginTop:0, color:'red'}}>
+                    or blurred backgrounds
                    </Text>
                    </View>
 
@@ -261,7 +264,7 @@ useEffect(()=>{
                   openGallery()
                 }, 500);
               }
-              } style={styles.uploadImg}>
+              } style={{width:80, alignItems:'center', height:80}}>
                  <Image style={styles.uploadImg} source={ImageUploadImg} />
                  <Text style={{color:colors.primary, fontWeight:'bold', marginTop:5}}>Gallery</Text>
               </TouchableOpacity>
@@ -273,7 +276,7 @@ useEffect(()=>{
                   openCamera()
                 }, 500);
               }
-              } style={styles.uploadImg}>
+              } style={{width:80, alignItems:'center', height:80}}>
                  <Image style={styles.uploadImg} source={CameraImg} />
                  <Text style={{color:colors.primary, fontWeight:'bold', marginTop:5}}>Camera</Text>
               </TouchableOpacity>

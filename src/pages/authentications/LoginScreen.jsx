@@ -28,7 +28,7 @@ import Toaster from '../components/Toaster';
 import { loggedInSuccess } from '../../redux/reducers/loginReducer';
 import NetInfo from '@react-native-community/netinfo';
 import { updateNetwork } from '../../redux/reducers/NetworkReducer';
-import { LogoWhiteImg } from '../assets';
+import { BGImg, LogoWhiteImg } from '../assets';
 
 const LoginScreen = () => {
   const dispatch = useDispatch();
@@ -94,8 +94,8 @@ const LoginScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-     {/* <ImageBackground source={{}}> */}
+    // <SafeAreaView style={styles.container}>
+     <ImageBackground style={{flex:1, padding:20}} source={BGImg}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -196,8 +196,8 @@ const LoginScreen = () => {
 
       {(loading || loader) && <LoaderScreen backgroundColor={"white"} message2={'Authenticating'} message="Signing you in" />}
       {error && !loading && <Toaster type="error" message="Mobile or Password is Invalid" />}
-      {/* </ImageBackground> */}
-    </SafeAreaView>
+      </ImageBackground> 
+    // </SafeAreaView>
   );
 };
 
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   title: {
-    color: colors.primary,
+    // color: colors.primary,
     fontWeight: '700',
     fontSize: 24
   },

@@ -114,7 +114,7 @@ const DashboardScreen = () => {
     dispatch(getPatrika({}))
     dispatch(getVideoLive({}))
     dispatch(getEventCorner({}))
-    dispatch(getEvents({with_cm:'with'}))
+    dispatch(getEvents({with_cm:''}))
     dispatch(getDistricts({}))
   },[])
 
@@ -201,7 +201,7 @@ useEffect(() => {
               </View> */}
               <View style={{padding:10}}>
                 <View>
-                <Text style={{fontWeight:'bold', fontSize:16, color:colors.primary, marginLeft:10, paddingBottom:10}}>Stories</Text>
+                <Text style={{fontWeight:'bold', fontSize:16,  marginLeft:10, paddingBottom:10}}>Stories</Text>
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} >
             {stories.storyList?.map((value, index) => (
@@ -228,7 +228,7 @@ useEffect(() => {
               </View>
             <View>
               <View style={styles.heading}>
-                <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold', width:'50%' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width:'50%' }}>
                   Event Corner
                 </Text>
                 <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
@@ -285,7 +285,7 @@ useEffect(() => {
 
               
               <View style={styles.heading}>
-                <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold', width:'50%' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width:'50%' }}>
                   Photo Gallery
                 </Text>
                 <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
@@ -296,7 +296,7 @@ useEffect(() => {
                 </TouchableOpacity> */}
 
                 <TouchableOpacity onPress={() => navigation.navigate('PhotoGalleryScreen')}>
-                        <Text>View More</Text>
+                        <Text>View All</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -311,20 +311,30 @@ useEffect(() => {
         <TouchableOpacity
           style={[styles.tab, activeTab === "Tab1" && styles.activeTab]}
           onPress={() => {
-            dispatch(getEvents({with_cm:'with'}))
+            dispatch(getEvents({with_cm:''}))
             setActiveTab("Tab1")
           }}
         >
-          <Text style={[styles.tabText, activeTab === "Tab1" && styles.activeTabText]}>CM Events</Text>
+          <Text style={[styles.tabText, activeTab === "Tab1" && styles.activeTabText]}>All Event</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.tab, activeTab === "Tab2" && styles.activeTab]}
           onPress={() => {
-            dispatch(getEvents({with_cm:'without'}))
+            dispatch(getEvents({with_cm:'with'}))
             setActiveTab("Tab2")
           }}
         >
-          <Text style={[styles.tabText, activeTab === "Tab2" && styles.activeTabText]}>Others</Text>
+          <Text style={[styles.tabText, activeTab === "Tab2" && styles.activeTabText]}>CM Events</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "Tab3" && styles.activeTab]}
+          onPress={() => {
+            dispatch(getEvents({with_cm:'without'}))
+            setActiveTab("Tab3")
+          }}
+        >
+          <Text style={[styles.tabText, activeTab === "Tab3" && styles.activeTabText]}>Others</Text>
         </TouchableOpacity>
       </View>
 
@@ -342,10 +352,9 @@ useEffect(() => {
             <View>
       
 
-
       <View>
               <View style={styles.heading}>
-                <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold', width:'50%' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width:'50%' }}>
                   Video Gallery
                 </Text>
                 <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
@@ -390,7 +399,7 @@ useEffect(() => {
 
     <View>
           <View style={styles.heading}>
-                <Text style={{ color: colors.primary, fontSize: 16, fontWeight: 'bold', width:'50%' }}>
+                <Text style={{ fontSize: 16, fontWeight: 'bold', width:'50%' }}>
                   Janman Patrika
                 </Text>
                 <View style={{width:"50%", alignItems:"flex-end", justifyContent:"center"}}>
@@ -594,11 +603,11 @@ const styles = StyleSheet.create({
     },
     tab: {
       // flex: 1,
-      padding: 12,
+      padding: 8,
       alignItems: "center",
       backgroundColor:'#e6e6e6',
       borderRadius:20,
-      width:width/2.5,
+      width:width/3.5,
       marginLeft:10
       
     },
@@ -607,8 +616,9 @@ const styles = StyleSheet.create({
       borderRadius:30
     },
     tabText: {
-      fontSize: 16,
-      color:colors.primary
+      fontSize: 14,
+      color:colors.primary,
+      fontWeight:'bold'
     },
     item: {
       padding: 15,

@@ -196,7 +196,7 @@ const ProfileScreen = () => {
 
             {/* 🕵️ Recent View Heading */}
             <View style={styles.heading}>
-              <Text style={{ color: colors.primary, fontSize: 16, fontWeight: "bold" }}>
+              <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                 Recent View
               </Text>
             </View>

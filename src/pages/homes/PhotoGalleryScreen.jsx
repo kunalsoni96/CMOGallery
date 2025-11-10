@@ -27,7 +27,7 @@ const PhotoGalleryScreen = () => {
   const [activeTab, setActiveTab] = useState("Tab1");
   const dispatch = useDispatch();
   useEffect(()=>{
-    dispatch(getEvents({with_cm:'with'}))
+    dispatch(getEvents({with_cm:''}))
   },[])
 
   const event = useSelector(state=>state.event)
@@ -56,26 +56,38 @@ const PhotoGalleryScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header screen='Photo Gallery' />
+      <Header screen='Photo Gallery' filterHandle={filterHandle} />
 
       <View style={styles.tabRow}>
         <TouchableOpacity
           style={[styles.tab, activeTab === "Tab1" && styles.activeTab]}
           onPress={() => {
-            dispatch(getEvents({with_cm:'with'}))
+            dispatch(getEvents({with_cm:''}))
             setActiveTab("Tab1")
           }}
         >
-          <Text style={[styles.tabText, activeTab === "Tab1" && styles.activeTabText]}>CM Events</Text>
+          <Text style={[styles.tabText, activeTab === "Tab1" && styles.activeTabText]}>All Event</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.tab, activeTab === "Tab2" && styles.activeTab]}
           onPress={() => {
-            dispatch(getEvents({with_cm:'without'}))
+            dispatch(getEvents({with_cm:'with'}))
             setActiveTab("Tab2")
           }}
         >
-          <Text style={[styles.tabText, activeTab === "Tab2" && styles.activeTabText]}>Others</Text>
+          <Text style={[styles.tabText, activeTab === "Tab2" && styles.activeTabText]}>CM Events</Text>
+        </TouchableOpacity>
+
+
+        <TouchableOpacity
+          style={[styles.tab, activeTab === "Tab3" && styles.activeTab]}
+          onPress={() => {
+            dispatch(getEvents({with_cm:'without'}))
+            setActiveTab("Tab3")
+          }}
+        >
+          <Text style={[styles.tabText, activeTab === "Tab3" && styles.activeTabText]}>Others</Text>
         </TouchableOpacity>
       </View>
       
@@ -172,11 +184,11 @@ const styles = StyleSheet.create({
       },
       tab: {
         // flex: 1,
-        padding: 10,
+        padding: 8,
         alignItems: "center",
         backgroundColor:'#e6e6e6',
         borderRadius:20,
-        width:width/2.5,
+        width:width/3.5,
         marginLeft:10
       },
       activeTab: {
@@ -184,8 +196,9 @@ const styles = StyleSheet.create({
         borderRadius:30
       },
       tabText: {
-        fontSize: 16,
-        color:colors.primary
+        fontSize: 14,
+        color:colors.primary,
+        fontWeight:'bold'
       },
       item: {
         padding: 15,
